@@ -11,7 +11,12 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('hello');
-});
+//Route::get('/', function()
+//{
+//	return View::make('hello');
+//});
+
+//Route::get('/', 'UserController@showProfile');
+
+Route::resource('/', 'IndexController',
+    array('only' => array('index')));
