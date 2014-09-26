@@ -14,7 +14,7 @@
         </a>
     </div>
     <div class="col-md-3 col-md-offset-2 main-page-block">
-        <a href="{{ action('PageController@code') }}" class="rounded_block_link">
+        <a href="{{ action('CodeController@index') }}" class="rounded_block_link">
             @include('interface.button-block', array('text' => 'Code', 'background' => '/images/php.jpg'))
         </a>
     </div>

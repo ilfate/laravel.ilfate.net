@@ -1,86 +1,63 @@
 <?php
 
-class PageController extends \BaseController {
+class PageController extends \BaseController
+{
+    /**
+     * Main page
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        return View::make('pages.index');
+    }
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		return View::make('pages.index');
-	}
+    /**
+     * Cv page
+     *
+     * @return Response
+     */
+    public function cv()
+    {
+        return View::make('pages.cv');
+    }
 
+    /**
+     * Skills page
+     *
+     * @return Response
+     */
+    public function skills()
+    {
+        return View::make('pages.skills');
+    }
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
+    /**
+     * My photo page
+     *
+     * @return Response
+     */
+    public function photo()
+    {
+        $data = array(
+            'images_gallery' => array(
+                array('img' => '/images/my/baikal1.jpg'),
+                array('img' => '/images/my/berlin1.jpg'),
+                array('img' => '/images/my/snow1.jpg', 'down-shift' => 0.1),
+                array('img' => '/images/my/berlin2.jpg'),
+                array('img' => '/images/my/tu1.jpg'),
+                array('img' => '/images/my/code1.jpg'),
+                array('img' => '/images/my/snow3.jpg'),
+                array('img' => '/images/my/ilfate2.jpg'),
+                array('img' => '/images/my/tu2.jpg'),
+                array('img' => '/images/my/snow0.jpg'),
+                array('img' => '/images/my/aust2.jpg', 'down-shift' => 0.1),
+                array('img' => '/images/my/aust3.jpg'),
+                array('img' => '/images/my/is1.jpg'),
+                array('img' => '/images/my/ilfate2.png'),
 
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
-
-
+            )
+        );
+        return View::make('pages.photo', $data);
+    }
 }

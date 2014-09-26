@@ -23,9 +23,13 @@ Route::resource('/', 'IndexController',
 
 
 Route::get('/', 'PageController@index');
-Route::get('Cv', 'PageController@cv');
-Route::get('Code', 'PageController@code');
 Route::get('Photo', 'PageController@photo');
+Route::get('Cv', 'PageController@cv');
 Route::get('Cv/Skills', 'PageController@skills');
 
+Route::get('Code', 'CodeController@index');
+Route::get('Code/Engine', 'CodeController@engine');
+Route::get('Code/Stars', 'CodeController@stars');
+
 Route::get('Games', 'GamesController@index');
+Route::get('RobotRock', 'GamesController@robotRock');
