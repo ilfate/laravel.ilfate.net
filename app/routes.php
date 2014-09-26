@@ -20,3 +20,12 @@
 
 Route::resource('/', 'IndexController',
     array('only' => array('index')));
+
+
+Route::get('/', 'PageController@index');
+Route::get('Cv', 'PageController@cv');
+Route::get('Code', 'PageController@code');
+Route::get('Photo', 'PageController@photo');
+Route::get('Cv/Skills', 'PageController@skills');
+
+Route::get('Games', 'GamesController@index');
