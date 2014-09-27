@@ -208,6 +208,11 @@ a.rounded_block_link{
 }
 
 
+.ilfate-breadcrumb {
+    margin: 7px 0px 0px 0px;
+}
+
+
 /**** ajax load ****/
 
 .ajax_load{

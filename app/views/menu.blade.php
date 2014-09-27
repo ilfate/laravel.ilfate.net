@@ -8,7 +8,21 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Ilfate</a>
+<!--                <a class="navbar-brand" href="/">Ilfate</a>-->
+
+                <ol class="breadcrumb ilfate-breadcrumb">
+                    @foreach (Helper\Breadcrumbs::getLinks() as $link)
+                        <li {{ $link['active'] ? 'class="active"' : '' }} >
+                            @if ($link['active'])
+                                <a href="{{{ $link['url'] }}}">
+                            @endif
+                            {{{ $link['name'] }}}
+                            @if ($link['active'])
+                                </a>
+                            @endif
+                        </li>
+                    @endforeach
+                </ol>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">

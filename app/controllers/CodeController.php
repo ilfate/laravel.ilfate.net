@@ -1,7 +1,20 @@
 <?php
 
+use Helper\Breadcrumbs;
+
 class CodeController extends \BaseController
 {
+    /**
+     * @var Breadcrumbs
+     */
+    protected $breadcrumbs;
+
+    /**
+     * @param Breadcrumbs $breadcrumbs
+     */
+    public function __construct(Breadcrumbs $breadcrumbs) {
+        $this->breadcrumbs = $breadcrumbs;
+    }
 
     /**
      * Main page
@@ -10,6 +23,7 @@ class CodeController extends \BaseController
      */
     public function index()
     {
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Code');
         return View::make('code.index');
     }
 
@@ -20,6 +34,8 @@ class CodeController extends \BaseController
      */
     public function engine()
     {
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . 'index'), 'Code');
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Engine');
         return View::make('code.engine');
     }
 
@@ -30,6 +46,8 @@ class CodeController extends \BaseController
      */
     public function stars()
     {
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . 'index'), 'Code');
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Stars');
         return View::make('code.stars');
     }
 }
