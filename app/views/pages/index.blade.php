@@ -2,8 +2,8 @@
 
 @section('content')
 
-<div class="hero-unit">
-    <h1>@lang('main_index_hello_text') </h1>
+<div class="page-header">
+    <h1>Hello! My name is Ilya Rubinchik <small>and this is my website!</small></h1>
 </div>
 
 

@@ -29,9 +29,13 @@
 </div>
 
 <script>
-    $(document).ready(function(){
-        Photo.createRows(800, 220, 1)
+    imagesLoaded( '.photo', function() {
+        Photo.createRows(800, 220, 1);
     });
 </script>
 
+@stop
+
+@section('additional_js')
+    <script type="text/javascript" src="/js/imagesloaded.pkgd.min.js"></script>
 @stop

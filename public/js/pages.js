@@ -56,6 +56,10 @@ function Photo() {
       {
         width = img.width();
         height = img.height();
+        if (width == 0 || height == 0) {
+            info('error. Image have size 0.');
+            return;
+        }
         img.attr('data-w', width).attr('data-h', height);
       } else {
         width = img.data('w');

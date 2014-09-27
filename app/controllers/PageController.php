@@ -41,7 +41,7 @@ class PageController extends \BaseController
     {
         $data = array(
             'images_gallery' => array(
-                array('img' => '/images/my/baikal1.jpg'),
+                array('img' => '/images/my/baikal1.jpg', 'down-shift' => 0.1),
                 array('img' => '/images/my/berlin1.jpg'),
                 array('img' => '/images/my/snow1.jpg', 'down-shift' => 0.1),
                 array('img' => '/images/my/berlin2.jpg'),

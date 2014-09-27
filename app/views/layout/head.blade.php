@@ -7,10 +7,11 @@
 
 
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" >
-    <link rel="stylesheet" href="/bootstrap/css/bootstrap-responsive.min.css" type="text/css" media="screen" >
 
     <link rel="stylesheet" href="/css/main.css" type="text/css" />
     <link rel="stylesheet" href="/css/game.css" type="text/css" />
+
+    @yield('additional_css')
 
     <!--  <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap.min.css">
       <link rel="stylesheet" href="css/bootstrap-image-gallery.min.css">-->
@@ -40,6 +41,7 @@
 <script type="text/javascript" src="/js/form.js"></script>
 <script type="text/javascript" src="/js/pages.js"></script>
 
+@yield('additional_js')
 
 @yield('layout')
 
