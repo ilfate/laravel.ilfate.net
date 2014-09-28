@@ -8,6 +8,12 @@
 
 <div class="row show-grid">
     <div class="col-md-8 col-md-offset-2 code-page-block">
+        <a href="{{ action('GamesController@mathEffect') }}" class="rounded_block_link">
+            @include('interface.button-block', array('text' => 'Math Effect', 'background' => '/images/game/Long_robot.jpg'))
+        </a>
+    </div>
+</div><div class="row show-grid">
+    <div class="col-md-8 col-md-offset-2 code-page-block">
         <a href="{{ action('GamesController@robotRock') }}" class="rounded_block_link">
             @include('interface.button-block', array('text' => 'Robot Rock', 'background' => '/images/game/Long_robot.jpg'))
         </a>

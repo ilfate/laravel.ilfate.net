@@ -34,3 +34,4 @@ Route::get('Code/Stars', 'CodeController@stars');
 Route::get('Games', 'GamesController@index');
 Route::get('RobotRock', 'GamesController@robotRock');
 Route::get('GameTemplate', 'GamesController@gameTemplate');
+Route::get('MathEffect', 'GamesController@mathEffect');

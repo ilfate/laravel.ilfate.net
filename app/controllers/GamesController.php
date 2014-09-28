@@ -39,6 +39,7 @@ class GamesController extends \BaseController
         $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'RobotRock');
 		return View::make('games.robotRock.index');
 	}
+
 	/**
 	 * js game template
 	 *
@@ -49,5 +50,17 @@ class GamesController extends \BaseController
         $this->breadcrumbs->addLink(action(__CLASS__ . '@' . 'index'), 'Games');
         $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Game Template');
 		return View::make('games.gameTemplate');
+	}
+
+	/**
+	 * js game template
+	 *
+	 * @return Response
+	 */
+	public function mathEffect()
+	{
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . 'index'), 'Games');
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Math Effect');
+		return View::make('games.mathEffect');
 	}
 }
