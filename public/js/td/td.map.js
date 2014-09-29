@@ -364,7 +364,7 @@ TD.Map = function (facet, config) {
         var el = $('.unit-' + unit.getId());
         if (el[0]) {
             // unit exist
-            el.html(unit.power);
+            el.find('.tdButton').remove();
             if (unit.owner == 'player') {
                 this.makeButtonsforUnit(el, unit);
             }
@@ -381,8 +381,7 @@ TD.Map = function (facet, config) {
             // draw new unit
             var el = $('<div></div>')
                 .addClass('tdUnit')
-                .addClass('unit-' + unit.getId())
-                .html(unit.power);
+                .addClass('unit-' + unit.getId());
             if (unit.owner == 'player') {
                 el.addClass('playerUnit');
                 this.makeButtonsforUnit(el, unit);
@@ -396,11 +395,31 @@ TD.Map = function (facet, config) {
             el.css('left', unit.x * this.oneCellPixelSize);
             el.css('top',  unit.y * this.oneCellPixelSize);
             el.fadeIn(1000)
+            
+            var moveArrow = $('<div></div>').addClass('moveArrow');
+            el.append(moveArrow);
+            var moveBlock = $('<div></div>').addClass('moveBlock');
+            el.append(moveBlock);
+            var unitPower = $('<div></div>').addClass('unitPower');
+            el.append(unitPower);
+
             this.mapEl.append(el);
         }
+        this.setUnitElPower(unit);
         if (unit.active) {
             el.addClass('unit-move-' + unit.direction);
         }
+    }
+
+    this.setUnitElPower = function(unit)  {
+        var el = $('.unit-' + unit.getId());
+        $('.unit-' + unit.getId() + ' .unitPower').html(unit.power);
+        var level = Math.ceil(unit.power / 4);
+        if (level > 10) level = 10;
+        
+        el.removeClass('power-1', 'power-2', 'power-3', 'power-4', 'power-5', 'power-6', 'power-7', 'power-8', 'power-9', 'power-10');
+        
+        el.addClass('power-' + level);
     }
 
     this.drawDeath = function (deadUnit) {

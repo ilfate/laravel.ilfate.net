@@ -26,17 +26,14 @@ $(document).ready(function() {
 
     // $('body').append('<div id="tdMap"></div>');
     var situation = false;
-    //   {'units' : [
-//       {'x': 0, 'y': 1, 'd': 1, 'a':true, 'p': 5, 'o':'player'},
-//       {'x': 1, 'y': 0, 'd': 2, 'a':true, 'p': 5, 'o':'bot'},
-//       {'x': 1, 'y': 2, 'd': 0, 'a':true, 'p': 5, 'o':'player'},
-//       {'x': 2, 'y': 1, 'd': 3, 'a':true, 'p': 5, 'o':'bot'},
+     //  {'units' : [
+
 //       {'x': 2, 'y': 2, 'd': 0, 'a':false, 'p': 1, 'o':'player'}
     //      {'x': 2, 'y': 2, 'd': 2, 'a':true, 'p': 4, 'o':'player'},
     //      {'x': 2, 'y': 3, 'd': 0, 'a':true, 'p': 3, 'o':'bot'}
     //  {'x': 3, 'y': 3, 'd': 1, 'a':true, 'p': 35, 'o':'player'},
     //  {'x': 5, 'y': 3, 'd': 2, 'a':false, 'p': 1, 'o':'player'}
-    //  ]}
+   //   ]};
     var game = new TD.Game(situation);
     game.init();
 });
