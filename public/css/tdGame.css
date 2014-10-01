@@ -120,19 +120,19 @@
     z-index: 6;
 }
 
-#tdMap .tdButton.tdGoTopButton{
+#tdMap .tdButton.arrow-0{
     top:-4px;
     left:22px;
 }
-#tdMap .tdButton.tdGoRightButton{
+#tdMap .tdButton.arrow-1{
     top:21px;
     left:45px;
 }
-#tdMap .tdButton.tdGoBottomButton{
+#tdMap .tdButton.arrow-2{
     top:44px;
     left:22px;
 }
-#tdMap .tdButton.tdGoLeftButton{
+#tdMap .tdButton.arrow-3{
     top:21px;
     left:-3px;
 }

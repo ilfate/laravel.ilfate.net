@@ -344,7 +344,7 @@ TD.Game = function (situation) {
         }
         if (!isInt(direction) || direction < 0 || direction > 3) {
             this.facet.stopGame();
-            debug('wrong direction provided by user');
+            debug('wrong direction provided by user (' + direction + ')');
             return;
         }
         // ok we save from any bullshit

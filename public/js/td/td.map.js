@@ -364,7 +364,7 @@ TD.Map = function (facet, config) {
         var el = $('.unit-' + unit.getId());
         if (el[0]) {
             // unit exist
-            el.find('.tdButton').remove();
+            //el.find('.tdButton').remove();
             if (unit.owner == 'player') {
                 this.makeButtonsforUnit(el, unit);
             }
@@ -435,18 +435,17 @@ TD.Map = function (facet, config) {
     }
 
     this.makeButtonsforUnit = function(el, unit) {
-        var buttons = [];
-        if (unit.active == true) {
-            //buttons.push('stop');
-            switch (unit.direction) {
-                case 0: buttons.push('go_1', 'go_2', 'go_3'); break;
-                case 1: buttons.push('go_0', 'go_2', 'go_3'); break;
-                case 2: buttons.push('go_0', 'go_1', 'go_3'); break;
-                case 3: buttons.push('go_0', 'go_1', 'go_2'); break;
-            }
-        } else {
-            buttons.push('go_0', 'go_1', 'go_2', 'go_3');
+        if (!el.find('.tdButton')[0]) {
+            this.createButtonsForUnit(el, unit);
         }
+        el.find('.tdButton').show();
+        if (unit.active == true) {
+            el.find('.arrow-' + unit.direction).hide();
+        }
+    }
+
+    this.createButtonsForUnit = function(el, unit) {
+        var buttons = ['go_0', 'go_1', 'go_2', 'go_3'];
         for(var key in buttons) {
             var button = $('<div></div>').addClass('tdButton');
             switch (buttons[key]) {
@@ -464,36 +463,15 @@ TD.Map = function (facet, config) {
                     }
                     break;
                 case 'go_0':
-                    button
-                        .addClass('tdGoTopButton')
-                        .addClass('fa fa-arrow-circle-up')
-                        .bind("click", function(){
-                            TD.Facet.userActionMoveUnit(unit.getId(), 0);
-                        });
-                    break;
                 case 'go_1':
-                    button
-                        .addClass('tdGoRightButton')
-                        .addClass('fa fa-arrow-circle-right')
-                        .bind("click", function(){
-                            TD.Facet.userActionMoveUnit(unit.getId(), 1);
-                        });
-                    break;
                 case 'go_2':
-                    button
-                        .addClass('tdGoBottomButton')
-                        .addClass('fa fa-arrow-circle-down')
-                        .bind("click", function(){
-                            TD.Facet.userActionMoveUnit(unit.getId(), 2);
-                        });
-                    break;
                 case 'go_3':
+                    var direction = parseInt(buttons[key].substr(3,1));
+                    var directionWords = ['up', 'right', 'down', 'left'];
                     button
-                        .addClass('tdGoLeftButton')
-                        .addClass('fa fa-arrow-circle-left')
-                        .bind("click", function(){
-                            TD.Facet.userActionMoveUnit(unit.getId(), 3);
-                        });
+                        .addClass('arrow-' + direction)
+                        .addClass('fa fa-arrow-circle-' + directionWords[direction])
+                        .bind("click", this.helpUserActionMoveCallback(unit.getId(), direction));
                     break;
                 default :
                     button = false;
@@ -503,6 +481,11 @@ TD.Map = function (facet, config) {
                 el.append(button);
             }
         }
+    }
 
+    this.helpUserActionMoveCallback = function(unitId, direction) {
+        return function() {
+            TD.Facet.userActionMoveUnit(unitId, direction);
+        }
     }
 }
