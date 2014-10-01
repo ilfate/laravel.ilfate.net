@@ -467,10 +467,9 @@ TD.Map = function (facet, config) {
                 case 'go_2':
                 case 'go_3':
                     var direction = parseInt(buttons[key].substr(3,1));
-                    var directionWords = ['up', 'right', 'down', 'left'];
                     button
                         .addClass('arrow-' + direction)
-                        .addClass('fa fa-arrow-circle-' + directionWords[direction])
+                        .addClass('fa fa-arrow-circle-' + this.directionName[direction])
                         .bind("click", this.helpUserActionMoveCallback(unit.getId(), direction));
                     break;
                 default :
