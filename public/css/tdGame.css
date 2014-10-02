@@ -225,3 +225,14 @@
 
 
 
+/*  DIALOG */
+
+.ui-widget-content {
+    background: none;
+    background-color: #ffffff;
+    color: #333333
+}
+
+.ui-widget-header {
+    border:none;
+}

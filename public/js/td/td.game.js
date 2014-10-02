@@ -24,7 +24,6 @@ TD = new TD();
 
 $(document).ready(function() {
 
-    // $('body').append('<div id="tdMap"></div>');
     var situation = false;
      //  {'units' : [
 
@@ -382,12 +381,16 @@ TD.Game = function (situation) {
         if (unitId && this.units[unitId] !== undefined) {
             if (this.units[unitId].owner != 'player') {
                 this.stop();
-                debug('You killed ' + this.statsKilledUnits + ' units!');
-                debug('You absorbed ' + this.statsKilledPower + ' points of power!');
-                debug('You lost ' + this.statsLostUnits + ' units!');
-                debug('You survived ' + this.statsTicksSurvived + ' turns!');
-                debug('You earned ' + this.statsPoints + ' points!');
-                alert('You lost!');
+                $('#gameStats').html('You survived - ' + this.statsTicksSurvived + ' turns!<br>' + 
+                    'You killed ' + this.statsKilledUnits + ' units!<br>' +
+                    'You earned ' + this.statsPoints + ' points!');
+                
+                // debug('You killed ' + this.statsKilledUnits + ' units!');
+                // debug('You absorbed ' + this.statsKilledPower + ' points of power!');
+                // debug('You lost ' + this.statsLostUnits + ' units!');
+                // debug('You survived ' + this.statsTicksSurvived + ' turns!');
+                // debug('You earned ' + this.statsPoints + ' points!');
+                // alert('You lost!');
             }
         }
     }

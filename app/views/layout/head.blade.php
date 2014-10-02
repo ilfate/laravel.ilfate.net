@@ -29,6 +29,7 @@
 
 <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="packages/leanModal.v1.1/jquery.leanModal.min.js"></script>
 
 <!--  <script type="text/javascript" src="/js/bootstrap-image-gallery.min.js"></script>
   <script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>-->

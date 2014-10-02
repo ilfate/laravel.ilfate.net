@@ -16,6 +16,11 @@
 @section('content')
 
 <div id="tdMap"></div>
+hide
+<div id="lean_overlay" class="" title="Game over!">
+  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>All your base is belong to enemy now!</p>
+
+</div>
 
 @stop
 

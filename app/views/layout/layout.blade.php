@@ -2,7 +2,7 @@
 
 @section('layout')
 
-<?//= Csrf::createInput() ?>
+<? //= Csrf::createInput() ?>
 <? //$this->render('menu.tpl') ?>
 
 @include('menu')
@@ -22,8 +22,7 @@
     </div>
 </div>
 
-@include('modal.modal')
-<?//= Js::getHtml() ?>
+<? //= Js::getHtml() ?>
 
 @stop
 
