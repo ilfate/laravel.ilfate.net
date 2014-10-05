@@ -215,6 +215,7 @@
     display: block;
     position: absolute;
     transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
     width:46px;
     height:46px;
     border-radius: 9px;
@@ -227,12 +228,17 @@
 
 /*  DIALOG */
 
-.ui-widget-content {
-    background: none;
-    background-color: #ffffff;
-    color: #333333
+.result-numbers {
+    color: #113D0C;
+    font-size: 22px;
 }
 
-.ui-widget-header {
-    border:none;
+.result-text {
+    font-size: 18px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.result-title {
+    text-align: center;
 }

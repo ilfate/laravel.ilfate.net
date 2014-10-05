@@ -22,6 +22,8 @@
     </div>
 </div>
 
+<input type="hidden" name="_token" id="laravel-token" value="{{ csrf_token() }}">
+
 <? //= Js::getHtml() ?>
 
 @stop

@@ -16,10 +16,25 @@
 @section('content')
 
 <div id="tdMap"></div>
-hide
-<div id="lean_overlay" class="" title="Game over!">
-  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>All your base is belong to enemy now!</p>
-
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- dialog body -->
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h2 class="result-title">
+                    Your base belong to enemy now!
+                </h2>
+                <p id="gameStats" class="result-text">
+                    You survived - <span class="result-numbers" id="turnsSurvived"></span> turns!<br>
+                    You killed - <span class="result-numbers" id="unitsKilled"></span> units!<br>
+                    You earned - <span class="result-numbers" id="pointsEarned"></span> points!<br>
+                </p>
+            </div>
+            <!-- dialog buttons -->
+            <div class="modal-footer"><a href="{{ action('GamesController@mathEffect') }}" type="button" class="btn btn-primary">Restart</a></div>
+        </div>
+    </div>
 </div>
 
 @stop
