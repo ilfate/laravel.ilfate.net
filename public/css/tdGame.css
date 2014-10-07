@@ -2,6 +2,11 @@
 
 #tdMap {
     position: relative;
+    margin: 0 0 0 118px;
+}
+
+.main-content-well, .main-content-well-side {
+min-height: 800px;
 }
 
 * {

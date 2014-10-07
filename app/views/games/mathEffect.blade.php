@@ -15,7 +15,12 @@
 
 @section('content')
 
+<div class="hero-unit">
+    <h1>MathEffect <small>Defend your base as long as you can!</small></h1>
+</div>
+
 <div id="tdMap"></div>
+
 <div id="myModal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
