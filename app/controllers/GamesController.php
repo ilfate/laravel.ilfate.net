@@ -52,47 +52,4 @@ class GamesController extends \BaseController
         $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Game Template');
         return View::make('games.gameTemplate');
     }
-
-    /**
-     * js game template
-     *
-     * @return Response
-     */
-    public function mathEffect()
-    {
-        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . 'index'), 'Games');
-        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Math Effect');
-        return View::make('games.mathEffect');
-    }
-
-    /**
-     * js game template
-     *
-     * @return Response
-     */
-    public function mathEffectSave()
-    {
-        if (Request::isMethod('get')) {
-            echo 'not Post';
-            return false;
-        }
-        if (!Request::ajax()) {
-            echo 'not Ajax';
-            return false;
-        }
-        $userData = json_encode(array(
-            'ip' => $_SERVER['REMOTE_ADDR'],
-            'laravel_session' => md5($_COOKIE['laravel_session'])
-        ));
-
-        $tdStatistics                = new TdStatistics();
-        $tdStatistics->pointsEarned  = Input::get('pointsEarned');
-        $tdStatistics->turnsSurvived = Input::get('turnsSurvived');
-        $tdStatistics->unitsKilled   = Input::get('unitsKilled');
-        $tdStatistics->userData      = $userData;
-
-        $tdStatistics->save();
-        //return 'turns = ' . $turnsSurvived;
-        return '{}';
-    }
 }

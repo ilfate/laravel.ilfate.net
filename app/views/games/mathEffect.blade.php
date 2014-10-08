@@ -37,7 +37,7 @@
                 </p>
             </div>
             <!-- dialog buttons -->
-            <div class="modal-footer"><a href="{{ action('GamesController@mathEffect') }}" type="button" class="btn btn-primary">Restart</a></div>
+            <div class="modal-footer"><a href="{{ action('MathEffectController@index') }}" type="button" class="btn btn-primary">Restart</a></div>
         </div>
     </div>
 </div>

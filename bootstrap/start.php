@@ -59,6 +59,12 @@ $framework = $app['path.base'].
 
 require $framework.'/Illuminate/Foundation/start.php';
 
+
+
+$logFile = 'laravel.log';
+
+Log::useDailyFiles(storage_path().'/logs/'.$logFile);
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

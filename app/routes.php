@@ -34,5 +34,6 @@ Route::get('Code/Stars', 'CodeController@stars');
 Route::get('Games', 'GamesController@index');
 Route::get('RobotRock', 'GamesController@robotRock');
 Route::get('GameTemplate', 'GamesController@gameTemplate');
-Route::get('MathEffect', 'GamesController@mathEffect');
-Route::post('MathEffect/save', array('before' => 'csrf', 'uses' => 'GamesController@mathEffectSave'));
+
+Route::get('MathEffect', 'MathEffectController@index');
+Route::post('MathEffect/save', array('before' => 'csrf', 'uses' => 'MathEffectController@save'));
