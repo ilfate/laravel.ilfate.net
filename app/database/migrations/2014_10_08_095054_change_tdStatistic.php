@@ -12,7 +12,7 @@ class ChangeTdStatistic extends Migration {
 	 */
 	public function up()
 	{
-		Schema::rename('tdStatistic', 'td_statistic');
+		Schema::rename('tdStatistics', 'td_statistic');
 
 		Schema::table('td_statistic', function($table)
 		{

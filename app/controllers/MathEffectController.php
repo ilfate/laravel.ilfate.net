@@ -27,7 +27,10 @@ class MathEffectController extends \BaseController
     {
         $this->breadcrumbs->addLink(action(__CLASS__ . '@' . 'index'), 'Games');
         $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Math Effect');
-        return View::make('games.mathEffect');
+
+        $name = Session::get('userName', null);
+
+        return View::make('games.mathEffect', array('userName' => $name));
     }
 
     /**
@@ -45,6 +48,8 @@ class MathEffectController extends \BaseController
             Log::warning('MathEffect save is not Ajax.');
             App::abort(404);
         }
+        $name = Session::get('userName', null);
+
 
         $tdStatistics                  = new TdStatistics();
         $tdStatistics->pointsEarned    = Input::get('pointsEarned');
@@ -52,23 +57,28 @@ class MathEffectController extends \BaseController
         $tdStatistics->unitsKilled     = Input::get('unitsKilled');
         $tdStatistics->ip              = $_SERVER['REMOTE_ADDR'];
         $tdStatistics->laravel_session = md5(Cookie::get('laravel_session'));
+        $tdStatistics->name            = $name;
 
         $tdStatistics->save();
         //return 'turns = ' . $turnsSurvived;
         return '{}';
     }
 
-    public function updateName()
+    public function saveName()
     {
-        $name            = Input::get('Name');
+        $name            = Input::get('name');
         $laravel_session = md5(Cookie::get('laravel_session'));
 
-        $stats = TdStatistics::where('laravel_session', '=', $laravel_session)->firstOrFail();
-        if (!stats) {
+        Session::put('userName', $name);
+
+
+        $stats = TdStatistics::where('laravel_session', '=', $laravel_session)->orderBy('created_at', 'desc')->firstOrFail();
+        if (!$stats) {
             Log::warning('No user found to update name. (name=' . $name . ')');
             App::abort(404);
         } 
         $stats->name = $name;
         $stats->save();
+        return '{}';
     }
 }

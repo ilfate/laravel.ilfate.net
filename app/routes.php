@@ -37,3 +37,4 @@ Route::get('GameTemplate', 'GamesController@gameTemplate');
 
 Route::get('MathEffect', 'MathEffectController@index');
 Route::post('MathEffect/save', array('before' => 'csrf', 'uses' => 'MathEffectController@save'));
+Route::post('MathEffect/saveName', array('before' => 'csrf', 'uses' => 'MathEffectController@saveName'));

@@ -35,7 +35,19 @@
                     You killed - <span class="result-numbers" id="unitsKilled"></span> units!<br>
                     You earned - <span class="result-numbers" id="pointsEarned"></span> points!<br>
                 </p>
+                @if (empty($userName))
+                <br>
+                <p>
+                    <form class="result-text" method="post" action="{{ action('MathEffectController@saveName') }}">
+                        <input type="text" name="name" />
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                        <button class="btn btn-primary" type="submit">Save my name</button>
+                    </form>
+                </p>
+                @endif
             </div>
+
             <!-- dialog buttons -->
             <div class="modal-footer"><a href="{{ action('MathEffectController@index') }}" type="button" class="btn btn-primary">Restart</a></div>
         </div>

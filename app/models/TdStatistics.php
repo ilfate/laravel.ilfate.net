@@ -12,7 +12,7 @@ class TdStatistics extends Eloquent {
 	 *
 	 * @var string
 	 */
-	protected $table = 'td_statistics';
+	protected $table = 'td_statistic';
 
 	/**
 	 * The attributes excluded from the model's JSON form.
