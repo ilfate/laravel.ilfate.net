@@ -217,7 +217,7 @@ TD.Map = function (facet, config) {
     }
 
     this.animateDeath = function(unit) {
-        this.deathAnimations.push({'id' : unit.getId(), 'x' : unit.x, 'y': unit.y});
+        this.deathAnimations.push({'id' : unit.getId(), 'x' : unit.x, 'y': unit.y, 'direction': unit.direction});
     }
 
     this.draw = function(units) {
@@ -425,6 +425,12 @@ TD.Map = function (facet, config) {
     this.drawDeath = function (deadUnit) {
         var el = $('.unit-' + deadUnit.id);
         el.removeClass('inUpdate');
+        el.removeClass('unit-move-0')
+            .removeClass('unit-move-1')
+            .removeClass('unit-move-2')
+            .removeClass('unit-move-3');
+        el.find('.tdButton').remove();
+        el.addClass('unit-move-' + deadUnit.direction);        
         el.animate({
             'left' : deadUnit.x * this.oneCellPixelSize,
             'top' : deadUnit.y * this.oneCellPixelSize,
