@@ -24,6 +24,14 @@ TD = new TD();
 
 $(document).ready(function() {
 
+    $('#modalHowUnitMoveButton').bind('click', function(){
+        $("#modalHowUnitMove").modal({                    // wire up the actual modal functionality and show the dialog
+                    "backdrop"  : "static",
+                    "keyboard"  : true,
+                    "show"      : true                     // ensure the modal is shown immediately
+        });
+    });
+
     var situation = false;
 //       {'units' : [
 //

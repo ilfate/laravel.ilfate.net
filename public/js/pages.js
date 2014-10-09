@@ -194,3 +194,12 @@ function swapNodes(a, b)
   b.parentNode.insertBefore(a, b);
   aparent.insertBefore(b, asibling);
 }
+
+function Page() {
+
+    this.hideMENameForm = function() {
+       $('#MENameForm').hide();
+    }
+}
+
+Page = new Page();

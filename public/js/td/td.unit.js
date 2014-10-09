@@ -17,7 +17,7 @@ TD.Unit = function (game) {
     this.isBoss    = false;
 
     this.notMovingTurns = 0
-    this.turnsForDebuffToStart = 3;
+    this.turnsForDebuffToStart = 4;
 
     this.init = function () {
         this.unitId = this.game.getNewUnitId();
@@ -69,16 +69,21 @@ TD.Unit = function (game) {
             return;
         }
         if (this.notMovingTurns >= this.turnsForDebuffToStart) {
-            if (rand(0,1) == 1) {
+            this.power--;
+            if (this.power > 30) {
                 this.power--;
-                this.notMovingTurns = 0;
-                if (this.turnsForDebuffToStart > 1) {
-                    this.turnsForDebuffToStart--;
-                }
-                if (this.power <= 0) {
-                    this.game.removeUnit(this);
-                }
             }
+            if (this.power > 60) {
+                this.power--;
+            }
+            this.notMovingTurns = 0;
+            if (this.turnsForDebuffToStart > 1) {
+                this.turnsForDebuffToStart--;
+            }
+            if (this.power <= 0) {
+                this.game.removeUnit(this);
+            }
+            
         }
     }
 

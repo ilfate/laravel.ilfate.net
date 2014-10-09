@@ -247,3 +247,8 @@ min-height: 800px;
 .result-title {
     text-align: center;
 }
+
+
+#modalHowUnitMove .modal-dialog {
+    width: 800px;
+}
