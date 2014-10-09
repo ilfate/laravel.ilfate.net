@@ -217,7 +217,7 @@ TD.Map = function (facet, config) {
     }
 
     this.animateDeath = function(unit) {
-        this.deathAnimations.push({'id':unit.getId(), 'x':unit.x, 'y':unit.y,'direction':unit.direction, 'active':unit.active);
+        this.deathAnimations.push({'id':unit.getId(), 'x':unit.x, 'y':unit.y,'direction':unit.direction, 'active':unit.active});
     }
 
     this.draw = function(units) {
