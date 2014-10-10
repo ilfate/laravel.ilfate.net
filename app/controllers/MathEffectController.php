@@ -79,6 +79,6 @@ class MathEffectController extends \BaseController
         } 
         $stats->name = $name;
         $stats->save();
-        return "{'actions': ['Page.hideMENameForm']}";
+        return '{"actions": ["Page.hideMENameForm"]}';
     }
 }

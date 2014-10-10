@@ -43,8 +43,8 @@
                 </p>
                 @if (empty($userName))
                 <br>
-                <p>
-                    <form class="result-text" method="post" action="{{ action('MathEffectController@saveName') }}">
+                <p id="MENameFormContainer">
+                    <form id="MENameForm" class="result-text" method="post" action="{{ action('MathEffectController@saveName') }}">
                         <input type="text" name="name" />
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
 

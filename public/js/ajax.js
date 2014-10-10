@@ -76,8 +76,8 @@ Ajax = function() {
       opt.dataType = "json";
     }
       
-    var request = $.ajax(opt);  
-    
+    var request = $.ajax(opt);
+
     if(options.dataType == "json") 
     {
       request.done(function(data){Ajax.doneJson(data, n_cb)});
@@ -102,6 +102,7 @@ Ajax = function() {
           var args = [];
         }
         var handler = eval("(" + data.actions[key] + ")");
+          info(handler);
         handler.call(this, args);
       }
     }

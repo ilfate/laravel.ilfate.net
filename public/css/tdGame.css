@@ -252,3 +252,6 @@ min-height: 800px;
 #modalHowUnitMove .modal-dialog {
     width: 800px;
 }
+#MENameFormContainer {
+    text-align: center;
+}

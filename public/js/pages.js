@@ -198,7 +198,8 @@ function swapNodes(a, b)
 function Page() {
 
     this.hideMENameForm = function() {
-       $('#MENameForm').hide();
+        $('#MENameForm').hide();
+        $('#MENameFormContainer').html('Name saved');
     }
 }
 
