@@ -68,7 +68,7 @@
                 <a type="button" class="youtube-stop" close" data-dismiss="modal">&times;</a>
                 <br>
                 <br>
-                <iframe width="560" height="315" frameborder="0" allowfullscreen></iframe>
+                <iframe width="560" height="315" frameborder="0" data-video="//www.youtube.com/embed/OlJ9VdY9dig" allowfullscreen></iframe>
                 {{-- <video id="example_video_1" class="video-js vjs-default-skin"
                   controls preload="auto" width="600" height="600"
                   poster="/images/game/tdTitle.png"

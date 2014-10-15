@@ -11,7 +11,8 @@ function info(data)
     console.info(data);
 }
 function debug(data) {
-    info(data);
+    //info(data);
+    // desabled
 }
 function isInt(n){
     return typeof n== "number" && isFinite(n) && n%1===0;
@@ -25,18 +26,27 @@ TD = new TD();
 $(document).ready(function() {
 
     $('#modalHowUnitMoveButton').bind('click', function(){
-        var src = 'http://www.youtube.com/v/OlJ9VdY9dig&amp;autoplay=1';
+        //var src = 'http://www.youtube.com/v/OlJ9VdY9dig&amp;autoplay=1';
         $("#modalHowUnitMove").modal({                    // wire up the actual modal functionality and show the dialog
                     "backdrop"  : "static",
                     "keyboard"  : true,
                     "show"      : true                     // ensure the modal is shown immediately
         });
-        $('#modalHowUnitMove iframe').attr('src', src);
+        var theModal = '#modalHowUnitMove',
+        videoSRC = $('#modalHowUnitMove iframe').attr( "data-video" ), 
+        videoSRCauto = videoSRC+"?autoplay=1" ;
+        $(theModal+' iframe').attr('src', videoSRCauto);
+        $(theModal+' .youtube-stop').click(function () {
+            $(theModal+' iframe').attr('src', videoSRC);
+        });
+        // if (!$('#modalHowUnitMove iframe').attr('src')) {
+        //     $('#modalHowUnitMove iframe').attr('src', src);
+        // }
     });
 
-    $('#modalHowUnitMove .youtube-stop').click(function () {
-        $('#modalHowUnitMove iframe').removeAttr('src');
-    });
+    // $('#modalHowUnitMove .youtube-stop').click(function () {
+    //     $('#modalHowUnitMove iframe').removeAttr('src');
+    // });
 
     var situation = false;
 //       {'units' : [
