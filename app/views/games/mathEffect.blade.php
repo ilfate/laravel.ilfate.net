@@ -65,10 +65,10 @@
         <div class="modal-content">
             <!-- dialog body -->
             <div class="modal-body">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <a type="button" class="youtube-stop" close" data-dismiss="modal">&times;</a>
                 <br>
                 <br>
-                <iframe width="560" height="315" src="//www.youtube.com/embed/OlJ9VdY9dig" frameborder="0" allowfullscreen></iframe>
+                <iframe width="560" height="315" frameborder="0" allowfullscreen></iframe>
                 {{-- <video id="example_video_1" class="video-js vjs-default-skin"
                   controls preload="auto" width="600" height="600"
                   poster="/images/game/tdTitle.png"
@@ -80,7 +80,7 @@
             </div>
 
             <!-- dialog buttons -->
-            <div class="modal-footer"><a type="button" class="btn btn-primary" data-dismiss="modal">Close</a></div>
+            <div class="modal-footer"><a type="button" class="btn btn-primary youtube-stop" data-dismiss="modal">Close</a></div>
         </div>
     </div>
 </div>
@@ -95,11 +95,11 @@ Click on <strong>arrows</strong> to give unit command to move<br>
 <button id="modalHowUnitMoveButton" class="btn btn-primary" >How to play</button>
 <h3>Rules</h3>
 <ul>
-<li>All moving units get +1 power every turn.</li>
-<li>Your unit on base cell get +1 power every turn.</li>
-<li>When your base is empty new unit with 1 power will be created for you.</li>
-<li>All standing units will lose power. Longer they stay, faster they lose power. (except unit on base)</li>
-<li>If you command unit to move, it will not stop until it hit the wall. </li>
+    <li>All moving units get +1 power every turn.</li>
+    <li>Your unit on base cell get +1 power every turn.</li>
+    <li>When your base is empty new unit with 1 power will be created for you.</li>
+    <li>All standing units will lose power. Longer they stay, faster they lose power. (except unit on base)</li>
+    <li>If you command unit to move, it will not stop until it hit the wall. </li>
 </ul>
 
 

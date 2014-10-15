@@ -25,11 +25,17 @@ TD = new TD();
 $(document).ready(function() {
 
     $('#modalHowUnitMoveButton').bind('click', function(){
+        var src = 'http://www.youtube.com/v/OlJ9VdY9dig&amp;autoplay=1';
         $("#modalHowUnitMove").modal({                    // wire up the actual modal functionality and show the dialog
                     "backdrop"  : "static",
                     "keyboard"  : true,
                     "show"      : true                     // ensure the modal is shown immediately
         });
+        $('#modalHowUnitMove iframe').attr('src', src);
+    });
+
+    $('#modalHowUnitMove .youtube-stop').click(function () {
+        $('#modalHowUnitMove iframe').removeAttr('src');
     });
 
     var situation = false;
