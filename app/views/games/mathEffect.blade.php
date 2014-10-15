@@ -66,20 +66,21 @@
             <!-- dialog body -->
             <div class="modal-body">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h2 class="result-title">
-                    This is how you control units and spawn new.
-                </h2>
-                <video id="example_video_1" class="video-js vjs-default-skin"
+                <br>
+                <br>
+                <iframe width="560" height="315" src="//www.youtube.com/embed/OlJ9VdY9dig" frameborder="0" allowfullscreen></iframe>
+                {{-- <video id="example_video_1" class="video-js vjs-default-skin"
                   controls preload="auto" width="600" height="600"
                   poster="/images/game/tdTitle.png"
                   data-setup='{"example_option":true}'>
                  <source src="/images/game/MilkyAgileGalapagosdove.webm" type='video/webm' />
                  <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
                 </video>
+                --}}
             </div>
 
             <!-- dialog buttons -->
-            <div class="modal-footer"><a type="button" class="btn btn-primary">Close</a></div>
+            <div class="modal-footer"><a type="button" class="btn btn-primary" data-dismiss="modal">Close</a></div>
         </div>
     </div>
 </div>
@@ -90,10 +91,16 @@
 
 <h3>Controls</h3>
 Click on <strong>arrows</strong> to give unit command to move<br>
-<br>
 <h3>Info</h3>
-They are trying to overrun your center! Don't let them!
+<button id="modalHowUnitMoveButton" class="btn btn-primary" >How to play</button>
+<h3>Rules</h3>
+<ul>
+<li>All moving units get +1 power every turn.</li>
+<li>Your unit on base cell get +1 power every turn.</li>
+<li>When your base is empty new unit with 1 power will be created for you.</li>
+<li>All standing units will lose power. Longer they stay, faster they lose power. (except unit on base)</li>
+<li>If you command unit to move, it will not stop until it hit the wall. </li>
+</ul>
 
-<button id="modalHowUnitMoveButton" class="btn btn-primary" >How to control units</button>
 
 @stop
