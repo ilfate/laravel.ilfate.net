@@ -81,4 +81,17 @@ class MathEffectController extends \BaseController
         $stats->save();
         return '{"actions": ["Page.hideMENameForm"]}';
     }
+
+    public function statistic()
+    {
+        $yesterday = time() - (24 * 60 * 60);
+        $logs = DB::table('td_statistic')
+            ->select(DB::raw('name, ip, max(turnsSurvived) as turnsSurvived, pointsEarned, unitsKilled'))
+            ->where('created_at', '>', date('Y-m-d H:i:s', $yesterday))
+            ->groupBy('name', 'ip')
+            ->orderBy('turnsSurvived', 'desc')
+            ->get();
+
+        return View::make('games.mathEffect.stats', array('logs' => $logs));
+    }
 }
