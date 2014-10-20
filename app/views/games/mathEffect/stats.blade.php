@@ -7,15 +7,15 @@
 </div>
 
 @forelse ($logs as $log)
-    @if ($log['name'])
-        {{{ $log['name'] }}}
+    @if ($log->name)
+        {{{ $log->name }}}
     @else
-        {{{ $log['ip'] }}}
+        {{{ $log->ip }}}
     @endif
     ---&gt;&nbsp;
-    {{{ $log['turnsSurvived'] }}},&nbsp;&nbsp;
-    {{{ $log['pointsEarned'] }}},&nbsp;&nbsp;
-    {{{ $log['unitsKilled'] }}}<br>
+    {{{ $log->turnsSurvived }}},&nbsp;&nbsp;
+    {{{ $log->pointsEarned }}},&nbsp;&nbsp;
+    {{{ $log->unitsKilled }}}<br>
 @empty
     No logs today :(
 @endforelse
