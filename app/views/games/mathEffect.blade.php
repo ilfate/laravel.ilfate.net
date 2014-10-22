@@ -101,6 +101,7 @@ Click on <strong>arrows</strong> to give unit command to move<br>
     <li>All standing units will lose power. Longer they stay, faster they lose power. (except unit on base)</li>
     <li>If you command unit to move, it will not stop until it hit the wall. </li>
 </ul>
-
+<h3>Game Leaderboard</h3>
+<a href="{{ action('MathEffectController@statistic') }}" class="btn btn-primary" >To statistic</a>
 
 @stop

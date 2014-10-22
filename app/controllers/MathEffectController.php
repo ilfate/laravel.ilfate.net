@@ -84,14 +84,46 @@ class MathEffectController extends \BaseController
 
     public function statistic()
     {
-        $yesterday = time() - (24 * 60 * 60);
-        $logs = DB::table('td_statistic')
-            ->select(DB::raw('name, ip, max(turnsSurvived) as turnsSurvived, pointsEarned, unitsKilled'))
-            ->where('created_at', '>', date('Y-m-d H:i:s', $yesterday))
-            ->groupBy('name', 'ip')
+        $this->breadcrumbs->addLink(action('GamesController' . '@' . 'index'), 'Games');
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . 'index'), 'Math Effect');
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Statistic');
+        //$yesterday = time() - (24 * 60 * 60);
+        // $logs = DB::table('td_statistic')
+        //     ->select(DB::raw('name, ip, max(turnsSurvived) as turnsSurvived, pointsEarned, unitsKilled'))
+        //     ->where('created_at', '>', date('Y-m-d H:i:s', $yesterday))
+        //     ->groupBy('name', 'ip')
+        //     ->orderBy('turnsSurvived', 'desc')
+        //     ->get();
+        $topLogs = DB::table('td_statistic')
+            ->select(DB::raw('name, ip, turnsSurvived, pointsEarned, unitsKilled'))
             ->orderBy('turnsSurvived', 'desc')
+            ->limit(10)
             ->get();
+        $totalGames = DB::table('td_statistic')
+            ->count();
+        $avrTurns = DB::table('td_statistic')
+            ->avg('turnsSurvived');
+        $users = DB::table('td_statistic')
+            ->select(DB::raw('count(DISTINCT CONCAT(name,ip)) as count'))
+            ->pluck('count');
 
-        return View::make('games.mathEffect.stats', array('logs' => $logs));
+        $name     = Session::get('userName', null);
+        $userLogs = false;
+        if ($name) {
+            $userLogs = DB::table('td_statistic')
+                ->select(DB::raw('name, ip, turnsSurvived, pointsEarned, unitsKilled'))
+                ->where('name', '=', $name)
+                ->orderBy('turnsSurvived', 'desc')
+                ->limit(10)
+                ->get();
+        }
+
+        return View::make('games.mathEffect.stats', array(
+            'topLogs'    => $topLogs, 
+            'totalGames' => $totalGames,
+            'avrTurns'   => $avrTurns,
+            'users'      => $users,
+            'userLogs'   => $userLogs
+            ));
     }
 }
