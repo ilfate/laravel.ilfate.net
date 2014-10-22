@@ -104,7 +104,7 @@ class MathEffectController extends \BaseController
         $avrTurns = DB::table('td_statistic')
             ->avg('turnsSurvived');
         $users = DB::table('td_statistic')
-            ->select(DB::raw('count(DISTINCT CONCAT(name,ip)) as count'))
+            ->select(DB::raw('count(DISTINCT CONCAT(COALESCE(name,\'empty\'),ip)) as count'))
             ->pluck('count');
 
         $name     = Session::get('userName', null);
