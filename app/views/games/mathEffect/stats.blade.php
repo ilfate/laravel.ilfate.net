@@ -51,7 +51,7 @@
 
 <div class="panel panel-default">
   <div class="panel-body">
-    Players played game
+    Number of players
   </div>
   <div class="panel-footer">{{{$users}}}</div>
 </div>

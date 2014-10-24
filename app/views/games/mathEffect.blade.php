@@ -103,6 +103,6 @@ Click on <strong>arrows</strong> to give unit command to move<br>
     <li>If you command unit to move, it will not stop until it hit the wall. </li>
 </ul>
 <h3>Game Leaderboard</h3>
-<a href="{{ action('MathEffectController@statistic') }}" class="btn btn-primary" >To statistic</a>
+<a href="{{ action('MathEffectController@statistic') }}" class="btn btn-primary" >Statistics</a>
 
 @stop
