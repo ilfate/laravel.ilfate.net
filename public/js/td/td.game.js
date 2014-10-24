@@ -445,11 +445,14 @@ TD.Game = function (situation) {
                     "show"      : true                     // ensure the modal is shown immediately
                 });
 
+                var checkKey = $('#checkKey').val();
+
                 Ajax.json('/MathEffect/save', {
                     //params : '__csrf=' + Ajax.getCSRF(),
                     data: 'turnsSurvived=' + this.statsTicksSurvived +
                         '&unitsKilled=' + this.statsKilledUnits +
                         '&pointsEarned=' + this.statsPoints +
+                        '&checkKey=' + checkKey +
                         '&_token=' + $('#laravel-token').val()
                     //callBack : function(){Ajax.linkLoadingEnd(link)}
                 });

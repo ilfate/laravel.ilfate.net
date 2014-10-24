@@ -47,6 +47,7 @@
                     <form id="MENameForm" class="result-text" method="post" action="{{ action('MathEffectController@saveName') }}">
                         <input type="text" name="name" />
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="checkKey" id="checkKey" value="{{ $checkKey }}">
 
                         <button class="btn btn-primary" type="submit">Save my name</button>
                     </form>

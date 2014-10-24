@@ -30,7 +30,10 @@ class MathEffectController extends \BaseController
 
         $name = Session::get('userName', null);
 
-        return View::make('games.mathEffect', array('userName' => $name));
+        $MEcheckKey = md5(rand(0,99999) . time());
+        Session::put('MEcheckKey', $MEcheckKey);
+
+        return View::make('games.mathEffect', array('userName' => $name, 'checkKey' => $MEcheckKey));
     }
 
     /**
@@ -48,7 +51,19 @@ class MathEffectController extends \BaseController
             Log::warning('MathEffect save is not Ajax.');
             App::abort(404);
         }
-        $name = Session::get('userName', null);
+        $name     = Session::get('userName', null);
+        $checkKey = Session::get('MEcheckKey', null);
+        Session::put('MEcheckKey', null);
+
+        if (Input::get('checkKey') != $checkKey) {
+            Log::warning('Some one tryed to hack');
+            Log::warning('pointsEarned=' . Input::get('pointsEarned'));
+            Log::warning('turnsSurvived=' . Input::get('turnsSurvived'));
+            Log::warning('unitsKilled=' . Input::get('unitsKilled'));
+            Log::warning('ip=' . $_SERVER['REMOTE_ADDR'];
+            Log::warning('name=' . $name;
+            return '{}';
+        }
 
 
         $tdStatistics                  = new TdStatistics();
