@@ -60,8 +60,8 @@ class MathEffectController extends \BaseController
             Log::warning('pointsEarned=' . Input::get('pointsEarned'));
             Log::warning('turnsSurvived=' . Input::get('turnsSurvived'));
             Log::warning('unitsKilled=' . Input::get('unitsKilled'));
-            Log::warning('ip=' . $_SERVER['REMOTE_ADDR'];
-            Log::warning('name=' . $name;
+            Log::warning('ip=' . $_SERVER['REMOTE_ADDR']);
+            Log::warning('name=' . $name);
             return '{}';
         }
 
