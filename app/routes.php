@@ -40,4 +40,4 @@ Route::post('MathEffect/save', array('before' => 'csrf', 'uses' => 'MathEffectCo
 Route::post('MathEffect/saveName', array('before' => 'csrf', 'uses' => 'MathEffectController@saveName'));
 Route::get('MathEffect/stats', 'MathEffectController@statistic');
 
-Route::get('JamNov', 'JamNovController@index');
+Route::get('tcg', 'TcgController@index');

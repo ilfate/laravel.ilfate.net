@@ -4,6 +4,7 @@ use Helper\Breadcrumbs;
 use Illuminate\Support\Facades\Session;
 use Tcg\Deck;
 use Tcg\Card;
+use Tcg\Game;
 
 class TcgController extends \BaseController
 {
@@ -42,9 +43,12 @@ class TcgController extends \BaseController
 
     public function getDeck()
     {
-        $deck = new Deck();
-        $deck->addCards($cards);
-        return $deck;
+        $game = Game::create();
+        $data = $game->export();
+        //var_dump($data);
+        unset($game);
+        $game = Game::import($data);
+        var_dump($game);
     }
 
     

@@ -9,6 +9,11 @@ namespace Tcg;
 
 class Card {
 
+    const CARD_LOCATION_DECK  = 1;
+    const CARD_LOCATION_HAND  = 2;
+    const CARD_LOCATION_FIELD = 3;
+    const CARD_LOCATION_GRAVE = 4;
+
 	/**
 	 *  1 - deck
 	 *  2 - hand
@@ -33,23 +38,28 @@ class Card {
 	public $id;
 
 	public $name;
-	public $unit;
-	public $spell;
+
+    /**
+     * @var Unit
+     */
+    public $unit;
+
+    /**
+     * @var Spell
+     */
+    public $spell;
+
+    /**
+     * @var int
+     */
+    public $card;
 
 
 
 	public static function createFromConfig($config)
 	{
-
-		$config = [
-			'name' => 'name',
-			'unit' => [
-				'totalHealth' => 10
-			],
-			'spell' => [],
-		];
-
 		$card = new Card();
+        $card->card = $config['card'];
 		$card->name = $config['name'];
 
 		$card->unit  = Unit::createFromConfig($config['unit']);
@@ -58,32 +68,29 @@ class Card {
 		return $card;
 	}
 
-	public function import($data)
+	public static function import($data)
 	{
-		$data = [
-			'id' => 1,
-			'owner' => 1,
-			'location' => 1,
-			'unit' => [
-				'currentHealth' => 9
-			],
-			'spell' => [],
-		];
+        $cardConfig = \Config::get('tcg.cards.' .  $data['card']);
+        $card       = Card::createFromConfig($cardConfig);
 
-		$this->id = $data['id'];
-		$this->owner = $data['owner'];
-		$this->location = $data['location'];
-		$this->unit->import($data['unit']);
-		$this->spell->import($data['spell']);
-		return $this;
+		$card->id = $data['id'];
+		$card->owner = $data['owner'];
+		$card->location = $data['location'];
+		$card->unit = Unit::import($data['unit'], $cardConfig['unit']);
+		$card->spell = Spell::import($data['spell'], $cardConfig['spell']);
+		return $card;
 	}
 
 	public function export()
 	{
 		$data = [
-
+            'id'       => $this->id,
+            'owner'    => $this->owner,
+            'location' => $this->location,
+            'card'     => $this->card,
 		];
-		$data
+		$data['unit'] = $this->unit->export();
+		$data['spell'] = $this->spell->export();
 		return $data;
 	}
 

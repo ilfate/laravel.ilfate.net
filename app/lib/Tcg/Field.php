@@ -7,7 +7,11 @@
 
 namespace Tcg;
 
-class Deck extends Location {
+class Field extends Location {
 
+    public function __construct()
+    {
+
+    }
 
 }

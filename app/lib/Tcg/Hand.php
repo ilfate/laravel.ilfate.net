@@ -7,7 +7,7 @@
 
 namespace Tcg;
 
-class Deck extends Location {
+class Hand extends Location {
 
 
 }

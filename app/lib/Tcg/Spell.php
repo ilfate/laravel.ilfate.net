@@ -9,17 +9,28 @@ namespace Tcg;
 
 class Spell {
 
+    public $type;
+
+
 	public static function createFromConfig($config)
 	{
 		$spell = new Spell();
-
+        $spell->type = $config['type'];
 
 		return $spell;
 	}
 
-	public function import($data)
+	public static function import($data, $spellId)
 	{
-		
-		return $this;
+        $spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $spellId));
+		return $spell;
 	}
+
+    public function export()
+    {
+        $data = [
+
+        ];
+        return $data;
+    }
 }
