@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPulsar
+ * ilfate.net
  * @autor Ilya Rubinchik ilfate@gmail.com
  * 2014
  */
