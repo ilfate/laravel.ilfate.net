@@ -9,9 +9,18 @@ namespace Tcg;
 
 class Player {
 
+    const PLAYER_TYPE_PLAYER = 'player';
+    const PLAYER_TYPE_BOT    = 'bot';
+
     public $id;
 
     public $name;
+
+    /**
+     * player || bot
+     * @var string
+     */
+    public $type = 'player';
 
     public function __construct($id)
     {
@@ -21,6 +30,7 @@ class Player {
     public static function import($data)
     {
         $player = new Player($data['id']);
+        $player->type = $data['type'];
         return $player;
     }
 
@@ -28,6 +38,7 @@ class Player {
     {
         $data = [
             'id'   => $this->id,
+            'type' => $this->type,
         ];
 
         return $data;

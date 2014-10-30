@@ -22,7 +22,6 @@ class Field extends Location {
     public function __construct($players)
     {
     	$this->players = $players;
-    	var_dump($players);
     }
 
     public function addCard(Card $card)
@@ -66,7 +65,7 @@ class Field extends Location {
     {
     	if ($this->getTopPlayer() == $card->owner) {
     		// yes we need to switch for top player
-    		$converted = $this->convert($cart->unit->x, $cart->unit->y);
+    		$converted = $this->convert($card->unit->x, $card->unit->y);
     		$card->unit->x = $converted[0];
     		$card->unit->y = $converted[1];
     	}
@@ -81,8 +80,9 @@ class Field extends Location {
 
     protected function convert($x, $y)
     {
-    	$x = (self::WIDTH) - $x;
-    	$y = (self::HEIGHT) - $y;
+        // 0 -> 4, 1 -> 3, 2 -> 2, 3 -> 1, 4 -> 0
+    	$x = (self::WIDTH - 1) - $x;
+    	$y = (self::HEIGHT - 1) - $y;
     	return [$x, $y];
     }
 

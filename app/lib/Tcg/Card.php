@@ -90,8 +90,8 @@ class Card {
         $card->card = $config['card'];
 		$card->name = $config['name'];
 
-		$card->unit  = Unit::createFromConfig($config['unit'], $card);
-		$card->spell = Spell::createFromConfig($config['spell'], $card);
+		$card->unit  = Unit::createFromConfig(\Config::get('tcg.units.' . $config['unit']), $card);
+		$card->spell = Spell::createFromConfig(\Config::get('tcg.units.' . $config['spell']), $card);
 
 		return $card;
 	}
@@ -126,7 +126,7 @@ class Card {
 		return $data;
 	}
 
-	public function render($data = array())
+	public function render($extData = array())
 	{
 		$data = [
 			'id' => $this->id
@@ -137,7 +137,7 @@ class Card {
 				// still a card
 				
 						
-				$data['unit'] = $this->unit->render($renderType, $data);
+				$data['unit'] = $this->unit->render($renderType, $extData);
 				$data['spell'] = $this->spell->render($renderType);
 				break;
 			

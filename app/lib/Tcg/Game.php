@@ -60,6 +60,7 @@ class Game {
     {
         $player1 = new Player(1);
         $player2 = new Player(2);
+        $player2->type = Player::PLAYER_TYPE_BOT;
 
         $game = new Game();
 
@@ -201,13 +202,26 @@ class Game {
 
     public function gameAutoActions()
     {
-        if ($this->phase == 0) {
-            // the game is just created
-            $handSize = \Config::get('tcg.game.handDraw');
-            foreach ($this->players as $playerId => $player) {
-                $this->drawCards($playerId, $handSize);
-            }
-            $this->phase = self::PHASE_UNIT_DEPLOYING;
+        switch ($this->phase) {
+            case self::PHASE_GAME_NOT_STARTED:
+                // the game is just created
+                $handSize = \Config::get('tcg.game.handDraw');
+                foreach ($this->players as $playerId => $player) {
+                    $this->drawCards($playerId, $handSize);
+                }
+                $this->phase = self::PHASE_UNIT_DEPLOYING;
+                $this->playerTurnId = array_rand($this->players);
+                if ($this->players[$this->playerTurnId]->type == Player::PLAYER_TYPE_BOT) {
+                    $this->gameAutoActions();
+                }
+                break;
+
+            case self::PHASE_UNIT_DEPLOYING:
+                if ($this->players[$this->playerTurnId]->type == Player::PLAYER_TYPE_BOT) {
+                    // deploy for bot
+                }
+                break;
+
         }
     }
 
