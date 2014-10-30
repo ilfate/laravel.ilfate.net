@@ -38,6 +38,13 @@ abstract class Location {
 		}
 	}
 
+    public function addCardIds(array $cards)
+    {
+        foreach ($cards as $cardId) {
+            $this->cards[$cardId] = $cardId;
+        }
+    }
+
 	public function count()
 	{
 		return count($this->cards);
@@ -50,5 +57,17 @@ abstract class Location {
             'owner' => $this->owner
         ];
         return $location;
+    }
+
+    public function getRandom($num = 1)
+    {
+        return array_rand($this->cards, $num);
+    }
+
+    public function remove($cardIds = array())
+    {
+        foreach ($cardIds as $cardId) {
+            unset($this->cards[$cardId]);
+        }
     }
 }

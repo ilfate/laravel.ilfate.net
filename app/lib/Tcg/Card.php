@@ -14,6 +14,22 @@ class Card {
     const CARD_LOCATION_FIELD = 3;
     const CARD_LOCATION_GRAVE = 4;
 
+    const CARD_STATUS_CARD  = 0;
+    const CARD_STATUS_UNIT  = 1;
+    const CARD_STATUS_SPELL = 2;
+
+    public static $locations = [
+    	Game::LOCATION_DECK  => 1,
+    	Game::LOCATION_HAND  => 2,
+    	Game::LOCATION_FIELD => 3,
+    	Game::LOCATION_GRAVE => 4,
+    ];
+
+    /**
+     * @var Game
+     */
+    protected $game;
+
 	/**
 	 *  1 - deck
 	 *  2 - hand
@@ -54,30 +70,45 @@ class Card {
      */
     public $card;
 
+    /**
+     * 0 - card
+     * 1 - unit
+     * 2 - spell
+     * @var int
+     */
+    public $status = 0;
+
+    public function __construct(Game $game)
+    {
+    	$this->game = $game;
+    }
 
 
-	public static function createFromConfig($config)
+	public static function createFromConfig($config, Game $game)
 	{
-		$card = new Card();
+		$card = new Card($game);
         $card->card = $config['card'];
 		$card->name = $config['name'];
 
-		$card->unit  = Unit::createFromConfig($config['unit']);
-		$card->spell = Spell::createFromConfig($config['spell']);
+		$card->unit  = Unit::createFromConfig($config['unit'], $card);
+		$card->spell = Spell::createFromConfig($config['spell'], $card);
 
 		return $card;
 	}
 
-	public static function import($data)
+	public static function import($data, $game)
 	{
         $cardConfig = \Config::get('tcg.cards.' .  $data['card']);
-        $card       = Card::createFromConfig($cardConfig);
+        $card       = Card::createFromConfig($cardConfig, $game);
 
-		$card->id = $data['id'];
-		$card->owner = $data['owner'];
+		$card->id       = $data['id'];
+		$card->owner    = $data['owner'];
 		$card->location = $data['location'];
-		$card->unit = Unit::import($data['unit'], $cardConfig['unit']);
-		$card->spell = Spell::import($data['spell'], $cardConfig['spell']);
+		$card->status   = $data['status'];
+
+		$card->unit  = Unit::import($data['unit'], $cardConfig['unit'], $card);
+		$card->spell = Spell::import($data['spell'], $cardConfig['spell'], $card);
+
 		return $card;
 	}
 
@@ -88,9 +119,35 @@ class Card {
             'owner'    => $this->owner,
             'location' => $this->location,
             'card'     => $this->card,
+            'status'   => $this->status,
 		];
 		$data['unit'] = $this->unit->export();
 		$data['spell'] = $this->spell->export();
+		return $data;
+	}
+
+	public function render($data = array())
+	{
+		$data = [
+			'id' => $this->id
+		];
+		switch ($this->status) {
+			case 0:
+				$renderType = 'card';
+				// still a card
+				
+						
+				$data['unit'] = $this->unit->render($renderType, $data);
+				$data['spell'] = $this->spell->render($renderType);
+				break;
+			
+			default:
+				# code...
+				break;
+		}
+		$data['type'] = $renderType;
+		$data['name'] = $this->name;
+
 		return $data;
 	}
 

@@ -14,6 +14,11 @@ class TcgController extends \BaseController
     protected $breadcrumbs;
 
     /**
+     * @var Game
+     */
+    protected $game;
+
+    /**
      * @param Breadcrumbs $breadcrumbs
      */
     public function __construct(Breadcrumbs $breadcrumbs)
@@ -33,22 +38,65 @@ class TcgController extends \BaseController
 
         $name = Session::get('userName', null);
 
-        $this->getDeck();
+        $this->play();
+        $game = $this->render();
+        View::share('game', $game);
 
-        $card = new Card();
-
-        return View::make('games.tcg.index', array('userName' => $name));
+        return View::make('games.tcg.index');//, array('game' => $game)
     }
 
 
-    public function getDeck()
+    public function play()
     {
-        $game = Game::create();
-        $data = $game->export();
-        //var_dump($data);
-        unset($game);
-        $game = Game::import($data);
-        var_dump($game);
+        $gameData = Session::get('tcg.userGame', null);
+        if (!$gameData) {
+            echo 'NEW GAME';
+            $game = Game::create();
+        } else {
+            echo 'GAME LOADED';
+            $game = Game::import($gameData);
+        }
+        $game->gameAutoActions();
+        $this->game = $game;
+        
+    }
+
+    protected function render()
+    {
+        $result = $this->game->render(1);
+        
+        $this->save();
+
+        return $result;
+    }
+
+    protected function save()
+    {
+        $data = $this->game->export();
+        Session::put('tcg.userGame', $data);        
+    }
+
+    public function dropGame()
+    {
+        Session::put('tcg.userGame', null);   
+        return Redirect::to('tcg');
+    }
+
+    public function deploy()
+    {
+        $this->play();
+
+        $cardId = Input::get('cardId');
+        $x = Input::get('x');
+        $y = Input::get('y');
+        var_dump($cardId);
+        var_dump($x);
+        var_dump($y);
+
+        $this->game->deploy($cardId, $x, $y);
+        $this->save();
+
+        return Redirect::to('tcg');
     }
 
     

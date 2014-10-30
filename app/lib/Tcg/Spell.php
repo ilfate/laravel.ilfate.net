@@ -9,20 +9,30 @@ namespace Tcg;
 
 class Spell {
 
-    public $type;
+    const CONFIG_VALUE_TEXT   = 'text';
 
+    /**
+     * @var array
+     */
+    public $config;
 
-	public static function createFromConfig($config)
+    /** 
+     * @var Card
+     */
+    protected $card;
+
+	public static function createFromConfig($config, $card)
 	{
 		$spell = new Spell();
-        $spell->type = $config['type'];
+        $spell->config = $config;
+        $spell->card = $card;
 
 		return $spell;
 	}
 
-	public static function import($data, $spellId)
+	public static function import($data, $spellId, $card)
 	{
-        $spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $spellId));
+        $spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $spellId), $card);
 		return $spell;
 	}
 
@@ -31,6 +41,15 @@ class Spell {
         $data = [
 
         ];
+        return $data;
+    }
+
+    public function render($type)
+    {
+        $data = [
+            'config' => $this->config
+        ];
+
         return $data;
     }
 }

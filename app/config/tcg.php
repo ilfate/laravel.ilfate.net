@@ -1,16 +1,22 @@
 <?php
 
 return array(
+    'game' => [
+        'handDraw' => 2,
+        'template' => [
+            3 => 'deploy'
+        ],
+    ],
     'cards' => array(
         [
             'card' => 0,
-            'name'  => 'name',
+            'name'  => 'Berserk',
             'unit'  => 0,
             'spell' => 0
         ],
         [
             'card' => 1,
-            'name'  => 'name',
+            'name'  => 'Super dude',
             'unit'  => 1,
             'spell' => 0
         ]
@@ -18,17 +24,20 @@ return array(
     'units' => [
         [
             'unit' => 0,
-            'totalHealth' => 10
+            'totalHealth' => 10,
+            'text' => 'Bloodthirst'
         ],
         [
             'unit' => 1,
-            'totalHealth' => 12
+            'totalHealth' => 12,
+            'text' => 'SUPA'
         ],
     ],
     'spells' => [
         [
             'spell' => 0,
-            'type' => 'focus'
+            'type' => 'focus',
+            'text' => 'Put focus on target unit'
         ],
     ],
 

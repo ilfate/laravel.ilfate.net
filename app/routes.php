@@ -41,3 +41,5 @@ Route::post('MathEffect/saveName', array('before' => 'csrf', 'uses' => 'MathEffe
 Route::get('MathEffect/stats', 'MathEffectController@statistic');
 
 Route::get('tcg', 'TcgController@index');
+Route::get('tcg/clear', 'TcgController@dropGame');
+Route::get('tcg/deploy', 'TcgController@deploy');

@@ -11,8 +11,29 @@ use ClassPreloader\Config;
 
 class Unit {
 
-	public $totalHealth;
+    const RENDER_TYPE_UNIT = 'unit';
+    const RENDER_TYPE_CARD = 'card';
+
+    const CONFIG_VALUE_TOTAL_HEALTH = 'totalHealth';
+    const CONFIG_VALUE_TEXT         = 'text';
+
+
+    /**
+     * totalHealth
+     * text
+     *
+     * @var array
+     */
+	public $config;
+
 	public $currentHealth;
+    public $x;
+    public $y;
+
+    /** 
+     * @var Card
+     */
+    protected $card;
 
     public $effects = array();
 
@@ -22,17 +43,18 @@ class Unit {
      */
     protected $effectObjects = array();
 
-	public static function createFromConfig($config)
+	public static function createFromConfig($config, Card $card)
 	{
 		$unit = new Unit();
-		$unit->totalHealth = $config['totalHealth'];
+		$unit->config = $config;
+        $unit->card   = $card;
 
 		return $unit;
 	}
 
-	public static function import($data, $unitId)
+	public static function import($data, $unitId, $card)
 	{
-        $unit = Unit::createFromConfig(\Config::get('tcg.units.' . $unitId));
+        $unit = Unit::createFromConfig(\Config::get('tcg.units.' . $unitId), $card);
 		$unit->currentHealth = $data['currentHealth'];
 		$unit->effects       = $data['effects'];
         $unit->initEffects();
@@ -46,6 +68,19 @@ class Unit {
             'currentHealth' => $this->currentHealth,
             'effects'       => $this->effects,
         ];
+        return $data;
+    }
+
+    public function render($type, $extData)
+    {
+        $data = [
+            'config' => $this->config,
+        ];
+        $data['x'] = empty($extData['x']) ? $this->x : $extData['x'];
+        $data['y'] = empty($extData['y']) ? $this->y : $extData['y'];
+        if ($type == self::RENDER_TYPE_UNIT) {
+            $data['currentHealth'] = $this->currentHealth;
+        }
         return $data;
     }
 

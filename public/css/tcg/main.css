@@ -1,0 +1,48 @@
+
+
+.main-content-well, .main-content-well-side {
+min-height: 800px;
+}
+
+
+* {
+    -webkit-box-sizing: border-box;
+}
+
+.hand {
+	position: relative;
+	display: block;
+	clear:both;
+}
+
+.hand .card {
+	float:left;
+	margin: 5px;
+	width:150px;
+	height: 200px;
+
+	border: 1px solid #494949;
+}
+
+.hand .card .name{
+	text-align: center;
+}
+
+.hand .card .unit, .hand .card .spell {
+	text-align: center;
+	border: 1px solid #494949;
+	margin:2.5%;
+	width:95%;	
+}
+
+.field {
+	width :550px;
+	position: relative;
+	display: block;
+}
+.field .cell {
+	width:100px;
+	height:100px;
+	float:left;
+	border: 1px solid #494949;
+}
