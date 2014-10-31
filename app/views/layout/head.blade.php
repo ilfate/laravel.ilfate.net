@@ -13,9 +13,6 @@
 
     @yield('additional_css')
 
-    <!--  <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap.min.css">
-      <link rel="stylesheet" href="css/bootstrap-image-gallery.min.css">-->
-
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
 
     <meta content="ilfate ilya rubinchik ilya_rubinchik php web developer" name="keywords">
@@ -29,7 +26,7 @@
 
 <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="packages/bootbox.min.js"></script>
+<!-- <script type="text/javascript" src="packages/bootbox.min.js"></script> -->
 
 <!--  <script type="text/javascript" src="/js/bootstrap-image-gallery.min.js"></script>
   <script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>-->
