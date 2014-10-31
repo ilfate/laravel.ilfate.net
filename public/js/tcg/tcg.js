@@ -32,7 +32,10 @@ $(document).ready(function() {
 
 TCG.Game = function () {
 
+    this.width = 5;
+    this.height = 5;
 	this.cardInFocus;
+    this.isMyTurn = true;
 	this.phase = 0;
 
 	this.fuu = function() {
@@ -47,22 +50,55 @@ TCG.Game = function () {
 
 	this.bindObjects = function()
 	{
-		$('.hand .my-card').bind('click', function(){ TCG.Game.event('click', $(this)) });
+		$('.hand .my-card').bind('click', function(){ TCG.Game.event('cardClick', $(this)) });
+        $('.field .cell').bind('click', function(){ TCG.Game.event('cellClick', $(this)) });
 	}
 
 	this.event = function(name, obj) {
 		switch(name) {
-			case 'click':
+			case 'cardClick':
 				if(obj.hasClass('card')) {
 					this.cardClick(obj);
+                    switch(this.phase) {
+                        case 3: // Deploy phase
+                            // light them up!
+                            if (this.cardInFocus) {
+                                this.lightUpDeployArea();
+                            } else {
+                                this.unFocusDeployArea();
+                            }
+                            break;
+                    }
 				}
 			break;
+            case 'cellClick':
+                this.deploy(obj);
+                break;
 		}
 	}
+
+    this.deploy = function(cell) {
+        if (this.cardInFocus && this.phase == 3 && this.isMyTurn) {
+            var x = cell.data('x');
+            var y = cell.data('y');
+            var cardId = this.cardInFocus.data('id');
+
+            window.location = "/tcg/action?action=deploy&cardId=" + cardId + "&x=" + x + "&y=" + y;
+        }
+    }
+
+    this.lightUpDeployArea = function() {
+        $('.field .cell.y_' + (this.height-2) + ', .field .cell.y_' + (this.height-1)).addClass('focus')
+    }
+
+    this.unFocusDeployArea = function() {
+        $('.field .cell.focus').removeClass('focus');
+    }
 
 	this.cardClick = function(obj) {
 		if(obj.hasClass('focus')) {
 			obj.removeClass('focus');
+            this.cardInFocus = false;
 		} else {
 			if (this.cardInFocus) {
 				this.cardInFocus.removeClass('focus');

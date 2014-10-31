@@ -4,9 +4,9 @@
 @for($y = 0; $y < $field['width']; $y++)
     @for($x = 0; $x < $field['width']; $x++)
 
-        <div class="cell">
+        <div class="cell x_{{$x}} y_{{$y}}" data-x="{{$x}}" data-y="{{$y}}">
         @if(isset($field['map'][$x][$y]))
-            {{{$field['map'][$x][$y]['unit']['config'][\Tcg\Unit::CONFIG_VALUE_TEXT]}}}
+            @include('games.tcg.cards.fieldCard', array('card' => $field['map'][$x][$y]))
         @endif
         </div>
 	@endfor	
