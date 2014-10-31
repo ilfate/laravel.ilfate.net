@@ -18,8 +18,8 @@
 
 //Route::get('/', 'UserController@showProfile');
 
-Route::resource('/', 'IndexController',
-    array('only' => array('index')));
+//Route::resource('/', 'IndexController',
+ //   array('only' => array('index')));
 
 
 Route::get('/', 'PageController@index');
@@ -42,4 +42,4 @@ Route::get('MathEffect/stats', 'MathEffectController@statistic');
 
 Route::get('tcg', 'TcgController@index');
 Route::get('tcg/clear', 'TcgController@dropGame');
-Route::get('tcg/deploy', 'TcgController@deploy');
+Route::get('tcg/action', 'TcgController@action');

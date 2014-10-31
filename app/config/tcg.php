@@ -2,9 +2,11 @@
 
 return array(
     'game' => [
-        'handDraw' => 2,
+        'handDraw'   => 2,
+        'spellsDraw' => 2,
         'template' => [
-            3 => 'deploy'
+            3 => 'deploy',
+            4 => 'battle'
         ],
     ],
     'cards' => array(

@@ -19,15 +19,27 @@ class Field extends Location {
 	 */
 	public $players;
 
-    public function __construct($players)
+    /**
+     * @var Game
+     */
+    public $game;
+
+    public function __construct($players, Game $game)
     {
     	$this->players = $players;
+        $this->game    = $game;
     }
 
     public function addCard(Card $card)
     {
     	$x = $card->unit->x;
     	$y = $card->unit->y;
+        if ($x >= self::WIDTH || $y >= self::HEIGHT || $x < 0 || $y < 0) {
+            throw new \Exception("Unit added to field has wrong X or Y", 1);    
+        }
+        if (isset($this->cards[$x][$y])) {
+            throw new \Exception("You can't deploy on occupied cell", 12);        
+        }
     	if (!isset($this->cards[$x])) {
     		$this->cards[$x] = [];
     	}
@@ -53,9 +65,26 @@ class Field extends Location {
     	return $data;
     }
 
-    public static function importField($data, $players)
+    /**
+     * @return Card[]
+     */
+    public function getPlayerUnits($playerId)
     {
-        $location = new Field($players);
+        $cards = [];
+        foreach ($this->cards as $x => $col) {
+            foreach ($col as $y => $cardId) {
+                $card = $this->game->getCard($cardId);
+                if ($card->owner == $playerId) {
+                    $cards[] = $card;
+                }
+            }
+        }
+        return $cards;
+    }
+
+    public static function importField($data, $players, Game $game)
+    {
+        $location = new Field($players, $game);
         $location->cards = $data['cards'];
 
         return $location;
@@ -86,7 +115,7 @@ class Field extends Location {
     	return [$x, $y];
     }
 
-    protected function getTopPlayer()
+    public function getTopPlayer()
     {
     	return $this->players[0];
     }
@@ -94,6 +123,37 @@ class Field extends Location {
     public function addCards(array $cards)
     {
     	throw new Exception("Add Cards is not working for field", 1);
+    }
+
+
+    public function getRandomDeployCell($playerId)
+    {
+        $freeCells = $this->getFreeDeployCells($playerId);
+        list($x, $y) = $freeCells[array_rand($freeCells)];
+        if ($this->getTopPlayer() == $playerId) {
+            list($x, $y) = $this->convert($x, $y);
+        }
+        return [$x, $y];
+    }
+
+    public function getFreeDeployCells($playerId)
+    {
+        if ($this->getTopPlayer() == $playerId) {
+            $y1 = 0;
+            $y2 = 1;
+        } else {
+            $y1 = self::HEIGHT - 2;
+            $y2 = self::HEIGHT;
+        }
+        $freeCells = [];
+        for ($x = 0; $x < self::WIDTH; $x++) {
+            for ($y = $y1; $y < $y2; $y++) {
+                if (!isset($this->cards[$x][$y])) {
+                    $freeCells[] = [$x, $y];
+                }
+            }
+        }
+        return $freeCells;
     }
 
 }

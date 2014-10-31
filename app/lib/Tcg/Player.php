@@ -16,6 +16,8 @@ class Player {
 
     public $name;
 
+    public $skippedTurn = false;
+
     /**
      * player || bot
      * @var string

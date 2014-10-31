@@ -1,5 +1,5 @@
 
-<div class="card">
+<div class="card my-card">
 	<div class="name" >{{{$card['name']}}}({{{$card['id']}}})</div>
 	<div class="unit">
 		<div class="health">

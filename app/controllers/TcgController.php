@@ -48,13 +48,13 @@ class TcgController extends \BaseController
 
     public function play()
     {
+        $currentPlayerId = 1;
         $gameData = Session::get('tcg.userGame', null);
         if (!$gameData) {
-            echo 'NEW GAME';
-            $game = Game::create();
+            $game = Game::create($currentPlayerId);
         } else {
-            echo 'GAME LOADED';
-            $game = Game::import($gameData);
+            
+            $game = Game::import($gameData, $currentPlayerId);
         }
         $game->gameAutoActions();
         $this->game = $game;
@@ -82,21 +82,26 @@ class TcgController extends \BaseController
         return Redirect::to('tcg');
     }
 
-    public function deploy()
+    public function action()
     {
         $this->play();
+        
+        $action = Input::get('action');
 
-        $cardId = Input::get('cardId');
-        $x = Input::get('x');
-        $y = Input::get('y');
-        var_dump($cardId);
-        var_dump($x);
-        var_dump($y);
-
-        $this->game->deploy($cardId, $x, $y);
+        switch ($action) {
+            case Game::GAME_ACTION_DEPLOY:
+                $cardId = Input::get('cardId');
+                $x = Input::get('x');
+                $y = Input::get('y');
+                $this->game->action(Game::GAME_ACTION_DEPLOY, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
+            break;
+            case Game::GAME_ACTION_SKIP:
+                $this->game->action(Game::GAME_ACTION_SKIP);
+            break;
+        }
         $this->save();
 
-        return Redirect::to('tcg');
+        return Redirect::to('tcg');   
     }
 
     
