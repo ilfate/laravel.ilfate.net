@@ -25,6 +25,10 @@ class Game {
     const GAME_ACTION_SKIP   = 'skip';
     const GAME_ACTION_MOVE   = 'move';
 
+    const GAME_RESULT_DRAW   = 'draw';
+    const GAME_RESULT_WIN    = 'win';
+    const GAME_RESULT_LOOSE  = 'loose';
+
     /**
      * @var Player[]
      */
@@ -53,6 +57,8 @@ class Game {
      * @var Field
      */
     public $field;
+
+    public $gameResult;
 
     /**
      * @var Card[]
@@ -117,10 +123,11 @@ class Game {
         }
         $game->field = Field::importField($data['field'], array_keys($game->players), $game);
 
-        $game->phase        = $data['phase'];
-        $game->turnNumber   = $data['turnNumber'];
-        $game->playerTurnId = $data['playerTurnId'];
+        $game->phase         = $data['phase'];
+        $game->turnNumber    = $data['turnNumber'];
+        $game->playerTurnId  = $data['playerTurnId'];
         $game->currentCardId = $data['currentCardId'];
+        $game->gameResult    = $data['gameResult'];
 
         return $game;
     }
@@ -143,10 +150,11 @@ class Game {
         $game['hands']   = $hands;
         $game['graves']  = $graves;
 
-        $game['turnNumber']   = $this->turnNumber;
-        $game['phase']        = $this->phase;
-        $game['playerTurnId'] = $this->playerTurnId;
+        $game['turnNumber']    = $this->turnNumber;
+        $game['phase']         = $this->phase;
+        $game['playerTurnId']  = $this->playerTurnId;
         $game['currentCardId'] = $this->currentCardId;
+        $game['gameResult']    = $this->gameResult;
 
         $game['field'] = $this->field->export();
 
@@ -160,7 +168,7 @@ class Game {
 
     public function render($playerId)
     {
-        //var_dump($this->field->map); die;
+        //var_dump($this); die;
         $data = [
             'template'   => \Config::get('tcg.game.template.' . $this->phase),
             'turn'       => $this->playerTurnId,
@@ -175,11 +183,25 @@ class Game {
         $data['hand']  = $this->renderHand($playerId);
         $data['field'] = $this->renderField($playerId);
         $data['opponentHand'] = $this->renderOpponentHand($playerId);
+        if ($this->gameResult) {
+            if (!empty($this->gameResult['draw'])) {
+                $data['result'] = self::GAME_RESULT_DRAW;
+            } else {
+                if ($this->currentPlayerId == $this->gameResult['winner']) {
+                    $data['result'] = self::GAME_RESULT_WIN;
+                } else {
+                    $data['result'] = self::GAME_RESULT_LOOSE;
+                }
+            }
+        }
         return $data;
     }
 
     public function action($name, $data = []) 
     {
+        if ($this->phase == self::PHASE_GAME_END) {
+            return;
+        }
         switch ($name) {
             case self::GAME_ACTION_DEPLOY:
                 $this->deploy($data['cardId'], $data['x'], $data['y']);
@@ -222,6 +244,7 @@ class Game {
         $card->unit->x = $x;
         $card->unit->y = $y;
         $this->moveCards([$card], self::LOCATION_HAND, self::LOCATION_FIELD);
+        $card->unit->deploy();
         $this->players[$this->currentPlayerId]->skippedTurn = false;
 
         $this->nextTurn();
@@ -275,6 +298,7 @@ class Game {
                 }
                 break;
             case self::PHASE_BATTLE:
+                $this->checkGameEnd();
                 if ($this->currentCardId === null) {
                     $this->nextBattleCard();
                 }
@@ -349,6 +373,32 @@ class Game {
         $this->cards[$card->id] = $card;
     }
 
+    public function checkGameEnd()
+    {
+        $playersLost = [];
+        foreach ($this->players as $id => $player) {
+            if (!count($this->field->getPlayerUnits($id))) {
+                $playersLost[] = $id;
+            }
+        }
+        if ($playersLost) {
+            $result = [];
+            if (count($playersLost) == 1) {
+                $result['loser'] = $playersLost[0];
+                foreach ($this->players as $id => $player) {
+                    if ($id != $result['loser']) {
+                        $result['winner'] = $id;
+                        break;
+                    }
+                }
+            } else {
+                $result['draw'] = true;
+            }
+            $this->gameResult = $result;
+            $this->phase = self::PHASE_GAME_END;
+        }
+    }
+
     public function drawCards($playerId, $num = 1)
     {
         if ($this->decks[$playerId]->count() < 1) {
@@ -366,12 +416,12 @@ class Game {
     {
         foreach ($cards as $card) {
             if ($from == self::LOCATION_FIELD) {
-                $this->{$from}->removeUnit($card->id);
+                $this->field->removeUnit($card);
             } else {
                 $this->{$from}[$card->owner]->remove([$card->id]);
             }
             if ($to == self::LOCATION_FIELD) {
-                $this->{$to}->addCard($card);
+                $this->field->addCard($card);
             } else {
                 $this->{$to}[$card->owner]->addCards([$card]);
             }
@@ -437,7 +487,7 @@ class Game {
     }
     protected function nextBattleCard()
     {
-        $this->currentCardId = $this->field->getNextCard($this->currentPlayerId, $this->currentCardId);
+        $this->currentCardId = $this->field->getNextCard($this->playerTurnId, $this->currentCardId);
         if ($this->currentCardId === null) {
             $this->nextTurn();
             $this->nextBattleCard();

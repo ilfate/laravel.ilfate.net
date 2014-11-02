@@ -14,7 +14,7 @@ class Berserk extends Unit {
 
     public function attack()
     {
-
+        parent::attack();
     }
 
 }

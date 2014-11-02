@@ -111,11 +111,15 @@ class Field extends Location {
         return [$x, $y];
     }
 
-    public function removeUnit($card)
+    public function removeUnit(Card $card)
     {
     	$x = $card->unit->x;
     	$y = $card->unit->y;
     	unset($this->map[$x][$y]);
+
+        $key = array_search($card->id, $this->cards[$card->owner]);
+        unset($this->cards[$card->owner][$key]);
+        $this->cards[$card->owner] = array_diff( $this->cards[$card->owner], array( null ) );
     }
 
     protected function convert($x, $y)
@@ -188,6 +192,26 @@ class Field extends Location {
         } else {
             return sqrt(pow(abs($y1 - $y2), 2) + pow(abs($x1 - $x2), 2));
         }
+    }
+
+    public function getAllPossibleAttackTargets($x, $y, $range, $playerId)
+    {
+        $result = [];
+        for($dx = $x - $range; $dx <= $x + $range; $dx++) {
+            for($dy = $y - $range; $dy <= $y + $range; $dy++) {
+                if (($x == $dx && $y == $dy) || $dx < 0 || $dy < 0 || $dx >= self::WIDTH || $dy >= self::HEIGHT) {
+                    continue;
+                }
+                if (isset($this->map[$dx][$dy])) {
+                    $cardId = $this->map[$dx][$dy];
+                    $card = $this->game->getCard($cardId);
+                    if ($card->owner != $playerId) {
+                        $result[] = $card;
+                    }
+                }
+            }
+        }
+        return $result;
     }
 
     public function getFreeDeployCells($playerId)

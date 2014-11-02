@@ -4,6 +4,8 @@
     <div class="health">
         <i class="fa fa-heart"></i>
         {{{$card['unit']['config'][\Tcg\Unit::CONFIG_VALUE_TOTAL_HEALTH]}}}
+        <i class="fa fa-heart-o"></i>
+        {{{$card['unit']['currentHealth']}}}
     </div>
-    <a class="skip {{$isFocus ? '' : 'hidden'}} btn btn-warning btn-xs" >Skip</a>
+    <a class="skip {{$isFocus ? '' : 'hidden'}} btn btn-warning btn-xs" >Attack</a>
 </div>

@@ -84,14 +84,16 @@ class Card {
     }
 
 
-	public static function createFromConfig($config, Game $game)
+	public static function createFromConfig($config, Game $game, $isImport = false)
 	{
 		$card = new Card($game);
         $card->card = $config['card'];
 		$card->name = $config['name'];
 
-		$card->unit  = Unit::createFromConfig(\Config::get('tcg.units.' . $config['unit']), $card);
-		$card->spell = Spell::createFromConfig(\Config::get('tcg.units.' . $config['spell']), $card);
+        if(!$isImport) {
+            $card->unit  = Unit::createFromConfig(\Config::get('tcg.units.' . $config['unit']), $card);
+            $card->spell = Spell::createFromConfig(\Config::get('tcg.units.' . $config['spell']), $card);
+        }
 
 		return $card;
 	}
@@ -99,7 +101,7 @@ class Card {
 	public static function import($data, $game)
 	{
         $cardConfig = \Config::get('tcg.cards.' .  $data['card']);
-        $card       = Card::createFromConfig($cardConfig, $game);
+        $card       = Card::createFromConfig($cardConfig, $game, true);
 
 		$card->id       = $data['id'];
 		$card->owner    = $data['owner'];
@@ -131,24 +133,21 @@ class Card {
 		$data = [
 			'id' => $this->id
 		];
-		switch ($this->status) {
-			case 0:
-				$renderType = 'card';
-				// still a card
-				
-						
-				$data['unit'] = $this->unit->render($renderType, $extData);
-				$data['spell'] = $this->spell->render($renderType);
-				break;
-			
-			default:
-				# code...
-				break;
-		}
-		$data['type'] = $renderType;
+
+        $data['unit'] = $this->unit->render($extData);
+        $data['spell'] = $this->spell->render();
+
 		$data['name'] = $this->name;
 
 		return $data;
 	}
+
+    public function __clone()
+    {
+        $this->unit = clone $this->unit;
+        $this->unit->card = $this;
+        $this->spell= clone $this->spell;
+        $this->spell->card = $this;
+    }
 
 }

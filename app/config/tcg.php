@@ -6,7 +6,8 @@ return array(
         'spellsDraw' => 2,
         'template' => [
             3 => 'deploy',
-            4 => 'battle'
+            4 => 'battle',
+            5 => 'finish'
         ],
     ],
     'cards' => array(
@@ -27,11 +28,14 @@ return array(
         [
             'unit' => '\Tcg\Unit\Berserk',
             'totalHealth' => 10,
-            'text' => 'Bloodthirst'
+            'attack' => [4,5],
+            'text' => 'Bloodthirst',
         ],
         [
             'unit' => '\Tcg\Unit\Berserk',
             'totalHealth' => 12,
+            'attack' => [2,4],
+            'attackRange' => 1,
             'text' => 'SUPA',
             'moveDistance' => 1, // not mandatory
         ],

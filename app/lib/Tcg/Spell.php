@@ -19,7 +19,7 @@ class Spell {
     /** 
      * @var Card
      */
-    protected $card;
+    public $card;
 
 	public static function createFromConfig($config, $card)
 	{
@@ -44,7 +44,7 @@ class Spell {
         return $data;
     }
 
-    public function render($type)
+    public function render()
     {
         $data = [
             'config' => $this->config

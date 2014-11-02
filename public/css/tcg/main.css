@@ -22,6 +22,7 @@ min-height: 800px;
 	height: 200px;
 
 	border: 1px solid #494949;
+    cursor: pointer;
 }
 .hand .card-back {
     float:left;
@@ -69,7 +70,7 @@ min-height: 800px;
 }
 
 .field .cell.focus {
-
+    cursor: pointer;
     border: 2px solid #228017;
 }
 

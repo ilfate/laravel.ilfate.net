@@ -19,6 +19,7 @@ class Unit
     const CONFIG_VALUE_TEXT         = 'text';
 
     const DEFAULT_MOVE_DISTANCE = 1;
+    const DEFAULT_ATTACK_RANGE = 1;
 
     /**
      * totalHealth
@@ -35,7 +36,7 @@ class Unit
     /**
      * @var Card
      */
-    protected $card;
+    public $card;
 
     public $effects = array();
     public $lastMoveTurn;
@@ -80,14 +81,19 @@ class Unit
         return $data;
     }
 
-    public function render($type, $extData)
+    public function deploy()
+    {
+        $this->currentHealth = $this->config[self::CONFIG_VALUE_TOTAL_HEALTH];
+    }
+
+    public function render($extData)
     {
         $data      = [
             'config' => $this->config,
         ];
         $data['x'] = empty($extData['x']) ? $this->x : $extData['x'];
         $data['y'] = empty($extData['y']) ? $this->y : $extData['y'];
-        if ($type == self::RENDER_TYPE_UNIT) {
+        if ($this->card->location == Card::CARD_LOCATION_FIELD) {
             $data['currentHealth'] = $this->currentHealth;
         }
         return $data;
@@ -95,7 +101,51 @@ class Unit
 
     public function attack()
     {
+        if ($this->card->location != Card::CARD_LOCATION_FIELD) {
+            throw new \Exception('Unit is trying to attack, but he is not on the Field!!');
+        }
+        $range = self::DEFAULT_ATTACK_RANGE;
+        if (isset($this->config['attackRange'])) {
+            $range = $this->config['attackRange'];
+        }
+        $targets = $this->card->game->field->getAllPossibleAttackTargets($this->x, $this->y, $range, $this->card->owner);
 
+        if (!$targets) {
+            return ;
+        }
+        // we have possible targets
+        $target = $this->choseTarget($targets);
+        $damage = $this->getDamage();
+        $target->unit->applyDamage($damage, $this->card);
+    }
+
+    /**
+     * @param $targets
+     *
+     * @return Card
+     */
+    public function choseTarget($targets)
+    {
+        return $targets[array_rand($targets)];
+    }
+
+    protected function getDamage()
+    {
+        $attack = $this->config['attack'];
+        return rand($attack[0], $attack[1]);
+    }
+
+    public function applyDamage($damage, Card $sourceCard)
+    {
+        $this->currentHealth -= $damage;
+        if ($this->currentHealth <= 0) {
+            $this->death();
+        }
+    }
+
+    public function death()
+    {
+        $this->card->game->moveCards([$this->card], Game::LOCATION_FIELD, GAME::LOCATION_GRAVE);
     }
 
     public function move($x, $y)
