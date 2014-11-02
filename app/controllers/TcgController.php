@@ -56,7 +56,6 @@ class TcgController extends \BaseController
             
             $game = Game::import($gameData, $currentPlayerId);
         }
-        $game->gameAutoActions();
         $this->game = $game;
         
     }
@@ -97,6 +96,12 @@ class TcgController extends \BaseController
             break;
             case Game::GAME_ACTION_SKIP:
                 $this->game->action(Game::GAME_ACTION_SKIP);
+            break;
+            case Game::GAME_ACTION_MOVE:
+                $cardId = Input::get('cardId');
+                $x = Input::get('x');
+                $y = Input::get('y');
+                $this->game->action(Game::GAME_ACTION_MOVE, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
             break;
         }
         $this->save();

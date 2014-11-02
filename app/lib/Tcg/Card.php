@@ -28,7 +28,7 @@ class Card {
     /**
      * @var Game
      */
-    protected $game;
+    public $game;
 
 	/**
 	 *  1 - deck

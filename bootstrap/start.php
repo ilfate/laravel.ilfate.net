@@ -26,7 +26,7 @@ $app = new Illuminate\Foundation\Application;
 
 $env = $app->detectEnvironment(array(
 
-	'local' => array('homestead', 'ilfate-Latitude-E6520'),
+	'local' => array('homestead', 'ilfate-Latitude-E6520', 'ilfate-ZenBook'),
 
 ));
 

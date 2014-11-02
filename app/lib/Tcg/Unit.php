@@ -9,7 +9,8 @@ namespace Tcg;
 
 use ClassPreloader\Config;
 
-class Unit {
+class Unit
+{
 
     const RENDER_TYPE_UNIT = 'unit';
     const RENDER_TYPE_CARD = 'card';
@@ -17,6 +18,7 @@ class Unit {
     const CONFIG_VALUE_TOTAL_HEALTH = 'totalHealth';
     const CONFIG_VALUE_TEXT         = 'text';
 
+    const DEFAULT_MOVE_DISTANCE = 1;
 
     /**
      * totalHealth
@@ -24,42 +26,46 @@ class Unit {
      *
      * @var array
      */
-	public $config;
+    public $config;
 
-	public $currentHealth;
+    public $currentHealth;
     public $x;
     public $y;
 
-    /** 
+    /**
      * @var Card
      */
     protected $card;
 
     public $effects = array();
-
+    public $lastMoveTurn;
 
     /**
      * @var Effect\Effect[]
      */
     protected $effectObjects = array();
 
-	public static function createFromConfig($config, Card $card)
-	{
-		$unit = new Unit();
-		$unit->config = $config;
+    public static function createFromConfig($config, Card $card)
+    {
+        $unit         = new $config['unit']();
+        $unit->config = $config;
         $unit->card   = $card;
 
-		return $unit;
-	}
+        return $unit;
+    }
 
-	public static function import($data, $unitId, $card)
-	{
+    public static function import($data, $unitId, $card)
+    {
         $unit = Unit::createFromConfig(\Config::get('tcg.units.' . $unitId), $card);
-		$unit->currentHealth = $data['currentHealth'];
-		$unit->effects       = $data['effects'];
+
+        $unit->currentHealth = $data['currentHealth'];
+        $unit->effects       = $data['effects'];
+        $unit->lastMoveTurn  = $data['lastMoveTurn'];
+        $unit->x             = $data['x'];
+        $unit->y             = $data['y'];
         $unit->initEffects();
-		return $unit;
-	}
+        return $unit;
+    }
 
     public function export()
     {
@@ -67,13 +73,16 @@ class Unit {
         $data = [
             'currentHealth' => $this->currentHealth,
             'effects'       => $this->effects,
+            'lastMoveTurn'  => $this->lastMoveTurn,
+            'x'             => $this->x,
+            'y'             => $this->y,
         ];
         return $data;
     }
 
     public function render($type, $extData)
     {
-        $data = [
+        $data      = [
             'config' => $this->config,
         ];
         $data['x'] = empty($extData['x']) ? $this->x : $extData['x'];
@@ -84,10 +93,30 @@ class Unit {
         return $data;
     }
 
+    public function attack()
+    {
+
+    }
+
+    public function move($x, $y)
+    {
+        //if ($this->lastMoveTurn !=)
+        $distance = $this->card->game->field->getDistance($this->x, $this->y, $x, $y);
+        if (empty($this->config['moveDistance'])) {
+            $moveDistance = self::DEFAULT_MOVE_DISTANCE;
+        } else {
+            $moveDistance = $this->config['moveDistance'];
+        }
+        if ($moveDistance < $distance) {
+            throw new \Exception('Unit cant move that far distance is = ' . $distance);
+        }
+        $this->x = $x;
+        $this->y = $y;
+    }
+
     protected function initEffects()
     {
-        foreach ($this->effects as $effect)
-        {
+        foreach ($this->effects as $effect) {
             $this->effectObjects[] = new $effect[0]($effect[1]);
         }
     }
@@ -95,7 +124,7 @@ class Unit {
     protected function updateEffects()
     {
         $this->effects = array();
-        foreach($this->effectObjects as $effect) {
+        foreach ($this->effectObjects as $effect) {
             $this->effects[] = [get_class($effect), $effect->export()];
         }
     }

@@ -24,14 +24,15 @@
 @section('sidebar')
 
 <h3>Info</h3>
-Turn: {{{$game['turn']}}}
+Turn player: {{{$game['turn']}}} <br>
+Turn number: {{{$game['turnNumber']}}} <br>
 
 <h3>Actions</h3>
 <a class="btn btn-primary" href="/tcg/clear">Clear the game</a>
 
-<h3>Deploy</h3>
+<h3>Move</h3>
 <form method="get" action="/tcg/action">
-	<input name="action" type="hidden" value="deploy" />
+	<input name="action" type="hidden" value="move" />
 	<table>
 		<tr>
 			<td><label>card Id</label></td>

@@ -47,6 +47,13 @@ min-height: 800px;
 	width:95%;	
 }
 
+.order .card {
+
+}
+.order .card.focus {
+    font-weight: bold;
+}
+
 .field {
 	width :550px;
 	position: relative;
@@ -54,6 +61,7 @@ min-height: 800px;
     clear:both;
 }
 .field .cell {
+    margin: 1px;
 	width:100px;
 	height:100px;
 	float:left;
@@ -61,5 +69,13 @@ min-height: 800px;
 }
 
 .field .cell.focus {
-    border: 1px solid #228017;
+
+    border: 2px solid #228017;
+}
+
+.field .unit {
+
+}
+.field .unit.focus {
+    font-weight: bold;
 }

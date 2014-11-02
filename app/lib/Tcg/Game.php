@@ -23,6 +23,7 @@ class Game {
 
     const GAME_ACTION_DEPLOY = 'deploy';
     const GAME_ACTION_SKIP   = 'skip';
+    const GAME_ACTION_MOVE   = 'move';
 
     /**
      * @var Player[]
@@ -33,6 +34,7 @@ class Game {
     public $phase = 0;
     public $playerTurnId;
     public $currentPlayerId;
+    public $currentCardId;
     public $turnNumber = 0;
 
     /**
@@ -88,6 +90,7 @@ class Game {
             $game->setUpCard(clone $card, $player2->id);
             $game->setUpCard(clone $card, $player2->id);
         }
+        $game->gameAutoActions();
         return $game;
     }
 
@@ -117,6 +120,7 @@ class Game {
         $game->phase        = $data['phase'];
         $game->turnNumber   = $data['turnNumber'];
         $game->playerTurnId = $data['playerTurnId'];
+        $game->currentCardId = $data['currentCardId'];
 
         return $game;
     }
@@ -142,6 +146,7 @@ class Game {
         $game['turnNumber']   = $this->turnNumber;
         $game['phase']        = $this->phase;
         $game['playerTurnId'] = $this->playerTurnId;
+        $game['currentCardId'] = $this->currentCardId;
 
         $game['field'] = $this->field->export();
 
@@ -155,12 +160,16 @@ class Game {
 
     public function render($playerId)
     {
-        //var_dump($this->field); die;
+        //var_dump($this->field->map); die;
         $data = [
-            'template' => \Config::get('tcg.game.template.' . $this->phase),
-            'turn'     => $this->playerTurnId,
-            'js'       => [
-                'phase' => $this->phase,
+            'template'   => \Config::get('tcg.game.template.' . $this->phase),
+            'turn'       => $this->playerTurnId,
+            'turnNumber' => $this->turnNumber,
+            'card'       => $this->currentCardId,
+            'js'         => [
+                'phase'    => $this->phase,
+                'card'     => $this->currentCardId,
+                'isMyTurn' => $this->playerTurnId == $this->currentPlayerId
             ]
         ];
         $data['hand']  = $this->renderHand($playerId);
@@ -177,32 +186,58 @@ class Game {
                 break;
 
             case self::GAME_ACTION_SKIP:
-                $this->players[$this->currentPlayerId]->skippedTurn = true;
-                $this->nextTurn();
+                if ($this->phase == self::PHASE_UNIT_DEPLOYING) {
+                    $this->players[$this->currentPlayerId]->skippedTurn = true;
+                    $this->nextTurn();
+                } else if($this->phase == self::PHASE_BATTLE) {
+                    $this->unitAttack();
+                }
                 break;
-            
+
+            case self::GAME_ACTION_MOVE:
+                $this->actionMove($data['cardId'], $data['x'], $data['y']);
+                break;
+
             default:
                 # code...
                 break;
         }
+        $this->gameAutoActions();
     }
 
     public function deploy($cardId, $x, $y, $isBotAction = false)
     {
         $card = $this->getCard($cardId);
         if (!$isBotAction && $this->currentPlayerId != $card->owner) {
-            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is tring to deploy not his card", 1);
+            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to deploy not his card", 1);
+        }
+        if ($card->owner != $this->playerTurnId) {
+            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to do deploy not on his turn", 1);
         }
         if ($y < Field::HEIGHT - 2) {
             throw new \Exception("This field is forbidden for deploy", 1);    
         }
+
+        list($x, $y) = $this->field->convertCoordinats($x, $y, $card->owner);
         $card->unit->x = $x;
         $card->unit->y = $y;
-        $this->field->convertCoordinats($card);
         $this->moveCards([$card], self::LOCATION_HAND, self::LOCATION_FIELD);
         $this->players[$this->currentPlayerId]->skippedTurn = false;
 
         $this->nextTurn();
+    }
+
+    protected function actionMove($cardId, $x, $y, $isBotAction = false)
+    {
+        $card = $this->getCard($cardId);
+        if (!$isBotAction && $this->currentPlayerId != $card->owner) {
+            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to move not his unit", 1);
+        }
+        if ($card->owner != $this->playerTurnId) {
+            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to do deploy not on his turn", 1);
+        }
+        $this->field->moveUnit($card, $x, $y);
+        $this->unitAttack();
     }
 
     public function gameAutoActions()
@@ -223,7 +258,7 @@ class Game {
                 break;
 
             case self::PHASE_UNIT_DEPLOYING:
-                if ($this->players[$this->playerTurnId]->type == Player::PLAYER_TYPE_BOT && $this->hands[$this->playerTurnId]->count() > 0) {
+                if ($this->isItBotTurn() && $this->hands[$this->playerTurnId]->count() > 0) {
                     $cardId = $this->hands[$this->playerTurnId]->getRandom();
                     list($x, $y) = $this->field->getRandomDeployCell($this->playerTurnId);
                     $this->deploy($cardId, $x, $y, true);
@@ -239,7 +274,14 @@ class Game {
                     $this->startBattle();
                 }
                 break;
-
+            case self::PHASE_BATTLE:
+                if ($this->currentCardId === null) {
+                    $this->nextBattleCard();
+                }
+                if ($this->isItBotTurn()) {
+                    $this->botBattleMove();
+                }
+                break;
         }
     }
 
@@ -257,7 +299,9 @@ class Game {
         }
         reset($this->players);
         $this->playerTurnId = key($this->players);
-        
+        if ($this->phase == self::PHASE_BATTLE) {
+            $this->turnNumber++;
+        }
     }
 
     protected function startBattle()
@@ -266,6 +310,8 @@ class Game {
         foreach ($this->players as $id => $player) {
             $this->drawCards($id, \Config::get('tcg.game.spellsDraw'));
         }
+        $this->turnNumber = 1;
+        $this->gameAutoActions();
     }
 
     public function getCard($id)
@@ -274,6 +320,12 @@ class Game {
             throw new \Exception('Card with id ' . $id. ' not found in game');
         }
         return $this->cards[$id];
+    }
+
+    protected function botBattleMove()
+    {
+        $this->unitAttack();
+        $this->gameAutoActions();
     }
 
     public function addDeck(Deck $deck)
@@ -329,12 +381,25 @@ class Game {
 
     protected function renderField($playerId)
     {
-        $data = $this->field->render($playerId);
+        $data = $this->field->render($playerId, $this->phase == self::PHASE_BATTLE);
+
         foreach ($data['cards'] as $cardData) {
-            if (!isset($data['map'][$cardData[1]])) {
-                $data['map'][$cardData[1]] = [];
+            $x = $cardData[1];
+            $y = $cardData[2];
+            if (!isset($data['map'][$x])) {
+                $data['map'][$x] = [];
             }
-            $data['map'][$cardData[1]][$cardData[2]] = $this->cards[$cardData[0]]->render(['x' => $cardData[1], 'y' => $cardData[2]]);
+            $card = $this->cards[$cardData[0]];
+            $data['map'][$x][$y] = $card->render(['x' => $x, 'y' => $y]);
+
+            if ($this->phase == self::PHASE_BATTLE) {
+
+                $key = array_search($card->id, $data['order']);
+                if (($key !== false)) {
+                    $data['order'][$key] = &$data['map'][$x][$y];
+                }
+            }
+
         }
         unset($data['cards']);
         return $data;
@@ -357,6 +422,25 @@ class Game {
                 // here our enemy
                 return ['size' => $this->hands[$id]->count()];
             }
+        }
+    }
+
+    protected function unitAttack()
+    {
+        $this->cards[$this->currentCardId]->unit->attack();
+        $this->nextBattleCard();
+    }
+
+    protected function isItBotTurn()
+    {
+        return $this->players[$this->playerTurnId]->type == Player::PLAYER_TYPE_BOT;
+    }
+    protected function nextBattleCard()
+    {
+        $this->currentCardId = $this->field->getNextCard($this->currentPlayerId, $this->currentCardId);
+        if ($this->currentCardId === null) {
+            $this->nextTurn();
+            $this->nextBattleCard();
         }
     }
 

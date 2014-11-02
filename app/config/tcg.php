@@ -25,14 +25,15 @@ return array(
     ),
     'units' => [
         [
-            'unit' => 0,
+            'unit' => '\Tcg\Unit\Berserk',
             'totalHealth' => 10,
             'text' => 'Bloodthirst'
         ],
         [
-            'unit' => 1,
+            'unit' => '\Tcg\Unit\Berserk',
             'totalHealth' => 12,
-            'text' => 'SUPA'
+            'text' => 'SUPA',
+            'moveDistance' => 1, // not mandatory
         ],
     ],
     'spells' => [
