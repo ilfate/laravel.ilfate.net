@@ -9,7 +9,7 @@
 <div class="row show-grid">
     <div class="col-md-8 col-md-offset-2 code-page-block">
         <a href="{{ action('MathEffectController@index') }}" class="rounded_block_link">
-            @include('interface.button-block', array('text' => 'Math Effect', 'background' => '/images/game/tdTitle.png'))
+            @include('interface.button-block', array('text' => 'Math Effect', 'background' => '/images/game/tdTitle_small.png'))
         </a>
     </div>
 </div><div class="row show-grid">
