@@ -323,9 +323,6 @@ class Game {
         }
         reset($this->players);
         $this->playerTurnId = key($this->players);
-        if ($this->phase == self::PHASE_BATTLE) {
-            $this->turnNumber++;
-        }
     }
 
     protected function startBattle()
@@ -487,10 +484,15 @@ class Game {
     }
     protected function nextBattleCard()
     {
-        $this->currentCardId = $this->field->getNextCard($this->playerTurnId, $this->currentCardId);
+        $this->currentCardId = $this->field->getNextCard($this->currentCardId);
         if ($this->currentCardId === null) {
-            $this->nextTurn();
+            //$this->nextTurn();
             $this->nextBattleCard();
+            $this->turnNumber++;
+        } else {
+            if ($this->cards[$this->currentCardId]->owner != $this->playerTurnId) {
+                $this->playerTurnId = $this->cards[$this->currentCardId]->owner;
+            }
         }
     }
 

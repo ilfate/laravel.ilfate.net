@@ -27,6 +27,8 @@ class Field extends Location {
     /** @var array */
     public $map = array();
 
+    public $playerUnits = array();
+
     public function __construct($players, Game $game)
     {
     	$this->players = $players;
@@ -47,10 +49,11 @@ class Field extends Location {
     		$this->map[$x] = [];
     	}
     	$this->map[$x][$y] = $card->id;
-        if (!isset($this->cards[$card->owner])) {
-            $this->cards[$card->owner] = [];
+        if (!isset($this->playerUnits[$card->owner])) {
+            $this->playerUnits[$card->owner] = [];
         }
-        $this->cards[$card->owner][] = $card->id;
+        $this->playerUnits[$card->owner][] = $card->id;
+        $this->cards[] = $card->id;
     }
 
     public function render($playerId, $isBattle)
@@ -71,7 +74,7 @@ class Field extends Location {
     		}
     	}
         if ($isBattle) {
-            $data['order'] = $this->cards[$playerId];
+            $data['order'] = $this->cards;
         }
     	return $data;
     }
@@ -81,14 +84,16 @@ class Field extends Location {
      */
     public function getPlayerUnits($playerId)
     {
-        return $this->cards[$playerId];
+        return $this->playerUnits[$playerId];
     }
 
     public static function importField($data, $players, Game $game)
     {
         $location = new Field($players, $game);
-        $location->map   = $data['map'];
-        $location->cards = $data['cards'];
+
+        $location->map         = $data['map'];
+        $location->cards       = $data['cards'];
+        $location->playerUnits = $data['playerUnits'];
 
         return $location;
     }
@@ -96,8 +101,9 @@ class Field extends Location {
     public function export()
     {
         $location = [
-            'cards' => $this->cards,
-            'map'   => $this->map,
+            'cards'       => $this->cards,
+            'playerUnits' => $this->playerUnits,
+            'map'         => $this->map,
         ];
         return $location;
     }
@@ -117,9 +123,13 @@ class Field extends Location {
     	$y = $card->unit->y;
     	unset($this->map[$x][$y]);
 
-        $key = array_search($card->id, $this->cards[$card->owner]);
-        unset($this->cards[$card->owner][$key]);
-        $this->cards[$card->owner] = array_diff( $this->cards[$card->owner], array( null ) );
+        $key = array_search($card->id, $this->playerUnits[$card->owner]);
+        unset($this->playerUnits[$card->owner][$key]);
+        $this->playerUnits[$card->owner] = array_diff( $this->playerUnits[$card->owner], array( null ) );
+
+        $key = array_search($card->id, $this->cards);
+        unset($this->cards[$key]);
+        $this->cards = array_diff( $this->cards, array( null ) );
     }
 
     protected function convert($x, $y)
@@ -140,10 +150,10 @@ class Field extends Location {
     	throw new Exception("Add Cards is not working for field", 1);
     }
 
-    public function getNextCard($playerId, $cardId = null)
+    public function getNextCard($cardId = null)
     {
         $next = false;
-        foreach ($this->cards[$playerId] as $card) {
+        foreach ($this->cards as $card) {
             if ($cardId === null || $next) {
                 return $card;
             }
