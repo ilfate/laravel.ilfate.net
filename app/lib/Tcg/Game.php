@@ -7,68 +7,7 @@
 
 namespace Tcg;
 
-class Game {
-
-    const PHASE_GAME_NOT_STARTED = 0;
-    const PHASE_HAND_DRAW_1      = 1;
-    const PHASE_HAND_DRAW_2      = 2;
-    const PHASE_UNIT_DEPLOYING   = 3;
-    const PHASE_BATTLE           = 4;
-    const PHASE_GAME_END         = 5;
-
-    const LOCATION_DECK  = 'decks';
-    const LOCATION_HAND  = 'hands';
-    const LOCATION_FIELD = 'field';
-    const LOCATION_GRAVE = 'graves';
-
-    const GAME_ACTION_DEPLOY = 'deploy';
-    const GAME_ACTION_SKIP   = 'skip';
-    const GAME_ACTION_MOVE   = 'move';
-
-    const GAME_RESULT_DRAW   = 'draw';
-    const GAME_RESULT_WIN    = 'win';
-    const GAME_RESULT_LOOSE  = 'loose';
-
-    /**
-     * @var Player[]
-     */
-    public $players = array();
-    public $maxPlayers = 2;
-
-    public $phase = 0;
-    public $playerTurnId;
-    public $currentPlayerId;
-    public $currentCardId;
-    public $turnNumber = 0;
-
-    /**
-     * @var Deck[]
-     */
-    public $decks = array();
-    /**
-     * @var Hand[]
-     */
-    public $hands = array();
-    /**
-     * @var Grave[]
-     */
-    public $graves = array();
-    /**
-     * @var Field
-     */
-    public $field;
-
-    public $gameResult;
-
-    /**
-     * @var Card[]
-     */
-    public $cards = array();
-
-    public function __construct($currentPlayerId)
-    {
-        $this->currentPlayerId = $currentPlayerId;
-    }
+class Game extends GameContainer {
 
     /**
      * @return Game
@@ -197,7 +136,7 @@ class Game {
         return $data;
     }
 
-    public function action($name, $data = []) 
+    public function action($name, $data = [])
     {
         if ($this->phase == self::PHASE_GAME_END) {
             return;
@@ -237,7 +176,7 @@ class Game {
             throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to do deploy not on his turn", 1);
         }
         if ($y < Field::HEIGHT - 2) {
-            throw new \Exception("This field is forbidden for deploy", 1);    
+            throw new \Exception("This field is forbidden for deploy", 1);
         }
 
         list($x, $y) = $this->field->convertCoordinats($x, $y, $card->owner);
@@ -274,7 +213,7 @@ class Game {
                 }
                 $this->phase = self::PHASE_UNIT_DEPLOYING;
                 $this->playerTurnId = array_rand($this->players);
-                
+
                 if ($this->players[$this->playerTurnId]->type == Player::PLAYER_TYPE_BOT) {
                     $this->gameAutoActions();
                 }
@@ -315,7 +254,7 @@ class Game {
         foreach ($this->players as $id => $player) {
             if ($nextOne) {
                 $this->playerTurnId = $id;
-                return;    
+                return;
             }
             if ($id == $this->playerTurnId) {
                 $nextOne = true;
@@ -335,39 +274,10 @@ class Game {
         $this->gameAutoActions();
     }
 
-    public function getCard($id)
-    {
-        if (empty($this->cards[$id])) {
-            throw new \Exception('Card with id ' . $id. ' not found in game');
-        }
-        return $this->cards[$id];
-    }
-
     protected function botBattleMove()
     {
         $this->unitAttack();
         $this->gameAutoActions();
-    }
-
-    public function addDeck(Deck $deck)
-    {
-        $this->decks[$deck->owner] = $deck;
-    }
-    public function addHand(Hand $hand)
-    {
-        $this->hands[$hand->owner] = $hand;
-    }
-    public function addGrave(Grave $grave)
-    {
-        $this->graves[$grave->owner] = $grave;
-    }
-    public function addPlayer(Player $player)
-    {
-        $this->players[$player->id] = $player;
-    }
-    public function addCard(Card $card)
-    {
-        $this->cards[$card->id] = $card;
     }
 
     public function checkGameEnd()
@@ -426,6 +336,15 @@ class Game {
         }
     }
 
+    public function triggerEvent($eventName, array $data = null)
+    {
+        $target = false;
+        if (isset($data['target'])) {
+            $target = $data['target'];
+        }
+
+    }
+
     protected function renderField($playerId)
     {
         $data = $this->field->render($playerId, $this->phase == self::PHASE_BATTLE);
@@ -478,10 +397,6 @@ class Game {
         $this->nextBattleCard();
     }
 
-    protected function isItBotTurn()
-    {
-        return $this->players[$this->playerTurnId]->type == Player::PLAYER_TYPE_BOT;
-    }
     protected function nextBattleCard()
     {
         $this->currentCardId = $this->field->getNextCard($this->currentCardId);
@@ -495,28 +410,4 @@ class Game {
             }
         }
     }
-
-    protected function setUpCard(Card $card, $playerId)
-    {
-        $newId          = count($this->cards);
-        $card->id       = $newId;
-        $card->owner    = $playerId;
-        $card->location = Card::CARD_LOCATION_DECK;
-        $this->cards[]  = $card;
-
-        $this->decks[$playerId]->addCards([$card]);
-    }
-
-    protected function createLocations()
-    {
-        foreach ($this->players as $player)
-        {
-            $this->decks[$player->id] = new Deck($player->id);
-            $this->hands[$player->id] = new Hand($player->id);
-            $this->graves[$player->id] = new Grave($player->id);
-        }
-        $this->field = new Field(array_keys($this->players), $this);
-    }
-
-
 }

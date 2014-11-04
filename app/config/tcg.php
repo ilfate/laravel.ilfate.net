@@ -36,7 +36,8 @@ return array(
             'totalHealth' => 12,
             'attack' => [2,4],
             'attackRange' => 1,
-            'text' => 'SUPA',
+            'armor' => 2,
+            'text' => '2 Armor',
             'moveDistance' => 1, // not mandatory
         ],
     ],

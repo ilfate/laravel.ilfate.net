@@ -3,10 +3,19 @@
 	<div class="name" >{{{$card['name']}}}({{{$card['id']}}})</div>
     @if ($mode == 'deploy')
 	<div class="unit">
-		<div class="health">
+		<div class="health-total">
 			<i class="fa fa-heart"></i>
-			{{{$card['unit']['config'][\Tcg\Unit::CONFIG_VALUE_TOTAL_HEALTH]}}}
+            <span class="value" >
+			    {{{$card['unit']['config'][\Tcg\Unit::CONFIG_VALUE_TOTAL_HEALTH]}}}
+            </span>
 		</div>
+        <div class="attack">
+            <i class="fa fa-gavel"></i>
+            <span class="value">
+			    {{{$card['unit']['config'][\Tcg\Unit::CONFIG_VALUE_ATTACK][0]}}}-
+                {{{$card['unit']['config'][\Tcg\Unit::CONFIG_VALUE_ATTACK][1]}}}
+            </span>
+        </div>
 		<p>
 			{{{$card['unit']['config'][\Tcg\Unit::CONFIG_VALUE_TEXT]}}}
 		</p>

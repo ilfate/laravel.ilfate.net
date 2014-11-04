@@ -90,9 +90,9 @@ class Card {
         $card->card = $config['card'];
 		$card->name = $config['name'];
 
-        if(!$isImport) {
+        if (!$isImport) {
             $card->unit  = Unit::createFromConfig(\Config::get('tcg.units.' . $config['unit']), $card);
-            $card->spell = Spell::createFromConfig(\Config::get('tcg.units.' . $config['spell']), $card);
+            $card->spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $config['spell']), $card);
         }
 
 		return $card;

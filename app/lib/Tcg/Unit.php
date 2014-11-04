@@ -17,9 +17,11 @@ class Unit
 
     const CONFIG_VALUE_TOTAL_HEALTH = 'totalHealth';
     const CONFIG_VALUE_TEXT         = 'text';
+    const CONFIG_VALUE_ATTACK       = 'attack';
+    const CONFIG_VALUE_ARMOR        = 'armor';
 
     const DEFAULT_MOVE_DISTANCE = 1;
-    const DEFAULT_ATTACK_RANGE = 1;
+    const DEFAULT_ATTACK_RANGE  = 1;
 
     /**
      * totalHealth
@@ -29,7 +31,10 @@ class Unit
      */
     public $config;
 
+    public $maxHealth;
     public $currentHealth;
+    public $maxArmor = 0;
+    public $armor = 0;
     public $x;
     public $y;
 
@@ -60,6 +65,9 @@ class Unit
         $unit = Unit::createFromConfig(\Config::get('tcg.units.' . $unitId), $card);
 
         $unit->currentHealth = $data['currentHealth'];
+        $unit->maxHealth     = $data['maxHealth'];
+        $unit->armor         = $data['armor'];
+        $unit->maxArmor      = $data['maxArmor'];
         $unit->effects       = $data['effects'];
         $unit->lastMoveTurn  = $data['lastMoveTurn'];
         $unit->x             = $data['x'];
@@ -73,6 +81,9 @@ class Unit
         $this->updateEffects();
         $data = [
             'currentHealth' => $this->currentHealth,
+            'maxHealth'     => $this->maxHealth,
+            'armor'         => $this->armor,
+            'maxArmor'      => $this->maxArmor,
             'effects'       => $this->effects,
             'lastMoveTurn'  => $this->lastMoveTurn,
             'x'             => $this->x,
@@ -84,6 +95,12 @@ class Unit
     public function deploy()
     {
         $this->currentHealth = $this->config[self::CONFIG_VALUE_TOTAL_HEALTH];
+        $this->maxHealth     = $this->config[self::CONFIG_VALUE_TOTAL_HEALTH];
+
+        if (!empty($this->config[self::CONFIG_VALUE_ARMOR])) {
+            $this->armor    = $this->config[self::CONFIG_VALUE_ARMOR];
+            $this->maxArmor = $this->config[self::CONFIG_VALUE_ARMOR];
+        }
     }
 
     public function render($extData)
@@ -95,6 +112,10 @@ class Unit
         $data['y'] = empty($extData['y']) ? $this->y : $extData['y'];
         if ($this->card->location == Card::CARD_LOCATION_FIELD) {
             $data['currentHealth'] = $this->currentHealth;
+            $data['maxHealth']     = $this->maxHealth;
+            if ($this->armor) {
+                $data['armor'] = $this->armor;
+            }
         }
         return $data;
     }
@@ -111,7 +132,7 @@ class Unit
         $targets = $this->card->game->field->getAllPossibleAttackTargets($this->x, $this->y, $range, $this->card->owner);
 
         if (!$targets) {
-            return ;
+            return;
         }
         // we have possible targets
         $target = $this->choseTarget($targets);
@@ -137,6 +158,18 @@ class Unit
 
     public function applyDamage($damage, Card $sourceCard)
     {
+        if ($this->armor) {
+            if ($damage > $this->armor) {
+                $damage -= $this->armor;
+                $this->armor = 0;
+            } else {
+                $this->armor -= $damage;
+                $damage = 0;
+            }
+        }
+        if ($damage > 0) {
+            $this->card->game->triggerEvent(Game::EVENT_UNIT_GET_DAMAGE, ['target' => $this]);
+        }
         $this->currentHealth -= $damage;
         if ($this->currentHealth <= 0) {
             $this->death();
