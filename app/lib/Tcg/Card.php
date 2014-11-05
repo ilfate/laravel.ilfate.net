@@ -70,30 +70,16 @@ class Card {
      */
     public $card;
 
-    /**
-     * 0 - card
-     * 1 - unit
-     * 2 - spell
-     * @var int
-     */
-    public $status = 0;
-
     public function __construct(Game $game)
     {
     	$this->game = $game;
     }
-
 
 	public static function createFromConfig($config, Game $game, $isImport = false)
 	{
 		$card = new Card($game);
         $card->card = $config['card'];
 		$card->name = $config['name'];
-
-        if (!$isImport) {
-            $card->unit  = Unit::createFromConfig(\Config::get('tcg.units.' . $config['unit']), $card);
-            $card->spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $config['spell']), $card);
-        }
 
 		return $card;
 	}
@@ -106,13 +92,21 @@ class Card {
 		$card->id       = $data['id'];
 		$card->owner    = $data['owner'];
 		$card->location = $data['location'];
-		$card->status   = $data['status'];
 
-		$card->unit  = Unit::import($data['unit'], $cardConfig['unit'], $card);
-		$card->spell = Spell::import($data['spell'], $cardConfig['spell'], $card);
+        if (!empty($data['unit'])) {
+            $card->unit  = Unit::import($data['unit'], $cardConfig['unit'], $card);
+            $card->spell = Spell::import($data['spell'], $cardConfig['spell'], $card);
+        }
 
 		return $card;
 	}
+
+    public function init()
+    {
+        $config = \Config::get('tcg.cards.' .  $this->card);
+        $this->unit  = Unit::createFromConfig(\Config::get('tcg.units.' . $config['unit']), $this);
+        $this->spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $config['spell']), $this);
+    }
 
 	public function export()
 	{
@@ -121,10 +115,11 @@ class Card {
             'owner'    => $this->owner,
             'location' => $this->location,
             'card'     => $this->card,
-            'status'   => $this->status,
 		];
-		$data['unit'] = $this->unit->export();
-		$data['spell'] = $this->spell->export();
+        if ($this->unit && $this->spell) {
+            $data['unit'] = $this->unit->export();
+            $data['spell'] = $this->spell->export();
+        }
 		return $data;
 	}
 
@@ -144,10 +139,12 @@ class Card {
 
     public function __clone()
     {
-        $this->unit = clone $this->unit;
-        $this->unit->card = $this;
-        $this->spell= clone $this->spell;
-        $this->spell->card = $this;
+        if ($this->unit && $this->spell) {
+            $this->unit = clone $this->unit;
+            $this->unit->card = $this;
+            $this->spell= clone $this->spell;
+            $this->spell->card = $this;
+        }
     }
 
 }

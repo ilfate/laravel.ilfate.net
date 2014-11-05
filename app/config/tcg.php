@@ -44,7 +44,7 @@ return array(
     ],
     'spells' => [
         [
-            'spell' => 0,
+            'spell' => '\Tcg\Spell\Focus',
             'type' => 'focus',
             'text' => 'Put focus on target unit'
         ],

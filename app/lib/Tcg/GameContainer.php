@@ -24,6 +24,7 @@ class GameContainer {
     const GAME_ACTION_DEPLOY = 'deploy';
     const GAME_ACTION_SKIP   = 'skip';
     const GAME_ACTION_MOVE   = 'move';
+    const GAME_ACTION_CAST   = 'cast';
 
     const GAME_RESULT_DRAW   = 'draw';
     const GAME_RESULT_WIN    = 'win';

@@ -23,7 +23,7 @@ class Spell {
 
 	public static function createFromConfig($config, $card)
 	{
-		$spell = new Spell();
+		$spell = new $config['spell']();
         $spell->config = $config;
         $spell->card = $card;
 

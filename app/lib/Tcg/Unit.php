@@ -25,6 +25,7 @@ class Unit
     const DEFAULT_ATTACK_RANGE  = 1;
 
     const KEYWORD_BLOODTHIRST = 'bloodthirst';
+    const KEYWORD_FOCUS       = 'focus';
 
     protected static $exportValues = array(
         'maxHealth',
@@ -163,21 +164,41 @@ class Unit
      */
     public function choseTarget($targets)
     {
+        if ($bloodthirstTaget = $this->isBloodthirst($targets)) {
+            return $bloodthirstTaget;
+        }
+        $targets = $this->isFocusTargets($targets);
+        return $targets[array_rand($targets)];
+    }
+
+    protected function isBloodthirst($targets)
+    {
         if ($this->hasKeyword(self::KEYWORD_BLOODTHIRST)) {
-            $theMostInjuerd = null;
+            $theMostInjured = null;
             $theBiggestDamage = 0;
             foreach ($targets as $card) {
                 $injure = $card->unit->maxHealth - $card->unit->currentHealth;
                 if ($injure && $injure > $theBiggestDamage) {
-                    $theMostInjuerd   = $card;
+                    $theMostInjured   = $card;
                     $theBiggestDamage = $injure;
                 }
             }
-            if ($theMostInjuerd) {
-                return $theMostInjuerd;
+            if ($theMostInjured) {
+                return $theMostInjured;
             }
         }
-        return $targets[array_rand($targets)];
+        return false;
+    }
+
+    protected function isFocusTargets($targets)
+    {
+        $focusOnly = array_filter($targets, function ($card) {
+            return $card->unit->hasKeyword(self::KEYWORD_FOCUS);
+        });
+        if ($focusOnly) {
+            return $focusOnly;
+        }
+        return $targets;
     }
 
     protected function getDamage(Card $target)

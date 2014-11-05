@@ -160,6 +160,10 @@ class Game extends GameContainer {
                 $this->actionMove($data['cardId'], $data['x'], $data['y']);
                 break;
 
+            case self::GAME_ACTION_CAST:
+                $this->actionCast($data['cardId'], $data['data']);
+                break;
+
             default:
                 # code...
                 break;
@@ -206,6 +210,11 @@ class Game extends GameContainer {
         $this->log->logMove($card->name, $this->playerTurnId);
 
         $this->unitAttack();
+    }
+
+    protected function actionCast($cardId, $data)
+    {
+
     }
 
     public function gameAutoActions()
@@ -331,6 +340,7 @@ class Game extends GameContainer {
         $cards = [];
         foreach ($cardsIds as $cardId) {
             $cards[] = $this->cards[$cardId];
+            $this->cards[$cardId]->init();
         }
         $this->moveCards($cards, self::LOCATION_DECK, self::LOCATION_HAND);
     }
