@@ -1,0 +1,173 @@
+<?php
+/**
+ * ilfate.net
+ * @autor Ilya Rubinchik ilfate@gmail.com
+ * 2014
+ */
+
+namespace Tcg;
+
+class GameLog {
+
+	const LOG_TYPE_TEXT          = 'text';
+	const LOG_TYPE_PLAYER_ACTION = 'player_action';
+	const LOG_TYPE_DEPLOY        = 'deploy';
+	const LOG_TYPE_MOVE          = 'move';
+	const LOG_TYPE_ATTACK        = 'attack';
+
+	const RENDER_MODE_PUBLIC = 'public';
+	const RENDER_MODE_ADMIN  = 'admin';
+
+	protected static $publicLogs = [
+		self::LOG_TYPE_TEXT,
+		self::LOG_TYPE_DEPLOY,
+	];
+
+	/** 
+	 * @var Game
+	 */
+	public $game;
+
+	/**
+	 *  
+	 *
+	 *
+	 * @var array
+	 */
+	protected $log = [];
+
+	public function __construct(Game $game) {
+		$this->game = $game;
+	}
+
+	/**
+     * @return GameLog
+     */
+    public static function import($data, Game $game)
+    {
+        $log = new GameLog($game);
+        $log->log = $data['log'];
+        return $log;
+    }
+
+    public function export()
+    {
+    	$data = [
+    		'log' => $this->log
+    	];
+
+    	return $data;
+    }
+
+    public function render($mode = self::RENDER_MODE_PUBLIC)
+    {
+    	if ($mode == self::RENDER_MODE_PUBLIC) {
+    		$available = self::$publicLogs;
+    	}
+    	$data = [];
+    	for ($i = count($this->log) - 1; $i >= 0; $i--) {
+    		if (!isset($available) || in_array($this->log[$i][0], $available)) {
+    			$data[] = $this->renderMessage($this->log[$i][0], $this->log[$i][1]);
+    		} 
+    	}
+    	return $data;
+    }
+
+    public function logText($text) 
+    {
+    	$this->log[] = [
+    		self::LOG_TYPE_TEXT,
+    		[
+    			$text
+    		]
+    	];
+    }
+
+    public function logAction($actionName, $data, $playerId)
+    {
+    	$this->log[] = [
+    		self::LOG_TYPE_PLAYER_ACTION,
+    		[
+    			$actionName,
+    			$data,
+    			$playerId
+    		]
+    	];
+    }
+
+    public function logDeploy($unitName, $playerId)
+    {
+    	$this->log[] = [
+    		self::LOG_TYPE_DEPLOY,
+    		[
+    			$unitName,
+    			$playerId
+    		]
+    	];	
+    }
+
+    public function logMove($unitName, $playerId)
+    {
+    	$this->log[] = [
+    		self::LOG_TYPE_MOVE,
+    		[
+    			$unitName,
+    			$playerId
+    		]
+    	];	
+    }
+
+    public function logAttack($unitName, $playerId, $targetName, $damage)
+    {
+    	$this->log[] = [
+    		self::LOG_TYPE_ATTACK,
+    		[
+    			$unitName,
+    			$playerId,
+    			$targetName,
+    			$damage
+    		]
+    	];	
+    }
+
+    protected function renderMessage($type, $data)
+    {
+    	switch ($type) {
+    		case self::LOG_TYPE_TEXT:
+    			return $data[0];
+    			break;
+    		case self::LOG_TYPE_PLAYER_ACTION:
+    			$text = $this->getPLayerInfo($data[2]);
+    			$text .= ' performed action "' . $data[0] . '" with data: ' . json_encode($data[1]);
+    			return $text;
+    			break;
+    		case self::LOG_TYPE_DEPLOY:
+    			$text = $this->getPLayerInfo($data[1]);
+    			$text .= ' deployed "' . $data[0] . '"';
+    			return $text;
+    			break;
+    		case self::LOG_TYPE_MOVE:
+    			$text = $this->getPLayerInfo($data[1]);
+    			$text .= ' moved "' . $data[0] . '"';
+    			return $text;
+    			break;
+    		case self::LOG_TYPE_ATTACK:
+    			$text = $this->getPLayerInfo($data[1]);
+    			$text .= ' attacket with "' . $data[0] . '" and dealt ' . $data[3] . ' damage to "' . $data[2] . '"';
+    			return $text;
+    			break;
+    		
+    		default:
+    			# code...
+    			break;
+    	}
+    }
+
+    protected function getPLayerInfo($playerId)
+    {
+    	$player = $this->game->players[$playerId];
+    	$text = $player->name . '(' . $player->id . ') ';
+    	return $text;
+    }
+}
+

@@ -14,7 +14,7 @@ class Player {
 
     public $id;
 
-    public $name;
+    public $name = 'default name';
 
     public $skippedTurn = false;
 

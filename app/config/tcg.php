@@ -30,6 +30,7 @@ return array(
             'totalHealth' => 10,
             'attack' => [4,5],
             'text' => 'Bloodthirst',
+            'keywords' => ['bloodthirst']
         ],
         [
             'unit' => '\Tcg\Unit\Berserk',

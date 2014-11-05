@@ -18,7 +18,8 @@ class Game extends GameContainer {
         $player2 = new Player(2);
         $player2->type = Player::PLAYER_TYPE_BOT;
 
-        $game = new Game($currentPlayerId);
+        $game      = new Game($currentPlayerId);
+        $game->log = new GameLog($game);
 
         $game->addPlayer($player1);
         $game->addPlayer($player2);
@@ -45,6 +46,7 @@ class Game extends GameContainer {
     public static function import($data, $currentPlayerId)
     {
         $game = new Game($currentPlayerId);
+
         foreach ($data['players'] as $player) {
             $game->addPlayer(Player::import($player));
         }
@@ -61,23 +63,19 @@ class Game extends GameContainer {
             $game->addCard(Card::import($card, $game));
         }
         $game->field = Field::importField($data['field'], array_keys($game->players), $game);
+        $game->log   = GameLog::import($data['log'], $game);
 
-        $game->phase         = $data['phase'];
-        $game->turnNumber    = $data['turnNumber'];
-        $game->playerTurnId  = $data['playerTurnId'];
-        $game->currentCardId = $data['currentCardId'];
-        $game->gameResult    = $data['gameResult'];
+        foreach (self::$exportValues as $valueName) {
+            $game->{$valueName} = $data[$valueName];
+        }
 
         return $game;
     }
 
     public function export()
     {
-        $game    = [];
-        $players = [];
-        $decks   = [];
-        $hands   = [];
-        $graves  = [];
+        $game = $players = $decks = $hands = $graves = [];
+
         foreach ($this->players as $playerId => $player) {
             $players[] = $player->export();
             $decks[] = $this->decks[$playerId]->export();
@@ -89,13 +87,12 @@ class Game extends GameContainer {
         $game['hands']   = $hands;
         $game['graves']  = $graves;
 
-        $game['turnNumber']    = $this->turnNumber;
-        $game['phase']         = $this->phase;
-        $game['playerTurnId']  = $this->playerTurnId;
-        $game['currentCardId'] = $this->currentCardId;
-        $game['gameResult']    = $this->gameResult;
+        foreach (self::$exportValues as $valueName) {
+            $game[$valueName] = $this->{$valueName};
+        }
 
         $game['field'] = $this->field->export();
+        $game['log']   = $this->log->export();
 
         $cards = [];
         foreach ($this->cards as $card) {
@@ -117,11 +114,13 @@ class Game extends GameContainer {
                 'phase'    => $this->phase,
                 'card'     => $this->currentCardId,
                 'isMyTurn' => $this->playerTurnId == $this->currentPlayerId
-            ]
+            ],
+            'log' => $this->log->render(GameLog::RENDER_MODE_ADMIN)
         ];
         $data['hand']  = $this->renderHand($playerId);
         $data['field'] = $this->renderField($playerId);
         $data['opponentHand'] = $this->renderOpponentHand($playerId);
+
         if ($this->gameResult) {
             if (!empty($this->gameResult['draw'])) {
                 $data['result'] = self::GAME_RESULT_DRAW;
@@ -141,6 +140,8 @@ class Game extends GameContainer {
         if ($this->phase == self::PHASE_GAME_END) {
             return;
         }
+        $this->log->logAction($name, $data, $this->playerTurnId);
+
         switch ($name) {
             case self::GAME_ACTION_DEPLOY:
                 $this->deploy($data['cardId'], $data['x'], $data['y']);
@@ -186,6 +187,8 @@ class Game extends GameContainer {
         $card->unit->deploy();
         $this->players[$this->currentPlayerId]->skippedTurn = false;
 
+        $this->log->logDeploy($card->name, $this->playerTurnId);
+
         $this->nextTurn();
     }
 
@@ -199,6 +202,9 @@ class Game extends GameContainer {
             throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to do deploy not on his turn", 1);
         }
         $this->field->moveUnit($card, $x, $y);
+
+        $this->log->logMove($card->name, $this->playerTurnId);
+
         $this->unitAttack();
     }
 
@@ -250,18 +256,28 @@ class Game extends GameContainer {
 
     public function nextTurn()
     {
-        $nextOne = false;
-        foreach ($this->players as $id => $player) {
-            if ($nextOne) {
-                $this->playerTurnId = $id;
-                return;
-            }
-            if ($id == $this->playerTurnId) {
-                $nextOne = true;
-            }
+        switch ($this->phase) {
+            case self::PHASE_UNIT_DEPLOYING:
+                $nextOne = false;
+                foreach ($this->players as $id => $player) {
+                    if ($nextOne) {
+                        $this->playerTurnId = $id;
+                        return;
+                    }
+                    if ($id == $this->playerTurnId) {
+                        $nextOne = true;
+                    }
+                }
+                reset($this->players);
+                $this->playerTurnId = key($this->players);
+                break;
+            case self::PHASE_BATTLE:
+                foreach ($this->field->cards as $cardId) {
+                    $this->cards[$cardId]->unit->endOfTurn();
+                }
+                $this->turnNumber++;
+                break;
         }
-        reset($this->players);
-        $this->playerTurnId = key($this->players);
     }
 
     protected function startBattle()
@@ -401,9 +417,10 @@ class Game extends GameContainer {
     {
         $this->currentCardId = $this->field->getNextCard($this->currentCardId);
         if ($this->currentCardId === null) {
-            //$this->nextTurn();
+            
+            $this->nextTurn();
             $this->nextBattleCard();
-            $this->turnNumber++;
+
         } else {
             if ($this->cards[$this->currentCardId]->owner != $this->playerTurnId) {
                 $this->playerTurnId = $this->cards[$this->currentCardId]->owner;

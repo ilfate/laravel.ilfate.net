@@ -29,7 +29,19 @@ class GameContainer {
     const GAME_RESULT_WIN    = 'win';
     const GAME_RESULT_LOOSE  = 'loose';
 
-    const EVENT_UNIT_GET_DAMAGE = 'unit_get_damage';
+    const EVENT_UNIT_GET_DAMAGE  = 'unit_get_damage';
+    const EVENT_UNIT_DEAL_DAMAGE = 'unit_deal_damage';
+    const EVENT_UNIT_DEATH       = 'unit_death';
+    const EVENT_UNIT_MOVE        = 'unit_move';
+    const EVENT_UNIT_DEPLOY      = 'unit_deploy';
+
+    protected static $exportValues = array(
+        'phase',
+        'turnNumber',
+        'playerTurnId',
+        'currentCardId',
+        'gameResult',
+    );
 
     /**
      * @var Player[]
@@ -61,6 +73,11 @@ class GameContainer {
     public $field;
 
     public $gameResult;
+
+    /**
+     * @var GameLog
+     */
+    public $log;
 
     /**
      * @var Card[]

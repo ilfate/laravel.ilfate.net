@@ -19,9 +19,25 @@ class Unit
     const CONFIG_VALUE_TEXT         = 'text';
     const CONFIG_VALUE_ATTACK       = 'attack';
     const CONFIG_VALUE_ARMOR        = 'armor';
+    const CONFIG_VALUE_KEYWORDS     = 'keywords';
 
     const DEFAULT_MOVE_DISTANCE = 1;
     const DEFAULT_ATTACK_RANGE  = 1;
+
+    const KEYWORD_BLOODTHIRST = 'bloodthirst';
+
+    protected static $exportValues = array(
+        'maxHealth',
+        'currentHealth',
+        'maxArmor',
+        'armor',
+        'x',
+        'y',
+        'stepsMade',
+        'effects',
+        'keywords',
+        'attack',
+    );
 
     /**
      * totalHealth
@@ -35,6 +51,7 @@ class Unit
     public $currentHealth;
     public $maxArmor = 0;
     public $armor = 0;
+    public $attack = [0, 0];
     public $x;
     public $y;
 
@@ -43,8 +60,9 @@ class Unit
      */
     public $card;
 
-    public $effects = array();
-    public $lastMoveTurn;
+    public $effects   = [];
+    public $keywords  = [];
+    public $stepsMade = 0;
 
     /**
      * @var Effect\Effect[]
@@ -64,14 +82,10 @@ class Unit
     {
         $unit = Unit::createFromConfig(\Config::get('tcg.units.' . $unitId), $card);
 
-        $unit->currentHealth = $data['currentHealth'];
-        $unit->maxHealth     = $data['maxHealth'];
-        $unit->armor         = $data['armor'];
-        $unit->maxArmor      = $data['maxArmor'];
-        $unit->effects       = $data['effects'];
-        $unit->lastMoveTurn  = $data['lastMoveTurn'];
-        $unit->x             = $data['x'];
-        $unit->y             = $data['y'];
+        foreach (self::$exportValues as $valueName) {
+            $unit->{$valueName} = $data[$valueName];
+        }
+
         $unit->initEffects();
         return $unit;
     }
@@ -79,16 +93,10 @@ class Unit
     public function export()
     {
         $this->updateEffects();
-        $data = [
-            'currentHealth' => $this->currentHealth,
-            'maxHealth'     => $this->maxHealth,
-            'armor'         => $this->armor,
-            'maxArmor'      => $this->maxArmor,
-            'effects'       => $this->effects,
-            'lastMoveTurn'  => $this->lastMoveTurn,
-            'x'             => $this->x,
-            'y'             => $this->y,
-        ];
+        $data = [];
+        foreach (self::$exportValues as $valueName) {
+            $data[$valueName] = $this->{$valueName};
+        }
         return $data;
     }
 
@@ -96,11 +104,17 @@ class Unit
     {
         $this->currentHealth = $this->config[self::CONFIG_VALUE_TOTAL_HEALTH];
         $this->maxHealth     = $this->config[self::CONFIG_VALUE_TOTAL_HEALTH];
+        $this->attack        = $this->config[self::CONFIG_VALUE_ATTACK];
 
         if (!empty($this->config[self::CONFIG_VALUE_ARMOR])) {
             $this->armor    = $this->config[self::CONFIG_VALUE_ARMOR];
             $this->maxArmor = $this->config[self::CONFIG_VALUE_ARMOR];
         }
+        if (!empty($this->config[self::CONFIG_VALUE_KEYWORDS])) {
+            $this->keywords = $this->config[self::CONFIG_VALUE_KEYWORDS];
+        }
+
+        $this->card->game->triggerEvent(Game::EVENT_UNIT_DEPLOY, ['target' => $this]);
     }
 
     public function render($extData)
@@ -136,24 +150,45 @@ class Unit
         }
         // we have possible targets
         $target = $this->choseTarget($targets);
-        $damage = $this->getDamage();
-        $target->unit->applyDamage($damage, $this->card);
+        $damage = $this->getDamage($target);
+        $damage = $target->unit->applyDamage($damage, $this->card);
+
+        $this->card->game->log->logAttack($this->card->name, $this->card->owner, $target->name, $damage);
     }
 
     /**
-     * @param $targets
+     * @param Card[] $targets
      *
      * @return Card
      */
     public function choseTarget($targets)
     {
+        if ($this->hasKeyword(self::KEYWORD_BLOODTHIRST)) {
+            $theMostInjuerd = null;
+            $theBiggestDamage = 0;
+            foreach ($targets as $card) {
+                $injure = $card->unit->maxHealth - $card->unit->currentHealth;
+                if ($injure && $injure > $theBiggestDamage) {
+                    $theMostInjuerd   = $card;
+                    $theBiggestDamage = $injure;
+                }
+            }
+            if ($theMostInjuerd) {
+                return $theMostInjuerd;
+            }
+        }
         return $targets[array_rand($targets)];
     }
 
-    protected function getDamage()
+    protected function getDamage(Card $target)
     {
-        $attack = $this->config['attack'];
-        return rand($attack[0], $attack[1]);
+        if ($this->stepsMade > 0) {
+            $damage = $this->attack[0];
+        } else {
+            $damage = rand($this->attack[0], $this->attack[1]);
+        }
+        $this->card->game->triggerEvent(Game::EVENT_UNIT_DEAL_DAMAGE, ['target' => $this, 'damage' => &$damage]);
+        return $damage;
     }
 
     public function applyDamage($damage, Card $sourceCard)
@@ -168,22 +203,23 @@ class Unit
             }
         }
         if ($damage > 0) {
-            $this->card->game->triggerEvent(Game::EVENT_UNIT_GET_DAMAGE, ['target' => $this]);
+            $this->card->game->triggerEvent(Game::EVENT_UNIT_GET_DAMAGE, ['target' => $this, 'damage' => &$damage]);
         }
         $this->currentHealth -= $damage;
         if ($this->currentHealth <= 0) {
             $this->death();
         }
+        return $damage;
     }
 
     public function death()
     {
+        $this->card->game->triggerEvent(Game::EVENT_UNIT_DEATH, ['target' => $this]);
         $this->card->game->moveCards([$this->card], Game::LOCATION_FIELD, GAME::LOCATION_GRAVE);
     }
 
     public function move($x, $y)
     {
-        //if ($this->lastMoveTurn !=)
         $distance = $this->card->game->field->getDistance($this->x, $this->y, $x, $y);
         if (empty($this->config['moveDistance'])) {
             $moveDistance = self::DEFAULT_MOVE_DISTANCE;
@@ -193,8 +229,31 @@ class Unit
         if ($moveDistance < $distance) {
             throw new \Exception('Unit cant move that far distance is = ' . $distance);
         }
+        $this->card->game->triggerEvent(Game::EVENT_UNIT_MOVE, ['target' => $this]);
         $this->x = $x;
         $this->y = $y;
+        $this->stepsMade += 1;
+    }
+
+    public function endOfTurn()
+    {
+        $this->stepsMade = 0;
+    }
+
+    public function hasKeyword($word) {
+        return in_array($word, $this->keywords);
+    }
+    public function addKeyword($word) {
+        if (!$this->hasKeyword($word)) {
+            $this->keywords[] = $word;
+        }
+    }
+    public function removeKeyword($word)
+    {
+        if ($this->hasKeyword($word)) {
+            $key = array_search($word, $this->keywords);
+            unset($this->keywords[$key]);
+        }
     }
 
     protected function initEffects()
