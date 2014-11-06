@@ -20,6 +20,7 @@ class Unit
     const CONFIG_VALUE_ATTACK       = 'attack';
     const CONFIG_VALUE_ARMOR        = 'armor';
     const CONFIG_VALUE_KEYWORDS     = 'keywords';
+    const CONFIG_VALUE_NAME         = 'name';
 
     const DEFAULT_MOVE_DISTANCE = 1;
     const DEFAULT_ATTACK_RANGE  = 1;
@@ -47,6 +48,7 @@ class Unit
      * @var array
      */
     public $config;
+    public $name;
 
     public $maxHealth;
     public $currentHealth;
@@ -75,6 +77,7 @@ class Unit
         $unit         = new $config['unit']();
         $unit->config = $config;
         $unit->card   = $card;
+        $unit->name   = $config[self::CONFIG_VALUE_NAME];
 
         return $unit;
     }
@@ -122,9 +125,11 @@ class Unit
     {
         $data      = [
             'config' => $this->config,
+            'attack' => $this->attack,
         ];
         $data['x'] = empty($extData['x']) ? $this->x : $extData['x'];
         $data['y'] = empty($extData['y']) ? $this->y : $extData['y'];
+
         if ($this->card->location == Card::CARD_LOCATION_FIELD) {
             $data['currentHealth'] = $this->currentHealth;
             $data['maxHealth']     = $this->maxHealth;
@@ -154,7 +159,7 @@ class Unit
         $damage = $this->getDamage($target);
         $damage = $target->unit->applyDamage($damage, $this->card);
 
-        $this->card->game->log->logAttack($this->card->name, $this->card->owner, $target->name, $damage);
+        $this->card->game->log->logAttack($this->name, $this->card->owner, $target->unit->name, $damage);
     }
 
     /**

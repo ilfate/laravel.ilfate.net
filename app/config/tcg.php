@@ -13,13 +13,11 @@ return array(
     'cards' => array(
         [
             'card' => 0,
-            'name'  => 'Berserk',
             'unit'  => 0,
             'spell' => 0
         ],
         [
             'card' => 1,
-            'name'  => 'Super dude',
             'unit'  => 1,
             'spell' => 0
         ]
@@ -27,6 +25,7 @@ return array(
     'units' => [
         [
             'unit' => '\Tcg\Unit\Berserk',
+            'name' => 'Berserk',
             'totalHealth' => 10,
             'attack' => [4,5],
             'text' => 'Bloodthirst',
@@ -34,6 +33,7 @@ return array(
         ],
         [
             'unit' => '\Tcg\Unit\Berserk',
+            'name'  => 'Super dude',
             'totalHealth' => 12,
             'attack' => [2,4],
             'attackRange' => 1,
@@ -45,7 +45,8 @@ return array(
     'spells' => [
         [
             'spell' => '\Tcg\Spell\Focus',
-            'type' => 'focus',
+            'name'  => 'Focus',
+            'type' => 'unit',
             'text' => 'Put focus on target unit'
         ],
     ],

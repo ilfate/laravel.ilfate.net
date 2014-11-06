@@ -42,6 +42,7 @@ class GameContainer {
         'playerTurnId',
         'currentCardId',
         'gameResult',
+        'spellsPlayed',
     );
 
     /**
@@ -55,6 +56,7 @@ class GameContainer {
     public $currentPlayerId;
     public $currentCardId;
     public $turnNumber = 0;
+    public $spellsPlayed = [];
 
     /**
      * @var Deck[]
@@ -142,6 +144,7 @@ class GameContainer {
             $this->decks[$player->id] = new Deck($player->id);
             $this->hands[$player->id] = new Hand($player->id);
             $this->graves[$player->id] = new Grave($player->id);
+            $this->spellsPlayed[$player->id] = 0;
         }
         $this->field = new Field(array_keys($this->players), $this);
     }

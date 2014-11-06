@@ -57,7 +57,9 @@ TCG.Game = function () {
 	{
 		$('.hand .my-card').live('click', function(){ TCG.Game.event('cardClick', $(this)) });
         $('.field .cell').live('click', function(){ TCG.Game.event('cellClick', $(this)) });
+        $('.field .unit').live('click', function(){ TCG.Game.event('unitClick', $(this)) });
         $('.field .cell .skip').live('click', function(){ TCG.Game.event('skip', $(this)) });
+        
 	}
 
 	this.event = function(name, obj) {
@@ -74,6 +76,10 @@ TCG.Game = function () {
                                 this.unFocusDeployArea();
                             }
                             break;
+                        case 4: // battle
+                            this.toggleCastButton(obj);
+                            // we need to hide current focused cells for unit
+                            break;
                     }
 				}
 			break;
@@ -81,7 +87,16 @@ TCG.Game = function () {
                 if (this.phase == 3) {
                     this.deploy(obj);
                 } else if (this.phase == 4) {
-                    this.moveUnit(obj);
+                    if (!this.handCardInFocus) {
+                        this.moveUnit(obj);
+                    } else {
+                        this.spell(obj, 'cell');
+                    }
+                }
+                break;
+            case 'unitClick':
+                if (this.phase == 4) {
+                    this.spell(obj, 'unit');
                 }
                 break;
             case 'skip' :
@@ -101,12 +116,37 @@ TCG.Game = function () {
     }
 
     this.moveUnit = function(cell) {
-        if (this.fieldCardInFocus && this.phase == 4 && this.isMyTurn && cell.hasClass('focus')) {
+        if (!this.handCardInFocus && this.fieldCardInFocus && this.phase == 4 && this.isMyTurn && cell.hasClass('focus')) {
             var x = cell.data('x');
             var y = cell.data('y');
             var cardId = this.fieldCardInFocus.data('id');
 
             window.location = "/tcg/action?action=move&cardId=" + cardId + "&x=" + x + "&y=" + y;
+        } else {
+            if (this.handCardInFocus && this.phase == 4 && this.isMyTurn) {
+                alert('You are trying to move unit, but you have card in hand active');
+            }
+        }
+    }
+
+    this.spell = function(obj, type) {
+        if (this.handCardInFocus && this.phase == 4 && this.isMyTurn) {
+            var spellType = this.handCardInFocus.data('spelltype');
+            if (type != spellType) {
+                info ('you are trying to cast spell? target is wrong')
+                return ;
+            }
+            var cardId = this.handCardInFocus.data('id');
+            if (spellType == 'unit') {
+                var targetId = obj.data('id');
+                window.location = "/tcg/action?action=cast&cardId=" + cardId + "&data[targetId]=" + targetId;
+            } else if (spellType == 'cell') {
+                var x = obj.data('x');
+                var y = obj.data('y');
+                window.location = "/tcg/action?action=cast&cardId=" + cardId + "&data[x]=" + x + "&adata[y]=" + y;
+            } else if(spellType == 'cast') {
+                window.location = "/tcg/action?action=cast&cardId=" + cardId + "&data[]=";
+            }
         }
     }
 
@@ -142,6 +182,14 @@ TCG.Game = function () {
 
     this.unFocusDeployArea = function() {
         $('.field .cell.focus').removeClass('focus');
+    }
+
+    this.toggleCastButton = function(obj) {
+        if (this.handCardInFocus && obj.data('spelltype') == 'cast') {
+            info(obj.find('.cast'));
+        } else {
+            obj.find('.cast').hide();
+        }
     }
 
 	this.cardClick = function(obj) {

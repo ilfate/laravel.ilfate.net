@@ -53,8 +53,6 @@ class Card {
 	 */
 	public $id;
 
-	public $name;
-
     /**
      * @var Unit
      */
@@ -79,7 +77,6 @@ class Card {
 	{
 		$card = new Card($game);
         $card->card = $config['card'];
-		$card->name = $config['name'];
 
 		return $card;
 	}
@@ -131,8 +128,6 @@ class Card {
 
         $data['unit'] = $this->unit->render($extData);
         $data['spell'] = $this->spell->render();
-
-		$data['name'] = $this->name;
 
 		return $data;
 	}

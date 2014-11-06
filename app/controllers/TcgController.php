@@ -89,19 +89,25 @@ class TcgController extends \BaseController
 
         switch ($action) {
             case Game::GAME_ACTION_DEPLOY:
-                $cardId = Input::get('cardId');
-                $x = Input::get('x');
-                $y = Input::get('y');
+                $cardId = (int) Input::get('cardId');
+                $x = (int) Input::get('x');
+                $y = (int) Input::get('y');
                 $this->game->action(Game::GAME_ACTION_DEPLOY, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
             break;
             case Game::GAME_ACTION_SKIP:
                 $this->game->action(Game::GAME_ACTION_SKIP);
             break;
             case Game::GAME_ACTION_MOVE:
-                $cardId = Input::get('cardId');
-                $x = Input::get('x');
-                $y = Input::get('y');
+                $cardId = (int) Input::get('cardId');
+                $x = (int) Input::get('x');
+                $y = (int) Input::get('y');
                 $this->game->action(Game::GAME_ACTION_MOVE, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
+            break;
+            case Game::GAME_ACTION_CAST:
+                $cardId = (int) Input::get('cardId');
+                $data = Input::get('data');
+                $this->validateCastData($data);
+                $this->game->action(Game::GAME_ACTION_CAST, ['cardId' => $cardId, 'data' => $data]);
             break;
         }
         $this->save();
@@ -110,4 +116,16 @@ class TcgController extends \BaseController
     }
 
     
+    private function validateCastData(&$data) {
+        if (isset($data['x']) && isset($data['y'])) {
+            $data = [
+                'x' => (int) $data['x'],
+                'y' => (int) $data['y']
+            ];
+        } else if (isset($data['targetId'])) {
+            $data = ['targetId' => (int) $data['targetId']];
+        } else {
+            $data = [];
+        }
+    }
 }

@@ -70,4 +70,9 @@ abstract class Location {
             unset($this->cards[$cardId]);
         }
     }
+
+    public function hasCard($cardId) 
+    {
+        return !empty($this->cards[$cardId]);
+    }
 }

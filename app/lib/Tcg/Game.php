@@ -191,7 +191,7 @@ class Game extends GameContainer {
         $card->unit->deploy();
         $this->players[$this->currentPlayerId]->skippedTurn = false;
 
-        $this->log->logDeploy($card->name, $this->playerTurnId);
+        $this->log->logDeploy($card->unit->name, $this->playerTurnId);
 
         $this->nextTurn();
     }
@@ -207,14 +207,28 @@ class Game extends GameContainer {
         }
         $this->field->moveUnit($card, $x, $y);
 
-        $this->log->logMove($card->name, $this->playerTurnId);
+        $this->log->logMove($card->unit->name, $this->playerTurnId);
 
         $this->unitAttack();
     }
 
     protected function actionCast($cardId, $data)
     {
+        $card = $this->getCard($cardId);
+        if (!$this->hands[$this->playerTurnId]->hasCard($cardId) || $this->currentPlayerId != $card->owner) {
+            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to use wrong spell", 1);
+        }
+        if ($this->spellsPlayed[$this->playerTurnId] >= Spell::MAX_SPELL_PER_TURN) {
+            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying cast more spells in one turn then he can!", 1);   
+        }
 
+        $card->spell->cast($data);
+
+        $this->spellsPlayed[$this->playerTurnId] ++;
+
+        $this->moveCards([$card], self::LOCATION_HAND, self::LOCATION_GRAVE);
+
+        $this->unitAttack();
     }
 
     public function gameAutoActions()
@@ -285,6 +299,9 @@ class Game extends GameContainer {
                     $this->cards[$cardId]->unit->endOfTurn();
                 }
                 $this->turnNumber++;
+                foreach ($this->spellsPlayed as &$value) {
+                    $value = 0;
+                }
                 break;
         }
     }
