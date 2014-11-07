@@ -49,6 +49,7 @@ class GameContainer {
      * @var Player[]
      */
     public $players = array();
+    public $teams   = array();
     public $maxPlayers = 2;
 
     public $phase = 0;
@@ -115,6 +116,21 @@ class GameContainer {
     public function addPlayer(Player $player)
     {
         $this->players[$player->id] = $player;
+        if (!isset($this->teams[$player->team])) {
+            $this->teams[$player->team] = [];
+        }
+        $this->teams[$player->team][] = $player->id;
+    }
+    public function getAllPlayerEnemies($playerId)
+    {
+        $enemies = [];
+        foreach ($this->teams as $team) {
+            $key = array_search($playerId, $team);
+            if ($key === false) {
+                $enemies = array_merge($enemies, $team);
+            }
+        }
+        return $enemies;
     }
     public function addCard(Card $card)
     {

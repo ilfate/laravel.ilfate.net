@@ -12,11 +12,14 @@ class Game extends GameContainer {
     /**
      * @return Game
      */
-	public static function create($currentPlayerId)
+	public static function create($currentPlayerId, $mode = 'bot')
     {
-        $player1 = new Player($currentPlayerId);
-        $player2 = new Player(2);
-        $player2->type = Player::PLAYER_TYPE_BOT;
+        
+        $player1 = new Player($currentPlayerId, 1);
+        $player2 = new Player(2, 2);
+        if ($mode == 'bot') {
+            $player2->type = Player::PLAYER_TYPE_BOT;
+        }
 
         $game      = new Game($currentPlayerId);
         $game->log = new GameLog($game);
@@ -26,16 +29,32 @@ class Game extends GameContainer {
         $game->createLocations();
 
         $configs = \Config::get('tcg.cards');
-        $cards = [
+        $deck1 = [
             Card::createFromConfig($configs[0], $game),
             Card::createFromConfig($configs[1], $game),
+            Card::createFromConfig($configs[2], $game),
+            Card::createFromConfig($configs[3], $game),
+            Card::createFromConfig($configs[4], $game),
+            Card::createFromConfig($configs[5], $game),
+            
         ];
-        foreach ($cards as $card) {
+        $deck2 = [
+            Card::createFromConfig($configs[51], $game),
+            Card::createFromConfig($configs[52], $game),
+            Card::createFromConfig($configs[53], $game),
+            Card::createFromConfig($configs[54], $game),
+            Card::createFromConfig($configs[55], $game),
+            Card::createFromConfig($configs[57], $game),
+        ];
+        foreach ($deck2 as $card) {
             $game->setUpCard(clone $card, $player1->id);
             $game->setUpCard(clone $card, $player1->id);
+        }
+        foreach ($deck1 as $card) {
             $game->setUpCard(clone $card, $player2->id);
             $game->setUpCard(clone $card, $player2->id);
         }
+        
         $game->gameAutoActions();
         return $game;
     }
@@ -205,11 +224,13 @@ class Game extends GameContainer {
         if ($card->owner != $this->playerTurnId) {
             throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to do deploy not on his turn", 1);
         }
-        $this->field->moveUnit($card, $x, $y);
+        $leftSteps = $this->field->moveUnit($card, $x, $y);
 
         $this->log->logMove($card->unit->name, $this->playerTurnId);
 
-        $this->unitAttack();
+        if (!$leftSteps) {
+            $this->unitAttack();
+        }
     }
 
     protected function actionCast($cardId, $data)

@@ -178,9 +178,10 @@ class Field extends Location {
         if ($oldX != $x && $oldy != $y) {
             throw new \Exception('Unit can move only on close cell');
         }
-        $card->unit->move($x, $y);
+        $leftSteps = $card->unit->move($x, $y);
         $this->map[$x][$y] = $card->id;
         unset($this->map[$oldX][$oldy]);
+        return $leftSteps;
     }
 
     public function getRandomDeployCell($playerId)
@@ -204,7 +205,21 @@ class Field extends Location {
         }
     }
 
-    public function getAllPossibleAttackTargets($x, $y, $range, $playerId)
+    public function getNeibourUnit($card, $dx, $dy) {
+        if ($this->getTopPlayer() == $card->owner) {
+            // this is top player we need to switch
+            $dx = -$dx;
+            $dy = -$dy;
+        }
+        $x = $card->unit->x + $dx;
+        $y = $card->unit->y + $dy;
+        if (isset($this->map[$x][$y])) {
+            return $this->game->cards[$this->map[$x][$y]];
+        }
+        return false;
+    }
+
+    public function getAllPlayersUnitsInRange($x, $y, $range, array $playerIds)
     {
         $result = [];
         for($dx = $x - $range; $dx <= $x + $range; $dx++) {
@@ -215,7 +230,7 @@ class Field extends Location {
                 if (isset($this->map[$dx][$dy])) {
                     $cardId = $this->map[$dx][$dy];
                     $card = $this->game->getCard($cardId);
-                    if ($card->owner != $playerId) {
+                    if (in_array($card->owner, $playerIds)) {
                         $result[] = $card;
                     }
                 }

@@ -38,17 +38,33 @@ class TcgController extends \BaseController
 
         $name = Session::get('userName', null);
 
-        $this->play();
-        $game = $this->render();
+        $currentPlayerId = 1;
+        $this->play($currentPlayerId);
+        $game = $this->render($currentPlayerId);
+        View::share('game', $game);
+
+        return View::make('games.tcg.index');//, array('game' => $game)
+    }
+
+    public function bot()
+    {
+        $this->breadcrumbs->addLink(action('GamesController' . '@' . 'index'), 'Games');
+        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Math Effect');
+
+        $name = Session::get('userName', null);
+
+        $currentPlayerId = 2;
+        $this->play($currentPlayerId);
+        $game = $this->render($currentPlayerId);
         View::share('game', $game);
 
         return View::make('games.tcg.index');//, array('game' => $game)
     }
 
 
-    public function play()
+    public function play($currentPlayerId)
     {
-        $currentPlayerId = 1;
+        
         $gameData = Session::get('tcg.userGame', null);
         if (!$gameData) {
             $game = Game::create($currentPlayerId);
@@ -60,9 +76,9 @@ class TcgController extends \BaseController
         
     }
 
-    protected function render()
+    protected function render($currentPlayerId)
     {
-        $result = $this->game->render(1);
+        $result = $this->game->render($currentPlayerId);
         
         $this->save();
 
@@ -83,7 +99,8 @@ class TcgController extends \BaseController
 
     public function action()
     {
-        $this->play();
+        $currentPlayerId = 1;
+        $this->play($currentPlayerId);
         
         $action = Input::get('action');
 

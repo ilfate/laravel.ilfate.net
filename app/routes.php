@@ -43,3 +43,5 @@ Route::get('MathEffect/stats', 'MathEffectController@statistic');
 Route::get('tcg', 'TcgController@index');
 Route::get('tcg/clear', 'TcgController@dropGame');
 Route::get('tcg/action', 'TcgController@action');
+
+Route::get('tcgb', 'TcgController@bot');

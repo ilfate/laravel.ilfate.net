@@ -1,18 +1,18 @@
 
 <div class="card unit id_{{$card['id']}} {{$isFocus ? 'focus' : ''}}" data-id="{{{$card['id']}}}">
 	<div class="name" >{{{$card['unit']['config'][\Tcg\Unit::CONFIG_VALUE_NAME]}}}({{{$card['id']}}})</div>
-    <div class="health-total">
+    <span class="health-total">
         <i class="fa fa-heart"></i>
         <span class="value">
         {{{$card['unit']['maxHealth']}}}
         </span>
-    </div>
-    <div class="health">
+    </span>
+    <span class="health">
         <i class="fa fa-heart-o"></i>
         <span class="value">
         {{{$card['unit']['currentHealth']}}}
         </span>
-    </div>
+    </span>
     @if (!empty($card['unit']['armor']))
     <div class="armor">
         <i class="fa fa-shield"></i>

@@ -145,21 +145,34 @@ class Unit
         if ($this->card->location != Card::CARD_LOCATION_FIELD) {
             throw new \Exception('Unit is trying to attack, but he is not on the Field!!');
         }
-        $range = self::DEFAULT_ATTACK_RANGE;
-        if (isset($this->config['attackRange'])) {
-            $range = $this->config['attackRange'];
-        }
-        $targets = $this->card->game->field->getAllPossibleAttackTargets($this->x, $this->y, $range, $this->card->owner);
+        
+        $targets = $this->getTargets();
 
         if (!$targets) {
+            $this->attackNoTargets();
             return;
         }
         // we have possible targets
         $target = $this->choseTarget($targets);
         $damage = $this->getDamage($target);
+
+        $this->beforeAttack($damage, $target);
+
         $damage = $target->unit->applyDamage($damage, $this->card);
 
+        $this->afterAttack($damage, $target);
+
         $this->card->game->log->logAttack($this->name, $this->card->owner, $target->unit->name, $damage);
+    }
+
+    protected function getTargets()
+    {
+        $range = self::DEFAULT_ATTACK_RANGE;
+        if (isset($this->config['attackRange'])) {
+            $range = $this->config['attackRange'];
+        }
+        $enemies = $this->card->game->getAllPlayerEnemies($this->card->owner);
+        return $this->card->game->field->getAllPlayersUnitsInRange($this->x, $this->y, $range, $enemies);
     }
 
     /**
@@ -167,7 +180,7 @@ class Unit
      *
      * @return Card
      */
-    public function choseTarget($targets)
+    protected function choseTarget($targets)
     {
         if ($bloodthirstTaget = $this->isBloodthirst($targets)) {
             return $bloodthirstTaget;
@@ -237,6 +250,12 @@ class Unit
         }
         return $damage;
     }
+    public function healDamage($damage, Card $sourceCard) {
+        $this->currentHealth += $damage;
+        if ($this->currentHealth > $this->maxHealth) {
+            $this->currentHealth = $this->maxHealth;
+        }
+    }
 
     public function death()
     {
@@ -246,7 +265,7 @@ class Unit
 
     public function move($x, $y)
     {
-        $distance = $this->card->game->field->getDistance($this->x, $this->y, $x, $y);
+        $distance = $this->card->game->field->getDistance($this->x, $this->y, $x, $y) + $this->stepsMade;
         if (empty($this->config['moveDistance'])) {
             $moveDistance = self::DEFAULT_MOVE_DISTANCE;
         } else {
@@ -259,6 +278,7 @@ class Unit
         $this->x = $x;
         $this->y = $y;
         $this->stepsMade += 1;
+        return $moveDistance - $this->stepsMade;
     }
 
     public function endOfTurn()
@@ -296,4 +316,15 @@ class Unit
             $this->effects[] = [get_class($effect), $effect->export()];
         }
     }
+
+    protected function beforeAttack($damage, Card $target) {
+
+    }
+    protected function afterAttack($damage, Card $target) {
+
+    }
+    protected function attackNoTargets() {
+
+    }
+    
 }

@@ -16,6 +16,8 @@ class Player {
 
     public $name = 'default name';
 
+    public $team;
+
     public $skippedTurn = false;
 
     /**
@@ -24,14 +26,15 @@ class Player {
      */
     public $type = 'player';
 
-    public function __construct($id)
+    public function __construct($id, $team)
     {
-        $this->id = $id;
+        $this->id   = $id;
+        $this->team = $team;
     }
 
     public static function import($data)
     {
-        $player = new Player($data['id']);
+        $player = new Player($data['id'], $data['team']);
         $player->type = $data['type'];
         return $player;
     }
@@ -41,6 +44,7 @@ class Player {
         $data = [
             'id'   => $this->id,
             'type' => $this->type,
+            'team' => $this->team,
         ];
 
         return $data;
