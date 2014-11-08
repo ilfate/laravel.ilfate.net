@@ -9,6 +9,8 @@ namespace Tcg;
 
 class Game extends GameContainer {
 
+    use Events;
+
     /**
      * @return Game
      */
@@ -33,18 +35,19 @@ class Game extends GameContainer {
             Card::createFromConfig($configs[0], $game),
             Card::createFromConfig($configs[1], $game),
             Card::createFromConfig($configs[2], $game),
-            Card::createFromConfig($configs[3], $game),
-            Card::createFromConfig($configs[4], $game),
-            Card::createFromConfig($configs[5], $game),
+//            Card::createFromConfig($configs[3], $game),
+//            Card::createFromConfig($configs[4], $game),
+//            Card::createFromConfig($configs[5], $game),
             
         ];
         $deck2 = [
             Card::createFromConfig($configs[51], $game),
             Card::createFromConfig($configs[52], $game),
-            Card::createFromConfig($configs[53], $game),
-            Card::createFromConfig($configs[54], $game),
-            Card::createFromConfig($configs[55], $game),
-            Card::createFromConfig($configs[57], $game),
+//            Card::createFromConfig($configs[53], $game),
+//            Card::createFromConfig($configs[54], $game),
+//            Card::createFromConfig($configs[55], $game),
+            Card::createFromConfig($configs[56], $game),
+//            Card::createFromConfig($configs[57], $game),
         ];
         foreach ($deck2 as $card) {
             $game->setUpCard(clone $card, $player1->id);
@@ -132,7 +135,8 @@ class Game extends GameContainer {
             'js'         => [
                 'phase'    => $this->phase,
                 'card'     => $this->currentCardId,
-                'isMyTurn' => $this->playerTurnId == $this->currentPlayerId
+                'isMyTurn' => $this->playerTurnId == $this->currentPlayerId,
+                'playerId' => $this->currentPlayerId
             ],
             'log' => $this->log->render(GameLog::RENDER_MODE_ADMIN)
         ];
@@ -398,15 +402,6 @@ class Game extends GameContainer {
             }
             $card->location = Card::$locations[$to];
         }
-    }
-
-    public function triggerEvent($eventName, array $data = null)
-    {
-        $target = false;
-        if (isset($data['target'])) {
-            $target = $data['target'];
-        }
-
     }
 
     protected function renderField($playerId)

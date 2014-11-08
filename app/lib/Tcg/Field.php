@@ -181,6 +181,7 @@ class Field extends Location {
         $leftSteps = $card->unit->move($x, $y);
         $this->map[$x][$y] = $card->id;
         unset($this->map[$oldX][$oldy]);
+        $card->unit->afterMove();
         return $leftSteps;
     }
 
@@ -206,6 +207,15 @@ class Field extends Location {
     }
 
     public function getNeibourUnit($card, $dx, $dy) {
+        list($x, $y) = $this->getRelativeCoordinats($dx, $dy, $card);
+        if (isset($this->map[$x][$y])) {
+            return $this->game->cards[$this->map[$x][$y]];
+        }
+        return false;
+    }
+
+    public function getRelativeCoordinats($dx, $dy, $card)
+    {
         if ($this->getTopPlayer() == $card->owner) {
             // this is top player we need to switch
             $dx = -$dx;
@@ -213,10 +223,7 @@ class Field extends Location {
         }
         $x = $card->unit->x + $dx;
         $y = $card->unit->y + $dy;
-        if (isset($this->map[$x][$y])) {
-            return $this->game->cards[$this->map[$x][$y]];
-        }
-        return false;
+        return [$x, $y];
     }
 
     public function getAllPlayersUnitsInRange($x, $y, $range, array $playerIds)

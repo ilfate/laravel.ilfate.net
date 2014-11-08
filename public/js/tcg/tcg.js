@@ -38,6 +38,8 @@ TCG.Game = function () {
 	this.fieldCardInFocus;
     this.isMyTurn = true;
 	this.phase = 0;
+    this.currentPlayerId;
+    this.units = new TCG.Units(this);
 
 	this.fuu = function() {
 		info('awdawd');
@@ -46,11 +48,13 @@ TCG.Game = function () {
 	this.init = function(data) {
 		this.phase = data.phase;
         this.isMyTurn = data.isMyTurn;
-        if (this.phase == 4) {
+        this.currentPlayerId = data.playerId;
+        if (this.phase == 4 && this.isMyTurn) {
             this.markMoveForCardId(data.card);
         }
         
 		this.bindObjects();
+        this.units.init();
 	}
 
 	this.bindObjects = function()
@@ -105,13 +109,18 @@ TCG.Game = function () {
 		}
 	}
 
+    this.action = function(url) {
+        url += '&playerId=' + this.currentPlayerId;
+        window.location = url;
+    }
+
     this.deploy = function(cell) {
         if (this.handCardInFocus && this.phase == 3 && this.isMyTurn) {
             var x = cell.data('x');
             var y = cell.data('y');
             var cardId = this.handCardInFocus.data('id');
 
-            window.location = "/tcg/action?action=deploy&cardId=" + cardId + "&x=" + x + "&y=" + y;
+            this.action("/tcg/action?action=deploy&cardId=" + cardId + "&x=" + x + "&y=" + y);
         }
     }
 
@@ -121,7 +130,7 @@ TCG.Game = function () {
             var y = cell.data('y');
             var cardId = this.fieldCardInFocus.data('id');
 
-            window.location = "/tcg/action?action=move&cardId=" + cardId + "&x=" + x + "&y=" + y;
+            this.action("/tcg/action?action=move&cardId=" + cardId + "&x=" + x + "&y=" + y);
         } else {
             if (this.handCardInFocus && this.phase == 4 && this.isMyTurn) {
                 alert('You are trying to move unit, but you have card in hand active');
@@ -133,42 +142,45 @@ TCG.Game = function () {
         if (this.handCardInFocus && this.phase == 4 && this.isMyTurn) {
             var spellType = this.handCardInFocus.data('spelltype');
             if (type != spellType) {
+                info(type);
                 info ('you are trying to cast spell? target is wrong')
                 return ;
             }
             var cardId = this.handCardInFocus.data('id');
             if (spellType == 'unit') {
                 var targetId = obj.data('id');
-                window.location = "/tcg/action?action=cast&cardId=" + cardId + "&data[targetId]=" + targetId;
+                this.action("/tcg/action?action=cast&cardId=" + cardId + "&data[targetId]=" + targetId);
             } else if (spellType == 'cell') {
                 var x = obj.data('x');
                 var y = obj.data('y');
-                window.location = "/tcg/action?action=cast&cardId=" + cardId + "&data[x]=" + x + "&adata[y]=" + y;
+                this.action("/tcg/action?action=cast&cardId=" + cardId + "&data[x]=" + x + "&adata[y]=" + y);
             } else if(spellType == 'cast') {
-                window.location = "/tcg/action?action=cast&cardId=" + cardId + "&data[]=";
+                this.action(window.location = "/tcg/action?action=cast&cardId=" + cardId + "&data[]=");
             }
         }
     }
 
     this.skip = function() {
         if (this.isMyTurn) {
-            window.location = "/tcg/action?action=skip";
+            this.action("/tcg/action?action=skip");
         }
     }
 
     this.markMoveForCardId = function(cardId) {
         this.fieldCardInFocus = $('.field .unit.id_' + cardId);
-        var cell = $(this.fieldCardInFocus.parent());
-        var x = cell.data('x');
-        var y = cell.data('y');
+        this.fieldCardInFocus.addClass('focus');
+        //var cell = $(this.fieldCardInFocus.parent());
+        var x = this.fieldCardInFocus.data('x');
+        var y = this.fieldCardInFocus.data('y');
         var neibours = this.getNeiboursCells(x, y);
         for (var key in neibours) {
             var dx = neibours[key][0];
             var dy = neibours[key][1];
             if (dx >= 0 && dy >= 0 && dx < this.width && dy < this.height) {
-                var newCell = $('.field .cell.x_' + dx + '.y_' + dy);
-                if (!newCell.children().length) {
+
+                if (!$('.field .unit.x_' + dx + '.y_' + dy).length) {
                     // this cell is free
+                    var newCell = $('.field .cell.x_' + dx + '.y_' + dy);
                     newCell.addClass('focus');
                 }
 

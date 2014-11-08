@@ -67,7 +67,7 @@ class TcgController extends \BaseController
         
         $gameData = Session::get('tcg.userGame', null);
         if (!$gameData) {
-            $game = Game::create($currentPlayerId);
+            $game = Game::create($currentPlayerId, false);
         } else {
             
             $game = Game::import($gameData, $currentPlayerId);
@@ -99,7 +99,7 @@ class TcgController extends \BaseController
 
     public function action()
     {
-        $currentPlayerId = 1;
+        $currentPlayerId = Input::get('playerId', 1);
         $this->play($currentPlayerId);
         
         $action = Input::get('action');
@@ -129,6 +129,9 @@ class TcgController extends \BaseController
         }
         $this->save();
 
+        if ($currentPlayerId == 2) {
+            return Redirect::to('tcgb');
+        }
         return Redirect::to('tcg');   
     }
 

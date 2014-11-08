@@ -36,6 +36,13 @@ class GameContainer {
     const EVENT_UNIT_MOVE        = 'unit_move';
     const EVENT_UNIT_DEPLOY      = 'unit_deploy';
 
+    const EVENT_TRIGGER_BEFORE_UNIT_MOVE = 'before_unit_move';
+    const EVENT_TRIGGER_AFTER_UNIT_MOVE = 'after_unit_move';
+    const EVENT_TRIGGER_UNIT_MOVE_TO_CELL = 'unit_move_to_cell';
+    const EVENT_TRIGGER_UNIT_MOVE_FROM_CELL = 'unit_move_from_cell';
+    const EVENT_TRIGGER_UNIT_DEPLOY = 'unit_deploy';
+    const EVENT_TRIGGER_UNIT_DEPLOY_TO_CELL = 'unit_deploy_to_cell';
+
     protected static $exportValues = array(
         'phase',
         'turnNumber',
@@ -43,6 +50,7 @@ class GameContainer {
         'currentCardId',
         'gameResult',
         'spellsPlayed',
+        'events',
     );
 
     /**
@@ -82,6 +90,8 @@ class GameContainer {
      * @var GameLog
      */
     public $log;
+
+
 
     /**
      * @var Card[]

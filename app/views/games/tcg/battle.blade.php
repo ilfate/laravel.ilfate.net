@@ -4,7 +4,7 @@
 @include('games.tcg.opponentHand', array('hand' => $game['opponentHand']))
 
 
-@include('games.tcg.field', array('field' => $game['field'], 'cardFocus' => $game['card']))
+@include('games.tcg.field', array('field' => $game['field']))
 
 @include('games.tcg.order', array('field' => $game['field'], 'cardFocus' => $game['card']))
 

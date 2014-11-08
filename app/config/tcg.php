@@ -23,7 +23,7 @@ return array(
         53 => ['card' => 53, 'unit' => 53, 'spell' => 0],
         54 => ['card' => 54, 'unit' => 54, 'spell' => 0],
         55 => ['card' => 55, 'unit' => 55, 'spell' => 0],
-        //56 => ['card' => 56, 'unit' => 56, 'spell' => 0],
+        56 => ['card' => 56, 'unit' => 56, 'spell' => 0],
         57 => ['card' => 57, 'unit' => 57, 'spell' => 0],
     ),
     'units' => [

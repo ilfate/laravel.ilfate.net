@@ -1,26 +1,22 @@
 
-<div class="card unit id_{{$card['id']}} {{$isFocus ? 'focus' : ''}}" data-id="{{{$card['id']}}}">
+<div class="card unit id_{{$card['id']}} x_{{$x}} y_{{$y}}" data-id="{{{$card['id']}}}" data-x="{{$x}}" data-y="{{$y}}">
 	<div class="name" >{{{$card['unit']['config'][\Tcg\Unit::CONFIG_VALUE_NAME]}}}({{{$card['id']}}})</div>
-    <span class="health-total">
-        <i class="fa fa-heart"></i>
-        <span class="value">
-        {{{$card['unit']['maxHealth']}}}
-        </span>
-    </span>
     <span class="health">
         <i class="fa fa-heart-o"></i>
         <span class="value">
         {{{$card['unit']['currentHealth']}}}
         </span>
     </span>
+
     @if (!empty($card['unit']['armor']))
-    <div class="armor">
+    <span class="armor">
         <i class="fa fa-shield"></i>
         <span class="value">
         {{{$card['unit']['armor']}}}
         </span>
-    </div>
+    </span>
     @endif
+
     <div class="attack">
         <i class="fa fa-gavel"></i>
             <span class="value">
@@ -28,5 +24,14 @@
                 {{{$card['unit']['attack'][1]}}}
             </span>
     </div>
-    <a class="skip {{$isFocus ? '' : 'hidden'}} btn btn-warning btn-xs" >Attack</a>
+
+    @if ($card['unit']['keywords'])
+    <div class="keywords">
+        @foreach ($card['unit']['keywords'] as $keyword)
+            <span class="keyword">{{$keyword}}</span>
+        @endforeach
+    </div>
+    @endif
+
+    <a class="skip btn btn-warning btn-xs" >Attack</a>
 </div>

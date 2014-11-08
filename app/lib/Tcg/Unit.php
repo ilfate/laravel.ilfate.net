@@ -27,6 +27,7 @@ class Unit
 
     const KEYWORD_BLOODTHIRST = 'bloodthirst';
     const KEYWORD_FOCUS       = 'focus';
+    const KEYWORD_SHIELD      = 'shield';
 
     protected static $exportValues = array(
         'maxHealth',
@@ -39,6 +40,7 @@ class Unit
         'effects',
         'keywords',
         'attack',
+        'data',
     );
 
     /**
@@ -57,6 +59,8 @@ class Unit
     public $attack = [0, 0];
     public $x;
     public $y;
+
+    public $data;
 
     /**
      * @var Card
@@ -118,7 +122,8 @@ class Unit
             $this->keywords = $this->config[self::CONFIG_VALUE_KEYWORDS];
         }
 
-        $this->card->game->triggerEvent(Game::EVENT_UNIT_DEPLOY, ['target' => $this]);
+        $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_DEPLOY, $this->card->id);
+        $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_DEPLOY_TO_CELL, $this->x . '_' . $this->y, ['cardId' => $this->card->id]);
     }
 
     public function render($extData)
@@ -129,6 +134,7 @@ class Unit
         ];
         $data['x'] = empty($extData['x']) ? $this->x : $extData['x'];
         $data['y'] = empty($extData['y']) ? $this->y : $extData['y'];
+        $data['keywords'] = $this->keywords;
 
         if ($this->card->location == Card::CARD_LOCATION_FIELD) {
             $data['currentHealth'] = $this->currentHealth;
@@ -232,6 +238,10 @@ class Unit
 
     public function applyDamage($damage, Card $sourceCard)
     {
+        if ($shield = $this->getShield()) {
+            $damage -= $shield;
+            if ($damage < 0) return 0;
+        }
         if ($this->armor) {
             if ($damage > $this->armor) {
                 $damage -= $this->armor;
@@ -274,7 +284,7 @@ class Unit
         if ($moveDistance < $distance) {
             throw new \Exception('Unit cant move that far distance is = ' . $distance);
         }
-        $this->card->game->triggerEvent(Game::EVENT_UNIT_MOVE, ['target' => $this]);
+        $this->beforeMove();
         $this->x = $x;
         $this->y = $y;
         $this->stepsMade += 1;
@@ -289,9 +299,14 @@ class Unit
     public function hasKeyword($word) {
         return in_array($word, $this->keywords);
     }
-    public function addKeyword($word) {
+    public function addKeyword($word, $data = null) {
         if (!$this->hasKeyword($word)) {
             $this->keywords[] = $word;
+        }
+        switch ($word) {
+            case self::KEYWORD_SHIELD:
+                $this->data[self::KEYWORD_SHIELD] = $data;
+                break;
         }
     }
     public function removeKeyword($word)
@@ -317,11 +332,30 @@ class Unit
         }
     }
 
+    public function getShield()
+    {
+        if ($this->hasKeyword(self::KEYWORD_SHIELD)) {
+            if (!isset($this->data[self::KEYWORD_SHIELD])) {
+                throw new \Exception('Unit have shield, but value is missing');
+            }
+            return $this->data[self::KEYWORD_SHIELD];
+        }
+        return false;
+    }
+
     protected function beforeAttack($damage, Card $target) {
 
     }
     protected function afterAttack($damage, Card $target) {
 
+    }
+    protected function beforeMove() {
+        $this->card->game->triggerEvent(Game::EVENT_TRIGGER_BEFORE_UNIT_MOVE, $this->card->id);
+        $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_MOVE_FROM_CELL, $this->x . '_' . $this->y, ['cardId' => $this->card->id]);
+    }
+    public function afterMove() {
+        $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_MOVE_TO_CELL, $this->x . '_' . $this->y, ['cardId' => $this->card->id]);
+        $this->card->game->triggerEvent(Game::EVENT_TRIGGER_AFTER_UNIT_MOVE, $this->card->id);
     }
     protected function attackNoTargets() {
 

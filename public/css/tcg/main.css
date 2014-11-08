@@ -75,8 +75,14 @@ min-height: 900px;
 }
 
 .field .unit {
-
+    position: absolute;
 }
 .field .unit.focus {
     font-weight: bold;
+}
+.field .unit .skip {
+    display: none;
+}
+.field .unit.focus .skip {
+    display: inline;
 }
