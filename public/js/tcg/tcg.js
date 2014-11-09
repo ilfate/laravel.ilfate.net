@@ -17,6 +17,9 @@ function debug(data) {
 function isInt(n){
     return typeof n== "number" && isFinite(n) && n%1===0;
 }
+function is_object(obj) {
+    return typeof obj === 'object';
+}
 
 function TCG () {
 
@@ -109,9 +112,54 @@ TCG.Game = function () {
 		}
 	}
 
-    this.action = function(url) {
-        url += '&playerId=' + this.currentPlayerId;
-        window.location = url;
+    this.action = function(data) {
+        switch(data.type) {
+//            case 'deploy':
+//
+//                break;
+            default:
+                var type = 'get';
+                var url = '/tcg/action?';
+                var first = true;
+                for(var key in data.data) {
+                    var value = data.data[key];
+
+                    if (is_object(value)) {
+                        for (var key2 in value) {
+                            url += '&' + key + '[' + key2 + ']=' + value[key2]
+                        }
+                    } else {
+                        if (first) {
+                            first = false;
+                        } else {
+                            url += '&';
+                        }
+                        url += key + '=' + value;
+                    }
+                }
+                break;
+        }
+        if (data.type == 'deploy') {
+            type = 'ajax';
+        }
+            url += '&playerId=' + this.currentPlayerId;
+        switch (type) {
+            case 'get':
+                window.location = url;
+                break;
+            case 'ajax':
+                Ajax.json(url, {
+                    //params : '__csrf=' + Ajax.getCSRF(),
+//                    data: 'turnsSurvived=' + this.statsTicksSurvived +
+//                        '&unitsKilled=' + this.statsKilledUnits +
+//                        '&pointsEarned=' + this.statsPoints +
+//                        '&checkKey=' + checkKey +
+//                        '&_token=' + $('#laravel-token').val()
+                    callBack : function(data){TCG.Game.processLog(data)}
+                });
+                break;
+        }
+
     }
 
     this.deploy = function(cell) {
@@ -120,7 +168,8 @@ TCG.Game = function () {
             var y = cell.data('y');
             var cardId = this.handCardInFocus.data('id');
 
-            this.action("/tcg/action?action=deploy&cardId=" + cardId + "&x=" + x + "&y=" + y);
+            //this.action("/tcg/action?action=deploy&cardId=" + cardId + "&x=" + x + "&y=" + y);
+            this.action({'type' : 'deploy', 'data' : {'action' : 'deploy', 'cardId' : cardId, 'x' : x, 'y' : y}});
         }
     }
 
@@ -130,7 +179,8 @@ TCG.Game = function () {
             var y = cell.data('y');
             var cardId = this.fieldCardInFocus.data('id');
 
-            this.action("/tcg/action?action=move&cardId=" + cardId + "&x=" + x + "&y=" + y);
+            this.action({'type' : 'move', 'data' : {'action' : 'move', 'cardId' : cardId, 'x' : x, 'y' : y}});
+            //this.action("/tcg/action?action=move&cardId=" + cardId + "&x=" + x + "&y=" + y);
         } else {
             if (this.handCardInFocus && this.phase == 4 && this.isMyTurn) {
                 alert('You are trying to move unit, but you have card in hand active');
@@ -149,20 +199,37 @@ TCG.Game = function () {
             var cardId = this.handCardInFocus.data('id');
             if (spellType == 'unit') {
                 var targetId = obj.data('id');
-                this.action("/tcg/action?action=cast&cardId=" + cardId + "&data[targetId]=" + targetId);
+                this.action({'type' : 'cast', 'data' : {'action' : 'cast', 'cardId' : cardId, 'data' : {'targetId' : targetId}}});
+                //this.action("/tcg/action?action=cast&cardId=" + cardId + "&data[targetId]=" + targetId);
             } else if (spellType == 'cell') {
                 var x = obj.data('x');
                 var y = obj.data('y');
-                this.action("/tcg/action?action=cast&cardId=" + cardId + "&data[x]=" + x + "&adata[y]=" + y);
+                this.action({'type' : 'cast', 'data' : {'action' : 'cast', 'cardId' : cardId, 'data' : {'x' : x, 'y' : y}}});
+                //this.action("/tcg/action?action=cast&cardId=" + cardId + "&data[x]=" + x + "&adata[y]=" + y);
             } else if(spellType == 'cast') {
-                this.action(window.location = "/tcg/action?action=cast&cardId=" + cardId + "&data[]=");
+                this.action({'type' : 'cast', 'data' : {'action' : 'cast', 'cardId' : cardId, 'data' : {}}});
+                //this.action(window.location = "/tcg/action?action=cast&cardId=" + cardId + "&data[]=");
             }
         }
     }
 
     this.skip = function() {
         if (this.isMyTurn) {
+            this.action({'type' : 'skip', 'data' : {'action' : 'skip'}});
             this.action("/tcg/action?action=skip");
+        }
+    }
+
+    this.processLog = function(log)
+    {
+        log = log.log;
+        for(var i in log) {
+            var event = log[i];
+            switch(event.type) {
+                case 'deploy':
+                    this.units.deploy(event.playerId, event.card);
+                    break;
+            }
         }
     }
 

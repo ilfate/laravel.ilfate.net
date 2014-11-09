@@ -136,6 +136,7 @@ class Game extends GameContainer {
                 'phase'    => $this->phase,
                 'card'     => $this->currentCardId,
                 'isMyTurn' => $this->playerTurnId == $this->currentPlayerId,
+                //'isIm'
                 'playerId' => $this->currentPlayerId
             ],
             'log' => $this->log->render(GameLog::RENDER_MODE_ADMIN)
@@ -155,7 +156,15 @@ class Game extends GameContainer {
                 }
             }
         }
+        $this->players[$this->currentPlayerId]->lastEventSeen = $this->log->getNextEventId();
         return $data;
+    }
+
+    public function renderUpdate()
+    {
+        $lastEvent = $this->players[$this->currentPlayerId]->lastEventSeen;
+        $logData = $this->log->renderUpdate($lastEvent);
+        return $logData;
     }
 
     public function action($name, $data = [])
@@ -214,7 +223,7 @@ class Game extends GameContainer {
         $card->unit->deploy();
         $this->players[$this->currentPlayerId]->skippedTurn = false;
 
-        $this->log->logDeploy($card->unit->name, $this->playerTurnId);
+        $this->log->logDeploy($this->playerTurnId, $card->id);
 
         $this->nextTurn();
     }
@@ -409,24 +418,27 @@ class Game extends GameContainer {
         $data = $this->field->render($playerId, $this->phase == self::PHASE_BATTLE);
 
         foreach ($data['cards'] as $cardData) {
-            $x = $cardData[1];
-            $y = $cardData[2];
-            if (!isset($data['map'][$x])) {
-                $data['map'][$x] = [];
-            }
-            $card = $this->cards[$cardData[0]];
-            $data['map'][$x][$y] = $card->render(['x' => $x, 'y' => $y]);
+//            $x = $cardData[1];
+//            $y = $cardData[2];
+//            if (!isset($data['map'][$x])) {
+//                $data['map'][$x] = [];
+//            }
+            $card = $this->cards[$cardData];
+            $renderedCard = $card->render($playerId);
+            $data['map'][] = $renderedCard;
 
             if ($this->phase == self::PHASE_BATTLE) {
 
                 $key = array_search($card->id, $data['order']);
                 if (($key !== false)) {
-                    $data['order'][$key] = &$data['map'][$x][$y];
+                    $data['order'][$key] = &$renderedCard;
                 }
             }
 
+
         }
         unset($data['cards']);
+
         return $data;
     }
 
@@ -435,7 +447,7 @@ class Game extends GameContainer {
         $data = [];
         $cards = $this->hands[$playerId]->cards;
         foreach ($cards as $cardId) {
-            $data[] = $this->cards[$cardId]->render();
+            $data[] = $this->cards[$cardId]->render($playerId);
         }
         return $data;
     }

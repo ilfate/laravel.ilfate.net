@@ -65,12 +65,12 @@ class Field extends Location {
     	];
     	foreach ($this->map as $x => $col) {
     		foreach ($col as $y => $cardId) {
-                list($x1, $y1) = [$x, $y];
-    			if ($this->getTopPlayer() == $playerId) {
-    				list($x1, $y1) = $this->convert($x, $y);
-
-    			}
-    			$data['cards'][] = [$cardId, $x1, $y1];
+//                list($x1, $y1) = [$x, $y];
+//    			if ($this->getTopPlayer() == $playerId) {
+//    				list($x1, $y1) = $this->convert($x, $y);
+//
+//    			}
+    			$data['cards'][] = $cardId;
     		}
     	}
         if ($isBattle) {

@@ -95,13 +95,13 @@ class GameLog {
     	];
     }
 
-    public function logDeploy($unitName, $playerId)
+    public function logDeploy($playerId, $cardId)
     {
     	$this->log[] = [
     		self::LOG_TYPE_DEPLOY,
     		[
-    			$unitName,
-    			$playerId
+    			$playerId,
+                $cardId
     		]
     	];	
     }
@@ -142,8 +142,8 @@ class GameLog {
     			return $text;
     			break;
     		case self::LOG_TYPE_DEPLOY:
-    			$text = $this->getPLayerInfo($data[1]);
-    			$text .= ' deployed "' . $data[0] . '"';
+    			$text = $this->getPLayerInfo($data[0]);
+    			$text .= ' deployed unit with id = ' . $data[1];
     			return $text;
     			break;
     		case self::LOG_TYPE_MOVE:
@@ -161,6 +161,38 @@ class GameLog {
     			# code...
     			break;
     	}
+    }
+
+    public function renderUpdate($lastEvent)
+    {
+        $render = [];
+        $till = count($this->log);
+        for($i = $lastEvent; $i < $till; $i++) {
+            $log = $this->log[$i];
+            if (!in_array($log[0], self::$publicLogs)) {
+                continue;
+            }
+            switch($log[0]) {
+                case self::LOG_TYPE_DEPLOY:
+                    $card = $this->game->cards[$log[1][1]];
+                    $event = [
+                        'type' => $log[0],
+                        'playerId' => $log[1][0],
+                        'card' => $card->render($this->game->currentPlayerId)
+                    ];
+                    break;
+                default :
+                    throw new \Exception('Not implemented log update render');
+
+            }
+            $render[] = $event;
+        }
+        return $render;
+    }
+
+    public function getNextEventId()
+    {
+        return count($this->log);
     }
 
     protected function getPLayerInfo($playerId)

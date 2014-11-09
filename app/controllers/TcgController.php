@@ -67,7 +67,7 @@ class TcgController extends \BaseController
         
         $gameData = Session::get('tcg.userGame', null);
         if (!$gameData) {
-            $game = Game::create($currentPlayerId, false);
+            $game = Game::create($currentPlayerId, 'bot');
         } else {
             
             $game = Game::import($gameData, $currentPlayerId);
@@ -104,30 +104,7 @@ class TcgController extends \BaseController
         
         $action = Input::get('action');
 
-        switch ($action) {
-            case Game::GAME_ACTION_DEPLOY:
-                $cardId = (int) Input::get('cardId');
-                $x = (int) Input::get('x');
-                $y = (int) Input::get('y');
-                $this->game->action(Game::GAME_ACTION_DEPLOY, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
-            break;
-            case Game::GAME_ACTION_SKIP:
-                $this->game->action(Game::GAME_ACTION_SKIP);
-            break;
-            case Game::GAME_ACTION_MOVE:
-                $cardId = (int) Input::get('cardId');
-                $x = (int) Input::get('x');
-                $y = (int) Input::get('y');
-                $this->game->action(Game::GAME_ACTION_MOVE, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
-            break;
-            case Game::GAME_ACTION_CAST:
-                $cardId = (int) Input::get('cardId');
-                $data = Input::get('data');
-                $this->validateCastData($data);
-                $this->game->action(Game::GAME_ACTION_CAST, ['cardId' => $cardId, 'data' => $data]);
-            break;
-        }
-        $this->save();
+        $this->doAction($action);
 
         if ($currentPlayerId == 2) {
             return Redirect::to('tcgb');
@@ -135,6 +112,49 @@ class TcgController extends \BaseController
         return Redirect::to('tcg');   
     }
 
+    public function actionAjax()
+    {
+        if(!Request::ajax()) {
+            throw new \Exception('It is not an a ajax action!');
+        }
+        $currentPlayerId = Input::get('playerId', 1);
+        $this->play($currentPlayerId);
+
+        $action = Input::get('action');
+
+        $this->doAction($action);
+
+        $data = $this->game->renderUpdate();
+        return json_encode(['log' => $data]);
+    }
+
+    private function doAction($action)
+    {
+        switch ($action) {
+            case Game::GAME_ACTION_DEPLOY:
+                $cardId = (int) Input::get('cardId');
+                $x = (int) Input::get('x');
+                $y = (int) Input::get('y');
+                $this->game->action(Game::GAME_ACTION_DEPLOY, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
+                break;
+            case Game::GAME_ACTION_SKIP:
+                $this->game->action(Game::GAME_ACTION_SKIP);
+                break;
+            case Game::GAME_ACTION_MOVE:
+                $cardId = (int) Input::get('cardId');
+                $x = (int) Input::get('x');
+                $y = (int) Input::get('y');
+                $this->game->action(Game::GAME_ACTION_MOVE, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
+                break;
+            case Game::GAME_ACTION_CAST:
+                $cardId = (int) Input::get('cardId');
+                $data = Input::get('data');
+                $this->validateCastData($data);
+                $this->game->action(Game::GAME_ACTION_CAST, ['cardId' => $cardId, 'data' => $data]);
+                break;
+        }
+        $this->save();
+    }
     
     private function validateCastData(&$data) {
         if (isset($data['x']) && isset($data['y'])) {

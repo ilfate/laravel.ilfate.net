@@ -19,4 +19,21 @@ TCG.Units = function (game) {
             'top' : y * this.cellHeight + y * 3
         })
     }
+
+    this.deploy = function(playerId, card) {
+        info(card);
+        // remove card from hand
+        $('.hand .card.id_' + card.id).remove();
+
+        this.createUnit(card);
+    }
+
+    this.createUnit = function(card) {
+        var template = $('#template-field-unit').html();
+        Mustache.parse(template);   // optional, speeds up future uses
+        var rendered = Mustache.render(template, {card : card, x : card.unit.x, y : card.unit.y});
+        var obj = $(rendered);
+        this.setUnit(obj);
+        $('.field .units').append(obj);
+    }
 }

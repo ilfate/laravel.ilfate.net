@@ -126,14 +126,18 @@ class Unit
         $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_DEPLOY_TO_CELL, $this->x . '_' . $this->y, ['cardId' => $this->card->id]);
     }
 
-    public function render($extData)
+    public function render($playerId)
     {
         $data      = [
             'config' => $this->config,
             'attack' => $this->attack,
         ];
-        $data['x'] = empty($extData['x']) ? $this->x : $extData['x'];
-        $data['y'] = empty($extData['y']) ? $this->y : $extData['y'];
+        list ($x, $y) = $this->card->game->field->convertCoordinats($this->x, $this->y, $playerId);
+        //list($x, $y) = [$this->x, $this->y];
+//        $data['x'] = empty($extData['x']) ? $this->x : $extData['x'];
+//        $data['y'] = empty($extData['y']) ? $this->y : $extData['y'];
+        $data['x'] = $x;
+        $data['y'] = $y;
         $data['keywords'] = $this->keywords;
 
         if ($this->card->location == Card::CARD_LOCATION_FIELD) {

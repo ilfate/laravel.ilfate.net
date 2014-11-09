@@ -120,13 +120,13 @@ class Card {
 		return $data;
 	}
 
-	public function render($extData = array())
+	public function render($playerId)
 	{
 		$data = [
 			'id' => $this->id
 		];
 
-        $data['unit'] = $this->unit->render($extData);
+        $data['unit'] = $this->unit->render($playerId);
         $data['spell'] = $this->spell->render();
 
 		return $data;

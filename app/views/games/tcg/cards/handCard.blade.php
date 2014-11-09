@@ -1,5 +1,5 @@
 
-<div class="card my-card" data-id="{{{$card['id']}}}" data-spelltype="{{{$card['spell']['config'][\Tcg\Spell::CONFIG_VALUE_TYPE]}}}">
+<div class="card my-card id_{{{$card['id']}}}" data-id="{{{$card['id']}}}" data-spelltype="{{{$card['spell']['config'][\Tcg\Spell::CONFIG_VALUE_TYPE]}}}">
     @if ($mode == 'deploy')
 	<div class="unit">
 		<div class="name" >{{{$card['unit']['config'][\Tcg\Unit::CONFIG_VALUE_NAME]}}}({{{$card['id']}}})</div>

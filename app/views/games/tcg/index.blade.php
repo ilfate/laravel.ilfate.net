@@ -25,4 +25,6 @@ Turn number: {{{$game['turnNumber']}}} <br>
 	});
 </script>
 
+@include('games.tcg.templates')
+
 @stop
