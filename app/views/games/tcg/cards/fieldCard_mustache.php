@@ -1,6 +1,6 @@
 
 <script id="template-field-unit" type="x-tmpl-mustache">
-    <div class="card unit id_{{card.id}} x_{{x}} y_{{y}}" data-id="{{card.id}}" data-x="{{x}}" data-y="{{y}}">
+    <div class="card unit id_{{card.id}} x_{{x}} y_{{y}}" data-id="{{card.id}}" data-x="{{x}}" data-y="{{y}}"  data-active="false">
         <div class="name" >{{card.unit.config.name}}({{card.id}})</div>
         <span class="health">
             <i class="fa fa-heart-o"></i>

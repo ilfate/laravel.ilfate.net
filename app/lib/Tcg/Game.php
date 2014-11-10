@@ -246,8 +246,6 @@ class Game extends GameContainer {
         }
         $leftSteps = $this->field->moveUnit($card, $x, $y);
 
-        $this->log->logMove($card->unit->name, $this->playerTurnId);
-
         if (!$leftSteps) {
             $this->unitAttack();
         }

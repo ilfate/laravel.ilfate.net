@@ -279,6 +279,16 @@ class Unit
 
     public function move($x, $y)
     {
+        $this->beforeMove();
+        $this->x = $x;
+        $this->y = $y;
+        $this->stepsMade += 1;
+
+        $this->card->game->log->logMove($this->card->id, $this->x, $this->y);
+    }
+
+    public function checkIsUnitAbleToMove($x, $y)
+    {
         $distance = $this->card->game->field->getDistance($this->x, $this->y, $x, $y) + $this->stepsMade;
         if (empty($this->config['moveDistance'])) {
             $moveDistance = self::DEFAULT_MOVE_DISTANCE;
@@ -288,10 +298,6 @@ class Unit
         if ($moveDistance < $distance) {
             throw new \Exception('Unit cant move that far distance is = ' . $distance);
         }
-        $this->beforeMove();
-        $this->x = $x;
-        $this->y = $y;
-        $this->stepsMade += 1;
         return $moveDistance - $this->stepsMade;
     }
 

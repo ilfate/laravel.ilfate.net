@@ -20,9 +20,10 @@ Turn number: {{{$game['js']['turnNumber']}}} <br>
 
 <script>
 	$(document).ready(function() {
+        TCG.Game.init({{json_encode($game['js'])}});
 		TCG.Game.renderFieldUnits({{json_encode($game['field']['map'])}});
 		TCG.Game.renderHandCards({{json_encode($game['hand'])}});
-		TCG.Game.init({{json_encode($game['js'])}});
+        TCG.Game.processGame();
 
 
 	});

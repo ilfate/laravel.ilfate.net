@@ -16,10 +16,21 @@ TCG.Units = function (game) {
     this.setUnit = function(obj) {
         var x = obj.data('x');
         var y = obj.data('y');
-        obj.css({
-            'left' : x * this.cellHeight + x * 3,
-            'top' : y * this.cellHeight + y * 3
-        })
+        var active = obj.data('active');
+        x = x * this.cellHeight + x * 3;
+        y= y * this.cellHeight + y * 3;
+        if (active == false) {
+            obj.css({
+                'left' : x,
+                'top' : y
+            })
+            obj.data('active', 'true');
+        } else {
+            obj.animate({
+                left : x,
+                top : y
+            }, 600);
+        }
     }
 
     this.deploy = function(playerId, card) {
@@ -30,6 +41,14 @@ TCG.Units = function (game) {
         this.createUnit(card);
     }
 
+    this.focusUnit = function(cardId)
+    {
+        $('.field .unit').removeClass('focus');
+        this.game.fieldCardInFocus = $('.field .unit.id_' + cardId);
+
+        this.game.fieldCardInFocus.addClass('focus');
+    }
+
     this.createUnit = function(card) {
         var template = $('#template-field-unit').html();
         Mustache.parse(template);   // optional, speeds up future uses
@@ -37,5 +56,16 @@ TCG.Units = function (game) {
         var obj = $(rendered);
         this.setUnit(obj);
         $('.field .units').append(obj);
+    }
+
+    this.move = function(cardId, x ,y) {
+        var unit = $('.field .unit.id_' + cardId);
+        var oldX = unit.data('x');
+        var oldY = unit.data('y');
+        unit.removeClass('x_' + oldX + ' y_' + oldY);
+        unit.addClass('x_' + x + ' y_' + y);
+        unit.data('x', x);
+        unit.data('y', y);
+        this.setUnit(unit);
     }
 }

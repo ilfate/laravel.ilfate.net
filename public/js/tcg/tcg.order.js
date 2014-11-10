@@ -19,4 +19,9 @@ TCG.Order = function (game) {
         $('.order').append(obj);
     }
 
+    this.setCurrentCard = function(cardId) {
+        $('.order .card').removeClass('focus');
+        $('.order .card.id_' + cardId).addClass('focus');
+    }
+
 }

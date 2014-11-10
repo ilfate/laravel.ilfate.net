@@ -22,6 +22,8 @@ class GameLog {
 	protected static $publicLogs = [
 		self::LOG_TYPE_TEXT,
 		self::LOG_TYPE_DEPLOY,
+        self::LOG_TYPE_START_BATTLE,
+        self::LOG_TYPE_MOVE,
 	];
 
 	/** 
@@ -114,13 +116,14 @@ class GameLog {
         ];  
     }
 
-    public function logMove($unitName, $playerId)
+    public function logMove($cardId, $x, $y)
     {
     	$this->log[] = [
     		self::LOG_TYPE_MOVE,
     		[
-    			$unitName,
-    			$playerId
+    			$cardId,
+    			$x,
+                $y
     		]
     	];	
     }
@@ -141,6 +144,7 @@ class GameLog {
 
     protected function renderMessage($type, $data)
     {
+        return '';
     	switch ($type) {
     		case self::LOG_TYPE_TEXT:
     			return $data[0];
@@ -191,6 +195,14 @@ class GameLog {
                     $event['card'] = $card->render($this->game->currentPlayerId);
                     break;
                 case self::LOG_TYPE_START_BATTLE:
+                    break;
+                case self::LOG_TYPE_MOVE:
+                    $event['cardId'] = $log[1][0];
+                    list($event['x'], $event['y']) = $this->game->field->convertCoordinats(
+                        $log[1][1],
+                        $log[1][2],
+                        $this->game->currentPlayerId
+                    );
                     break;
                 default :
                     throw new \Exception('Not implemented log update render');
