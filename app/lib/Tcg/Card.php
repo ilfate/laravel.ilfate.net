@@ -123,7 +123,8 @@ class Card {
 	public function render($playerId)
 	{
 		$data = [
-			'id' => $this->id
+			'id' => $this->id,
+            'owner' => $this->owner,
 		];
 
         $data['unit'] = $this->unit->render($playerId);

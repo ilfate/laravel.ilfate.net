@@ -4,11 +4,6 @@ return array(
     'game' => [
         'handDraw'   => 3,
         'spellsDraw' => 2,
-        'template' => [
-            3 => 'deploy',
-            4 => 'battle',
-            5 => 'finish'
-        ],
     ],
     'cards' => array(
         0 => ['card' => 0, 'unit' => 0, 'spell' => 0],

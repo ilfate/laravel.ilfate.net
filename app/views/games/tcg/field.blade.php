@@ -10,14 +10,5 @@
         @endfor
     @endfor
     <div class="units" >
-        @if (!empty($field['map']))
-            @foreach($field['map'] as $card)
-                @include('games.tcg.cards.fieldCard', array(
-                'card' => $card,
-                'x' => $card['unit']['x'],
-                'y' => $card['unit']['y']
-                ))
-            @endforeach
-        @endif
     </div>
 </div>

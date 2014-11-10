@@ -128,16 +128,14 @@ class Game extends GameContainer {
     {
         //var_dump($this); die;
         $data = [
-            'template'   => \Config::get('tcg.game.template.' . $this->phase),
-            'turn'       => $this->playerTurnId,
-            'turnNumber' => $this->turnNumber,
-            'card'       => $this->currentCardId,
-            'js'         => [
-                'phase'    => $this->phase,
-                'card'     => $this->currentCardId,
-                'isMyTurn' => $this->playerTurnId == $this->currentPlayerId,
+            'card'     => $this->currentCardId,
+            'js'       => [
+                'phase'           => $this->phase,
+                'card'            => $this->currentCardId,
+                'playerTurnId'    => $this->playerTurnId,
+                'turnNumber'      => $this->turnNumber,
                 //'isIm'
-                'playerId' => $this->currentPlayerId
+                'currentPlayerId' => $this->currentPlayerId
             ],
             'log' => $this->log->render(GameLog::RENDER_MODE_ADMIN)
         ];
@@ -156,15 +154,24 @@ class Game extends GameContainer {
                 }
             }
         }
+        // var_dump($this->log->getNextEventId());
+        // var_dump($this->players[$this->currentPlayerId]->lastEventSeen); die;
         $this->players[$this->currentPlayerId]->lastEventSeen = $this->log->getNextEventId();
         return $data;
     }
 
     public function renderUpdate()
     {
+        $data = [];
         $lastEvent = $this->players[$this->currentPlayerId]->lastEventSeen;
-        $logData = $this->log->renderUpdate($lastEvent);
-        return $logData;
+        $data['log'] = $this->log->renderUpdate($lastEvent);
+        $data['game'] = [
+            'turnNumber'   => $this->turnNumber,
+            'playerTurnId' => $this->playerTurnId,
+            'card'         => $this->currentCardId,
+        ];
+        $this->players[$this->currentPlayerId]->lastEventSeen = $this->log->getNextEventId();
+        return $data;
     }
 
     public function action($name, $data = [])
@@ -347,6 +354,9 @@ class Game extends GameContainer {
             $this->drawCards($id, \Config::get('tcg.game.spellsDraw'));
         }
         $this->turnNumber = 1;
+
+        $this->log->logStartBattle();
+
         $this->gameAutoActions();
     }
 
@@ -416,24 +426,19 @@ class Game extends GameContainer {
     protected function renderField($playerId)
     {
         $data = $this->field->render($playerId, $this->phase == self::PHASE_BATTLE);
-
+        $data['map'] = [];
         foreach ($data['cards'] as $cardData) {
-//            $x = $cardData[1];
-//            $y = $cardData[2];
-//            if (!isset($data['map'][$x])) {
-//                $data['map'][$x] = [];
-//            }
             $card = $this->cards[$cardData];
             $renderedCard = $card->render($playerId);
             $data['map'][] = $renderedCard;
 
-            if ($this->phase == self::PHASE_BATTLE) {
+            // if ($this->phase == self::PHASE_BATTLE) {
 
-                $key = array_search($card->id, $data['order']);
-                if (($key !== false)) {
-                    $data['order'][$key] = &$renderedCard;
-                }
-            }
+            //     $key = array_search($card->id, $data['order']);
+            //     if (($key !== false)) {
+            //         $data['order'][$key] = &$renderedCard;
+            //     }
+            // }
 
 
         }
@@ -457,7 +462,7 @@ class Game extends GameContainer {
         foreach ($this->players as $id => $player) {
             if ($playerId != $id) {
                 // here our enemy
-                return ['size' => $this->hands[$id]->count()];
+                return ['size' => $this->hands[$id]->count(), 'playerId' => $id];
             }
         }
     }

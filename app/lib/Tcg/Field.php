@@ -61,21 +61,21 @@ class Field extends Location {
     	$data = [
     		'width'  => self::WIDTH,
     		'height' => self::HEIGHT,
-    		'cards'  => [],
+    		'cards'  => $this->cards,
     	];
-    	foreach ($this->map as $x => $col) {
-    		foreach ($col as $y => $cardId) {
-//                list($x1, $y1) = [$x, $y];
-//    			if ($this->getTopPlayer() == $playerId) {
-//    				list($x1, $y1) = $this->convert($x, $y);
-//
-//    			}
-    			$data['cards'][] = $cardId;
-    		}
-    	}
-        if ($isBattle) {
-            $data['order'] = $this->cards;
-        }
+//     	foreach ($this->map as $x => $col) {
+//     		foreach ($col as $y => $cardId) {
+// //                list($x1, $y1) = [$x, $y];
+// //    			if ($this->getTopPlayer() == $playerId) {
+// //    				list($x1, $y1) = $this->convert($x, $y);
+// //
+// //    			}
+//     			$data['cards'][] = $cardId;
+//     		}
+//     	}
+
+        // $data['order'] = $this->cards;
+        
     	return $data;
     }
 

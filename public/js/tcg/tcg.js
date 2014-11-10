@@ -39,26 +39,37 @@ TCG.Game = function () {
     this.height = 5;
 	this.handCardInFocus;
 	this.fieldCardInFocus;
-    this.isMyTurn = true;
 	this.phase = 0;
     this.currentPlayerId;
+    this.playerTurnId;
     this.units = new TCG.Units(this);
-
-	this.fuu = function() {
-		info('awdawd');
-	}
+    this.hand = new TCG.Hand(this);
+    this.order = new TCG.Order(this);
 
 	this.init = function(data) {
 		this.phase = data.phase;
-        this.isMyTurn = data.isMyTurn;
-        this.currentPlayerId = data.playerId;
-        if (this.phase == 4 && this.isMyTurn) {
+        this.playerTurnId = data.playerTurnId;
+        this.currentPlayerId = data.currentPlayerId;
+        if (this.isBattle() && this.isMyTurn()) {
             this.markMoveForCardId(data.card);
         }
         
 		this.bindObjects();
         this.units.init();
 	}
+
+    this.renderFieldUnits = function(units) {
+        for(var i in units) {
+            this.units.createUnit(units[i]);
+            this.order.createCard(units[i]);
+        }
+    }
+    this.renderHandCards = function(cards) {
+        for(var i in cards) {
+            this.hand.createCard(cards[i]);
+
+        }
+    }
 
 	this.bindObjects = function()
 	{
@@ -91,9 +102,9 @@ TCG.Game = function () {
 				}
 			break;
             case 'cellClick':
-                if (this.phase == 3) {
+                if (this.isDeploy()) {
                     this.deploy(obj);
-                } else if (this.phase == 4) {
+                } else if (this.isBattle()) {
                     if (!this.handCardInFocus) {
                         this.moveUnit(obj);
                     } else {
@@ -102,7 +113,7 @@ TCG.Game = function () {
                 }
                 break;
             case 'unitClick':
-                if (this.phase == 4) {
+                if (this.isBattle()) {
                     this.spell(obj, 'unit');
                 }
                 break;
@@ -151,9 +162,6 @@ TCG.Game = function () {
                 Ajax.json(url, {
                     //params : '__csrf=' + Ajax.getCSRF(),
 //                    data: 'turnsSurvived=' + this.statsTicksSurvived +
-//                        '&unitsKilled=' + this.statsKilledUnits +
-//                        '&pointsEarned=' + this.statsPoints +
-//                        '&checkKey=' + checkKey +
 //                        '&_token=' + $('#laravel-token').val()
                     callBack : function(data){TCG.Game.processLog(data)}
                 });
@@ -163,18 +171,19 @@ TCG.Game = function () {
     }
 
     this.deploy = function(cell) {
-        if (this.handCardInFocus && this.phase == 3 && this.isMyTurn) {
+        if (this.handCardInFocus && this.isDeploy() && this.isMyTurn()) {
             var x = cell.data('x');
             var y = cell.data('y');
             var cardId = this.handCardInFocus.data('id');
 
             //this.action("/tcg/action?action=deploy&cardId=" + cardId + "&x=" + x + "&y=" + y);
             this.action({'type' : 'deploy', 'data' : {'action' : 'deploy', 'cardId' : cardId, 'x' : x, 'y' : y}});
+            this.unFocusDeployArea();
         }
     }
 
     this.moveUnit = function(cell) {
-        if (!this.handCardInFocus && this.fieldCardInFocus && this.phase == 4 && this.isMyTurn && cell.hasClass('focus')) {
+        if (!this.handCardInFocus && this.fieldCardInFocus && this.isBattle() && this.isMyTurn() && cell.hasClass('focus')) {
             var x = cell.data('x');
             var y = cell.data('y');
             var cardId = this.fieldCardInFocus.data('id');
@@ -182,14 +191,14 @@ TCG.Game = function () {
             this.action({'type' : 'move', 'data' : {'action' : 'move', 'cardId' : cardId, 'x' : x, 'y' : y}});
             //this.action("/tcg/action?action=move&cardId=" + cardId + "&x=" + x + "&y=" + y);
         } else {
-            if (this.handCardInFocus && this.phase == 4 && this.isMyTurn) {
+            if (this.handCardInFocus && this.isBattle() && this.isMyTurn()) {
                 alert('You are trying to move unit, but you have card in hand active');
             }
         }
     }
 
     this.spell = function(obj, type) {
-        if (this.handCardInFocus && this.phase == 4 && this.isMyTurn) {
+        if (this.handCardInFocus && this.isBattle() && this.isMyTurn()) {
             var spellType = this.handCardInFocus.data('spelltype');
             if (type != spellType) {
                 info(type);
@@ -214,27 +223,43 @@ TCG.Game = function () {
     }
 
     this.skip = function() {
-        if (this.isMyTurn) {
+        if (this.isMyTurn()) {
             this.action({'type' : 'skip', 'data' : {'action' : 'skip'}});
             this.action("/tcg/action?action=skip");
         }
     }
 
-    this.processLog = function(log)
+    this.processLog = function(data)
     {
-        log = log.log;
+        var log = data.log;
+        this.processGameUpdate(data.game);
         for(var i in log) {
             var event = log[i];
             switch(event.type) {
                 case 'deploy':
                     this.units.deploy(event.playerId, event.card);
+                    this.order.createCard(event.card);
+                    break;
+                case 'startBattle':
+                    this.startBattle();
                     break;
             }
         }
     }
 
+    this.processGameUpdate = function(game) {
+        this.markMoveForCardId(game.card);
+        this.playerTurnId = game.playerTurnId;
+    }
+
+    this.startBattle = function() {
+        this.phase = 4;
+    }
+
     this.markMoveForCardId = function(cardId) {
+
         this.fieldCardInFocus = $('.field .unit.id_' + cardId);
+        info(cardId);
         this.fieldCardInFocus.addClass('focus');
         //var cell = $(this.fieldCardInFocus.parent());
         var x = this.fieldCardInFocus.data('x');
@@ -291,6 +316,17 @@ TCG.Game = function () {
             [x, y - 1],
             [x, y + 1],
         ];
+    }
+
+    this.isMyTurn = function() {
+        return this.currentPlayerId == this.playerTurnId;
+    }
+
+    this.isBattle = function() {
+        return this.phase == 4;
+    }
+    this.isDeploy = function() {
+        return this.phase == 3;
     }
 
 }

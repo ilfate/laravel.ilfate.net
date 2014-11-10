@@ -41,6 +41,7 @@ class TcgController extends \BaseController
         $currentPlayerId = 1;
         $this->play($currentPlayerId);
         $game = $this->render($currentPlayerId);
+        $this->save();
         View::share('game', $game);
 
         return View::make('games.tcg.index');//, array('game' => $game)
@@ -56,6 +57,7 @@ class TcgController extends \BaseController
         $currentPlayerId = 2;
         $this->play($currentPlayerId);
         $game = $this->render($currentPlayerId);
+        $this->save();
         View::share('game', $game);
 
         return View::make('games.tcg.index');//, array('game' => $game)
@@ -79,8 +81,6 @@ class TcgController extends \BaseController
     protected function render($currentPlayerId)
     {
         $result = $this->game->render($currentPlayerId);
-        
-        $this->save();
 
         return $result;
     }
@@ -105,6 +105,7 @@ class TcgController extends \BaseController
         $action = Input::get('action');
 
         $this->doAction($action);
+        $this->save();
 
         if ($currentPlayerId == 2) {
             return Redirect::to('tcgb');
@@ -125,7 +126,8 @@ class TcgController extends \BaseController
         $this->doAction($action);
 
         $data = $this->game->renderUpdate();
-        return json_encode(['log' => $data]);
+        $this->save();
+        return json_encode($data);
     }
 
     private function doAction($action)
@@ -153,7 +155,6 @@ class TcgController extends \BaseController
                 $this->game->action(Game::GAME_ACTION_CAST, ['cardId' => $cardId, 'data' => $data]);
                 break;
         }
-        $this->save();
     }
     
     private function validateCastData(&$data) {

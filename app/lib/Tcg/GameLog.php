@@ -12,6 +12,7 @@ class GameLog {
 	const LOG_TYPE_TEXT          = 'text';
 	const LOG_TYPE_PLAYER_ACTION = 'player_action';
 	const LOG_TYPE_DEPLOY        = 'deploy';
+    const LOG_TYPE_START_BATTLE  = 'startBattle';
 	const LOG_TYPE_MOVE          = 'move';
 	const LOG_TYPE_ATTACK        = 'attack';
 
@@ -105,6 +106,13 @@ class GameLog {
     		]
     	];	
     }
+    public function logStartBattle()
+    {
+        $this->log[] = [
+            self::LOG_TYPE_START_BATTLE,
+            []
+        ];  
+    }
 
     public function logMove($unitName, $playerId)
     {
@@ -129,6 +137,7 @@ class GameLog {
     		]
     	];	
     }
+
 
     protected function renderMessage($type, $data)
     {
@@ -172,14 +181,16 @@ class GameLog {
             if (!in_array($log[0], self::$publicLogs)) {
                 continue;
             }
+            $event = [
+                'type' => $log[0],
+            ];
             switch($log[0]) {
                 case self::LOG_TYPE_DEPLOY:
                     $card = $this->game->cards[$log[1][1]];
-                    $event = [
-                        'type' => $log[0],
-                        'playerId' => $log[1][0],
-                        'card' => $card->render($this->game->currentPlayerId)
-                    ];
+                    $event['playerId'] = $log[1][0];
+                    $event['card'] = $card->render($this->game->currentPlayerId);
+                    break;
+                case self::LOG_TYPE_START_BATTLE:
                     break;
                 default :
                     throw new \Exception('Not implemented log update render');

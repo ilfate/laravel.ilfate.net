@@ -36,6 +36,8 @@
 
 <script type="text/javascript" src="/js/tcg/tcg.js"></script>
 <script type="text/javascript" src="/js/tcg/tcg.units.js"></script>
+<script type="text/javascript" src="/js/tcg/tcg.order.js"></script>
+<script type="text/javascript" src="/js/tcg/tcg.hand.js"></script>
 
 @yield('layout')
 

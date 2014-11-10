@@ -1,4 +1,6 @@
-
+/**
+ * Created by Ilya Rubinchik (ilfate) on 12/09/14.
+ */
 
 TCG.Units = function (game) {
     this.game = game;

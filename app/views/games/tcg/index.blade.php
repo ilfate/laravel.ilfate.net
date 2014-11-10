@@ -2,7 +2,7 @@
 
 @section('content')
 
-@include('games.tcg.' . $game['template'], array('game' => $game))
+@include('games.tcg.game', array('game' => $game))
 
 @stop
 
@@ -11,8 +11,8 @@
 @section('sidebar')
 
 <h3>Info</h3>
-Turn player: {{{$game['turn']}}} <br>
-Turn number: {{{$game['turnNumber']}}} <br>
+Turn player: {{{$game['js']['playerTurnId']}}} <br>
+Turn number: {{{$game['js']['turnNumber']}}} <br>
 
 <h3>Actions</h3>
 <a class="btn btn-primary" href="/tcg/clear">Clear the game</a><br><br>
@@ -20,8 +20,11 @@ Turn number: {{{$game['turnNumber']}}} <br>
 
 <script>
 	$(document).ready(function() {
+		TCG.Game.renderFieldUnits({{json_encode($game['field']['map'])}});
+		TCG.Game.renderHandCards({{json_encode($game['hand'])}});
 		TCG.Game.init({{json_encode($game['js'])}});
-		
+
+
 	});
 </script>
 
