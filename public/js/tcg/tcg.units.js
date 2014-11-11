@@ -31,10 +31,20 @@ TCG.Units = function (game) {
                 top : y
             }, 600);
         }
+        //armor
+        this.checkArmor(obj);
+    }
+
+    this.checkArmor = function(unit) {
+        var armor = parseInt(unit.find('.armor .value').html())
+        if (armor <= 0) {
+            unit.find('.armor').hide();
+        } else {
+            unit.find('.armor').show();
+        }
     }
 
     this.deploy = function(playerId, card) {
-        info(card);
         // remove card from hand
         $('.hand .card.id_' + card.id).remove();
 
@@ -67,5 +77,31 @@ TCG.Units = function (game) {
         unit.data('x', x);
         unit.data('y', y);
         this.setUnit(unit);
+    }
+
+    this.damage = function(cardId, health, damage) {
+        var unit = this.getUnitObj(cardId);
+        var healthObj = unit.find('.health .value');
+        var currentHealth = parseInt(healthObj.html());
+        if (currentHealth - damage != health) {
+            info ('wtf damage is wrong');
+            return;
+        }
+        healthObj.html(health);
+    }
+
+    this.armor = function(cardId, armor, aArmor) {
+        var unit = this.getUnitObj(cardId);
+        unit.find('.armor .value').html(armor);
+        this.checkArmor(unit);
+    }
+
+    this.getUnitObj = function(cardId) {
+        var unit = $('.field .unit.id_' + cardId);
+        if (unit.length != 0) {
+            return unit;
+        }
+        info('There is no unit with Id ' + cardId);
+        return false;
     }
 }

@@ -26,10 +26,7 @@ class GudTheSmith extends Unit {
 			return;
 		}
 		$unit = $healTargets[array_rand($healTargets)]->unit;
-		$unit->armor += 3;
-		if ($unit->armor > $unit->maxArmor) {
-			$unit->armor = $unit->maxArmor;
-		}
+		$unit->changeArmor(3);
 
 		$this->card->game->log->logText(__CLASS__ . " repared armor for " . $unit->name );
     }

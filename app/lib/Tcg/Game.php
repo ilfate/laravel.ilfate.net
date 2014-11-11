@@ -348,12 +348,12 @@ class Game extends GameContainer {
     protected function startBattle()
     {
         $this->phase = self::PHASE_BATTLE;
+        $this->log->logStartBattle();
+
         foreach ($this->players as $id => $player) {
             $this->drawCards($id, \Config::get('tcg.game.spellsDraw'));
         }
         $this->turnNumber = 1;
-
-        $this->log->logStartBattle();
 
         $this->gameAutoActions();
     }
@@ -400,7 +400,9 @@ class Game extends GameContainer {
         foreach ($cardsIds as $cardId) {
             $cards[] = $this->cards[$cardId];
             $this->cards[$cardId]->init();
+            $this->log->logDraw($playerId, $cardId);
         }
+
         $this->moveCards($cards, self::LOCATION_DECK, self::LOCATION_HAND);
     }
 

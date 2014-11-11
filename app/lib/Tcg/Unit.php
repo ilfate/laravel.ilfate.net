@@ -139,13 +139,11 @@ class Unit
         $data['x'] = $x;
         $data['y'] = $y;
         $data['keywords'] = $this->keywords;
+        $data['armor'] = $this->armor;
 
         if ($this->card->location == Card::CARD_LOCATION_FIELD) {
             $data['currentHealth'] = $this->currentHealth;
             $data['maxHealth']     = $this->maxHealth;
-            if ($this->armor) {
-                $data['armor'] = $this->armor;
-            }
         }
         return $data;
     }
@@ -247,28 +245,42 @@ class Unit
             if ($damage < 0) return 0;
         }
         if ($this->armor) {
-            if ($damage > $this->armor) {
-                $damage -= $this->armor;
-                $this->armor = 0;
-            } else {
-                $this->armor -= $damage;
-                $damage = 0;
-            }
+            $dArmor = $this->changeArmor(-$damage);
+            $damage += $dArmor;
         }
         if ($damage > 0) {
             $this->card->game->triggerEvent(Game::EVENT_UNIT_GET_DAMAGE, ['target' => $this, 'damage' => &$damage]);
         }
         $this->currentHealth -= $damage;
+
+        $this->card->game->log->logUnitGetDamage($this->card->id, $this->currentHealth, $damage);
+
         if ($this->currentHealth <= 0) {
             $this->death();
         }
         return $damage;
     }
+
     public function healDamage($damage, Card $sourceCard) {
         $this->currentHealth += $damage;
         if ($this->currentHealth > $this->maxHealth) {
             $this->currentHealth = $this->maxHealth;
         }
+    }
+
+    public function changeArmor($value) {
+        $oldArmor = $this->armor;
+        $this->armor += $value;
+        if ($this->armor < 0) {
+            $this->armor = 0;
+        } else if ($this->armor > $this->maxArmor) {
+            $this->armor = $this->maxArmor;
+        }
+        $dArmor = $this->armor - $oldArmor;
+
+        $this->card->game->log->logUnitChangeArmor($this->card->id, $this->armor, $dArmor);
+
+        return $dArmor;
     }
 
     public function death()

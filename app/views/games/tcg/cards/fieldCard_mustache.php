@@ -9,14 +9,12 @@
             </span>
         </span>
 
-        {{#card.unit.armor}}
         <span class="armor">
             <i class="fa fa-shield"></i>
             <span class="value">
             {{card.unit.armor}}
             </span>
         </span>
-        {{/card.unit.armor}}
 
         <div class="attack">
             <i class="fa fa-gavel"></i>

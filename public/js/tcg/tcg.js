@@ -75,7 +75,7 @@ TCG.Game = function () {
 		$('.hand .my-card').live('click', function(){ TCG.Game.event('cardClick', $(this)) });
         $('.field .cell').live('click', function(){ TCG.Game.event('cellClick', $(this)) });
         $('.field .unit').live('click', function(){ TCG.Game.event('unitClick', $(this)) });
-        $('.field .cell .skip').live('click', function(){ TCG.Game.event('skip', $(this)) });
+        $('.field .unit .skip').live('click', function(){ TCG.Game.event('skip', $(this)) });
         
 	}
 
@@ -149,7 +149,8 @@ TCG.Game = function () {
                 }
                 break;
         }
-        if (data.type == 'deploy' || data.type == 'move') {
+
+        if (data.type == 'deploy' || data.type == 'move' || data.type == 'skip') {
             type = 'ajax';
         }
             url += '&playerId=' + this.currentPlayerId;
@@ -223,7 +224,6 @@ TCG.Game = function () {
     this.skip = function() {
         if (this.isMyTurn()) {
             this.action({'type' : 'skip', 'data' : {'action' : 'skip'}});
-            this.action("/tcg/action?action=skip");
         }
     }
 
@@ -237,12 +237,27 @@ TCG.Game = function () {
                 case 'deploy':
                     this.units.deploy(event.playerId, event.card);
                     this.order.createCard(event.card);
+                    this.handCardInFocus = null;
                     break;
                 case 'startBattle':
                     this.startBattle();
                     break;
+                case 'cardDraw':
+                    if (event.playerId == this.currentPlayerId) {
+                        this.hand.createCard(event.card)
+                    } else {
+
+                    }
+                    break;
                 case 'move':
                     this.units.move(event.cardId, event.x, event.y);
+                    this.tryToShowNextUnitMove();
+                    break;
+                case 'unitGetDamage':
+                    this.units.damage(event.cardId, event.health, event.damage);
+                    break;
+                case 'unitChangeArmor':
+                    this.units.armor(event.cardId, event.armor, event.dArmor);
                     break;
             }
         }
@@ -251,17 +266,15 @@ TCG.Game = function () {
     this.processGameUpdate = function(game) {
         this.playerTurnId = game.playerTurnId;
 
-        if (this.isMyTurn() && this.currentCardId != game.card) {
-            this.markMoveForCardId(game.card);
-        } else if (this.currentCardId != game.card) {
-            this.units.focusUnit(game.card);
+        if (this.currentCardId != game.card) {
+            this.currentCardId = game.card;
+            this.tryToShowNextUnitMove();
         }
-        this.currentCardId = game.card;
-
     }
 
     this.startBattle = function() {
         this.phase = 4;
+        this.tryToShowNextUnitMove();
     }
 
     this.markMoveForCardId = function(cardId) {

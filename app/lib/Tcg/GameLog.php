@@ -9,12 +9,15 @@ namespace Tcg;
 
 class GameLog {
 
-	const LOG_TYPE_TEXT          = 'text';
-	const LOG_TYPE_PLAYER_ACTION = 'player_action';
-	const LOG_TYPE_DEPLOY        = 'deploy';
-    const LOG_TYPE_START_BATTLE  = 'startBattle';
-	const LOG_TYPE_MOVE          = 'move';
-	const LOG_TYPE_ATTACK        = 'attack';
+	const LOG_TYPE_TEXT            = 'text';
+	const LOG_TYPE_PLAYER_ACTION   = 'playerAction';
+	const LOG_TYPE_DEPLOY          = 'deploy';
+    const LOG_TYPE_CARD_DRAW       = 'cardDraw';
+    const LOG_TYPE_START_BATTLE    = 'startBattle';
+	const LOG_TYPE_MOVE            = 'move';
+    const LOG_TYPE_UNIT_GET_DAMAGE = 'unitGetDamage';
+    const LOG_TYPE_UNIT_CHANGE_ARMOR = 'unitChangeArmor';
+	const LOG_TYPE_ATTACK          = 'attack';
 
 	const RENDER_MODE_PUBLIC = 'public';
 	const RENDER_MODE_ADMIN  = 'admin';
@@ -24,6 +27,9 @@ class GameLog {
 		self::LOG_TYPE_DEPLOY,
         self::LOG_TYPE_START_BATTLE,
         self::LOG_TYPE_MOVE,
+        self::LOG_TYPE_CARD_DRAW,
+        self::LOG_TYPE_UNIT_GET_DAMAGE,
+        self::LOG_TYPE_UNIT_CHANGE_ARMOR,
 	];
 
 	/** 
@@ -115,6 +121,17 @@ class GameLog {
             []
         ];  
     }
+    
+    public function logDraw($playerId, $cardId)
+    {
+        $this->log[] = [
+            self::LOG_TYPE_CARD_DRAW,
+            [
+                $playerId,
+                $cardId
+            ]
+        ];  
+    }
 
     public function logMove($cardId, $x, $y)
     {
@@ -126,6 +143,30 @@ class GameLog {
                 $y
     		]
     	];	
+    }
+
+    public function logUnitGetDamage($cardId, $health, $damage)
+    {
+        $this->log[] = [
+            self::LOG_TYPE_UNIT_GET_DAMAGE,
+            [
+                $cardId,
+                $health,
+                $damage
+            ]
+        ];  
+    }
+
+    public function logUnitChangeArmor($cardId, $armor, $dArmor)
+    {
+        $this->log[] = [
+            self::LOG_TYPE_UNIT_CHANGE_ARMOR,
+            [
+                $cardId,
+                $armor,
+                $dArmor
+            ]
+        ];  
     }
 
     public function logAttack($unitName, $playerId, $targetName, $damage)
@@ -196,6 +237,14 @@ class GameLog {
                     break;
                 case self::LOG_TYPE_START_BATTLE:
                     break;
+                case self::LOG_TYPE_CARD_DRAW:
+                    if ($this->game->currentPlayerId == $log[1][0]) {
+                        $event['card'] = $this->game->cards[$log[1][1]]->render($log[1][0]);
+                    } else {
+                        $event['card'] = true;
+                    }
+                    $event['playerId'] = $log[1][0];
+                    break;
                 case self::LOG_TYPE_MOVE:
                     $event['cardId'] = $log[1][0];
                     list($event['x'], $event['y']) = $this->game->field->convertCoordinats(
@@ -203,6 +252,16 @@ class GameLog {
                         $log[1][2],
                         $this->game->currentPlayerId
                     );
+                    break;
+                case self::LOG_TYPE_UNIT_GET_DAMAGE:
+                    $event['cardId'] = $log[1][0];
+                    $event['health'] = $log[1][1];
+                    $event['damage'] = $log[1][2];
+                    break;
+                case self::LOG_TYPE_UNIT_CHANGE_ARMOR:
+                    $event['cardId'] = $log[1][0];
+                    $event['armor'] = $log[1][1];
+                    $event['aArmor'] = $log[1][2];
                     break;
                 default :
                     throw new \Exception('Not implemented log update render');

@@ -14,6 +14,11 @@ use \Tcg\Card;
 class Dvallin extends Unit {
 
 	protected function afterAttack($damage, Card $target) {
-    	$this->armor += $damage;    
+		if ($this->maxArmor == $this->armor) {
+			$this->maxArmor += $damage;
+		} else if($damage > $this->maxArmor - $this->armor) {
+			$this->maxArmor += $damage - $this->maxArmor - $this->armor;
+		}
+		$this->changeArmor($damage);
     }
 }
