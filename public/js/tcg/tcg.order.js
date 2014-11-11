@@ -24,4 +24,9 @@ TCG.Order = function (game) {
         $('.order .card.id_' + cardId).addClass('focus');
     }
 
+    this.removeCard = function(cardId) {
+        $('.order .card.id_' + cardId).remove();
+    }
+
+
 }

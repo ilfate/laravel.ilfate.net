@@ -122,6 +122,8 @@ class Unit
             $this->keywords = $this->config[self::CONFIG_VALUE_KEYWORDS];
         }
 
+        $this->card->game->log->logDeploy($this->card->game->playerTurnId, $this->card->id);
+
         $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_DEPLOY, $this->card->id);
         $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_DEPLOY_TO_CELL, $this->x . '_' . $this->y, ['cardId' => $this->card->id]);
     }
@@ -262,10 +264,14 @@ class Unit
     }
 
     public function healDamage($damage, Card $sourceCard) {
+        $oldHealth = $this->currentHealth;
         $this->currentHealth += $damage;
         if ($this->currentHealth > $this->maxHealth) {
             $this->currentHealth = $this->maxHealth;
         }
+        $damage = $oldHealth - $this->currentHealth;
+        $this->card->game->log->logUnitGetDamage($this->card->id, $this->currentHealth, $damage);
+        return $damage;
     }
 
     public function changeArmor($value) {
@@ -287,6 +293,7 @@ class Unit
     {
         $this->card->game->triggerEvent(Game::EVENT_UNIT_DEATH, ['target' => $this]);
         $this->card->game->moveCards([$this->card], Game::LOCATION_FIELD, GAME::LOCATION_GRAVE);
+        $this->card->game->log->logDeath($this->card->id);
     }
 
     public function move($x, $y)
@@ -330,12 +337,18 @@ class Unit
                 $this->data[self::KEYWORD_SHIELD] = $data;
                 break;
         }
+        $this->card->game->log->logUnitChange(
+            $this->card->id,
+            'keyword',
+            ['words' => $this->keywords, 'data' => $this->data]
+        );
     }
     public function removeKeyword($word)
     {
         if ($this->hasKeyword($word)) {
             $key = array_search($word, $this->keywords);
             unset($this->keywords[$key]);
+            $this->card->game->log->logUnitChange($this->card->id, 'keyword', ['words' => $this->keywords, 'data' => $this->data]);
         }
     }
 

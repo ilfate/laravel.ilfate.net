@@ -35,19 +35,19 @@ class Game extends GameContainer {
             Card::createFromConfig($configs[0], $game),
             Card::createFromConfig($configs[1], $game),
             Card::createFromConfig($configs[2], $game),
-//            Card::createFromConfig($configs[3], $game),
-//            Card::createFromConfig($configs[4], $game),
-//            Card::createFromConfig($configs[5], $game),
+            Card::createFromConfig($configs[3], $game),
+            Card::createFromConfig($configs[4], $game),
+            Card::createFromConfig($configs[5], $game),
             
         ];
         $deck2 = [
             Card::createFromConfig($configs[51], $game),
             Card::createFromConfig($configs[52], $game),
-//            Card::createFromConfig($configs[53], $game),
-//            Card::createFromConfig($configs[54], $game),
-//            Card::createFromConfig($configs[55], $game),
+            Card::createFromConfig($configs[53], $game),
+            Card::createFromConfig($configs[54], $game),
+            Card::createFromConfig($configs[55], $game),
             Card::createFromConfig($configs[56], $game),
-//            Card::createFromConfig($configs[57], $game),
+            Card::createFromConfig($configs[57], $game),
         ];
         foreach ($deck2 as $card) {
             $game->setUpCard(clone $card, $player1->id);
@@ -188,6 +188,9 @@ class Game extends GameContainer {
 
             case self::GAME_ACTION_SKIP:
                 if ($this->phase == self::PHASE_UNIT_DEPLOYING) {
+                    if ($this->currentPlayerId != $this->playerTurnId) {
+                        throw new \Exception('not this player turn to skip');
+                    }
                     $this->players[$this->currentPlayerId]->skippedTurn = true;
                     $this->nextTurn();
                 } else if($this->phase == self::PHASE_BATTLE) {
@@ -229,8 +232,6 @@ class Game extends GameContainer {
         $this->moveCards([$card], self::LOCATION_HAND, self::LOCATION_FIELD);
         $card->unit->deploy();
         $this->players[$this->currentPlayerId]->skippedTurn = false;
-
-        $this->log->logDeploy($this->playerTurnId, $card->id);
 
         $this->nextTurn();
     }

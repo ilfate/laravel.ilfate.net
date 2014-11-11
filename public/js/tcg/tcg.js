@@ -124,9 +124,10 @@ TCG.Game = function () {
 
     this.action = function(data) {
         switch(data.type) {
-//            case 'deploy':
-//
-//                break;
+            case 'ping':
+                var type = 'ajax';
+                var url = '/tcg/action?f=f';
+                break;
             default:
                 var type = 'get';
                 var url = '/tcg/action?';
@@ -184,6 +185,7 @@ TCG.Game = function () {
 
     this.moveUnit = function(cell) {
         if (!this.handCardInFocus && this.fieldCardInFocus && this.isBattle() && this.isMyTurn() && cell.hasClass('focus')) {
+            this.units.removeFocus();
             var x = cell.data('x');
             var y = cell.data('y');
             var cardId = this.fieldCardInFocus.data('id');
@@ -204,6 +206,7 @@ TCG.Game = function () {
                 info ('you are trying to cast spell? target is wrong')
                 return ;
             }
+            this.units.removeFocus();
             var cardId = this.handCardInFocus.data('id');
             if (spellType == 'unit') {
                 var targetId = obj.data('id');
@@ -223,14 +226,20 @@ TCG.Game = function () {
 
     this.skip = function() {
         if (this.isMyTurn()) {
+            this.units.removeFocus();
             this.action({'type' : 'skip', 'data' : {'action' : 'skip'}});
+        }
+    }
+    this.ping = function() {
+        if (!this.isMyTurn()) {
+            this.action({'type' : 'ping', 'data' : {}});
         }
     }
 
     this.processLog = function(data)
     {
         var log = data.log;
-        this.processGameUpdate(data.game);
+        var newTurn = this.processGameUpdate(data.game);
         for(var i in log) {
             var event = log[i];
             switch(event.type) {
@@ -259,17 +268,36 @@ TCG.Game = function () {
                 case 'unitChangeArmor':
                     this.units.armor(event.cardId, event.armor, event.dArmor);
                     break;
+                case 'death':
+                    this.units.death(event.cardId);
+                    this.order.removeCard(event.cardId);
+                    break;
+                case 'change':
+                    this.units.change(event.cardId, event.dataType, event.data);
+                    break;
             }
         }
+        this.postProcessGameUpdate(newTurn);
     }
 
     this.processGameUpdate = function(game) {
-        this.playerTurnId = game.playerTurnId;
+        if (this.playerTurnId != game.playerTurnId) {
+            this.playerTurnId = game.playerTurnId;
+            $('.playerTurnId').html(this.playerTurnId);
+        }
 
+        var newTurn = false;
         if (this.currentCardId != game.card) {
             this.currentCardId = game.card;
+            newTurn = true;
+        }
+        return newTurn;
+    }
+    this.postProcessGameUpdate = function(newTurn) {
+        if (newTurn) {
             this.tryToShowNextUnitMove();
         }
+        this.tryToSetUpConnection();
     }
 
     this.startBattle = function() {
@@ -284,7 +312,7 @@ TCG.Game = function () {
         var x = this.fieldCardInFocus.data('x');
         var y = this.fieldCardInFocus.data('y');
         var neibours = this.getNeiboursCells(x, y);
-        $('.field .cell').removeClass('focus');
+
         for (var key in neibours) {
             var dx = neibours[key][0];
             var dy = neibours[key][1];
@@ -300,8 +328,10 @@ TCG.Game = function () {
         }
     }
 
+
     this.processGame = function() {
         this.tryToShowNextUnitMove();
+        this.tryToSetUpConnection();
     }
 
     this.tryToShowNextUnitMove = function() {
@@ -312,6 +342,13 @@ TCG.Game = function () {
             this.order.setCurrentCard(this.currentCardId);
         }
 
+    }
+    this.tryToSetUpConnection = function() {
+        if (!this.isMyTurn()) {
+            setTimeout(function() {
+                TCG.Game.ping()
+            }, 2000);
+        }
     }
 
     this.lightUpDeployArea = function() {

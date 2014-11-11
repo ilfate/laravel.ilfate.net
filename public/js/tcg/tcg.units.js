@@ -53,10 +53,12 @@ TCG.Units = function (game) {
 
     this.focusUnit = function(cardId)
     {
-        $('.field .unit').removeClass('focus');
         this.game.fieldCardInFocus = $('.field .unit.id_' + cardId);
-
         this.game.fieldCardInFocus.addClass('focus');
+    }
+    this.removeFocus = function() {
+        $('.field .unit').removeClass('focus');
+        $('.field .cell').removeClass('focus');
     }
 
     this.createUnit = function(card) {
@@ -94,6 +96,29 @@ TCG.Units = function (game) {
         var unit = this.getUnitObj(cardId);
         unit.find('.armor .value').html(armor);
         this.checkArmor(unit);
+    }
+
+    this.death = function(cardId) {
+        var unit = this.getUnitObj(cardId);
+        unit.remove();
+    }
+
+    this.change = function(cardId, dataType, data) {
+        var keywordsObj = this.getUnitObj(cardId).find('.keywords');
+        switch (dataType) {
+            case 'keyword':
+                keywordsObj.html('');
+                keywordsString = '';
+                for (var key in data.words) {
+                    var word = data.words[key];
+                    if (data['word'] !== undefined) {
+                        word += ' ' + data['word'];
+                    }
+                    keywordsString += '<span class="keyword">' + word + '</span> ';
+                }
+                keywordsObj.html(keywordsString);
+                break;
+        }
     }
 
     this.getUnitObj = function(cardId) {

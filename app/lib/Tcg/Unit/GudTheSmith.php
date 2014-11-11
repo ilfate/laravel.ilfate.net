@@ -28,6 +28,6 @@ class GudTheSmith extends Unit {
 		$unit = $healTargets[array_rand($healTargets)]->unit;
 		$unit->changeArmor(3);
 
-		$this->card->game->log->logText(__CLASS__ . " repared armor for " . $unit->name );
+		//$this->card->game->log->logText(__CLASS__ . " repared armor for " . $unit->name );
     }
 }

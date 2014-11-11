@@ -11,7 +11,7 @@
 @section('sidebar')
 
 <h3>Info</h3>
-Turn player: {{{$game['js']['playerTurnId']}}} <br>
+Turn player: <span class="playerTurnId">{{{$game['js']['playerTurnId']}}}</span> <br>
 Turn number: {{{$game['js']['turnNumber']}}} <br>
 
 <h3>Actions</h3>
