@@ -433,15 +433,6 @@ class Game extends GameContainer {
             $renderedCard = $card->render($playerId);
             $data['map'][] = $renderedCard;
 
-            // if ($this->phase == self::PHASE_BATTLE) {
-
-            //     $key = array_search($card->id, $data['order']);
-            //     if (($key !== false)) {
-            //         $data['order'][$key] = &$renderedCard;
-            //     }
-            // }
-
-
         }
         unset($data['cards']);
 
