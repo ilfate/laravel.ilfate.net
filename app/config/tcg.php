@@ -2,8 +2,8 @@
 
 return array(
     'game' => [
-        'handDraw'   => 2,
-        'spellsDraw' => 2,
+        'handDraw'   => 5,
+        'spellsDraw' => 1,
     ],
     'cards' => array(
         0 => ['card' => 0, 'unit' => 0, 'spell' => 0],
