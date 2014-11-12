@@ -2,7 +2,7 @@
 
 return array(
     'game' => [
-        'handDraw'   => 5,
+        'handDraw'   => 2,
         'spellsDraw' => 2,
     ],
     'cards' => array(

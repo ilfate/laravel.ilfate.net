@@ -30,6 +30,10 @@
         {{/card.unit.keywords}}
         </div>
 
+        <div class="info" data-toggle="popover" data-trigger="hover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">
+            <i class="fa fa-info-circle"></i>
+        </div>
+
         <a class="skip btn btn-warning btn-xs" >Attack</a>
     </div>
 </script>

@@ -6,9 +6,6 @@
 
 @include('games.tcg.field', array('field' => $game['field']))
 
-@include('games.tcg.order', array('field' => $game['field'], 'cardFocus' => $game['card']))
-
-
 @include('games.tcg.hand', array('hand' => $game['hand'], 'mode' => 'battle', 'playerId' => $game['js']['currentPlayerId']))
 
 

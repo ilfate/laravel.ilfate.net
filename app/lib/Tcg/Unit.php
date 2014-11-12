@@ -168,11 +168,12 @@ class Unit
 
         $this->beforeAttack($damage, $target);
 
+        $this->card->game->log->logAttack($this->card->id, $target->id);
+
         $damage = $target->unit->applyDamage($damage, $this->card);
 
         $this->afterAttack($damage, $target);
 
-        $this->card->game->log->logAttack($this->name, $this->card->owner, $target->unit->name, $damage);
     }
 
     protected function getTargets()

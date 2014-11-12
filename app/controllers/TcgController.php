@@ -67,7 +67,8 @@ class TcgController extends \BaseController
     public function play($currentPlayerId)
     {
         
-        $gameData = Session::get('tcg.userGame', null);
+        //$gameData = Session::get('tcg.userGame', null);
+        $gameData = Cache::get('tcg.userGame', null);
         if (!$gameData) {
             $game = Game::create($currentPlayerId, 'NOT_bot');
         } else {
@@ -88,12 +89,14 @@ class TcgController extends \BaseController
     protected function save()
     {
         $data = $this->game->export();
-        Session::put('tcg.userGame', $data);        
+        //Session::put('tcg.userGame', $data);
+        Cache::put('tcg.userGame', $data, 300);
     }
 
     public function dropGame()
     {
-        Session::put('tcg.userGame', null);   
+        //Session::put('tcg.userGame', null);   
+        Cache::forget('tcg.userGame');   
         return Redirect::to('tcg');
     }
 

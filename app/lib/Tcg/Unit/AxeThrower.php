@@ -26,7 +26,7 @@ class AxeThrower extends Unit {
     	}
     	if ($cardInFront) {
     		$cardInFront->unit->applyDamage($damage, $this->card);
-    		$this->card->game->log->logAttack($this->name, $this->card->owner, $cardInFront->unit->name, $damage);
+    		//$this->card->game->log->logAttack($this->name, $this->card->owner, $cardInFront->unit->name, $damage);
     	}
     }
 }

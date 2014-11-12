@@ -44,8 +44,9 @@ TCG.Game = function () {
     this.playerTurnId;
     this.currentCardId;
     this.units = new TCG.Units(this);
-    this.hand = new TCG.Hand(this);
+    this.hand  = new TCG.Hand(this);
     this.order = new TCG.Order(this);
+    this.spell = new TCG.Spell(this);
 
 	this.init = function(data) {
 		this.phase = data.phase;
@@ -76,7 +77,6 @@ TCG.Game = function () {
         $('.field .cell').live('click', function(){ TCG.Game.event('cellClick', $(this)) });
         $('.field .unit').live('click', function(){ TCG.Game.event('unitClick', $(this)) });
         $('.field .unit .skip').live('click', function(){ TCG.Game.event('skip', $(this)) });
-        
 	}
 
 	this.event = function(name, obj) {
@@ -245,8 +245,8 @@ TCG.Game = function () {
             switch(event.type) {
                 case 'deploy':
                     this.units.deploy(event.playerId, event.card);
+                    this.hand.removeCard(event.card.id);
                     this.order.createCard(event.card);
-                    this.handCardInFocus = null;
                     break;
                 case 'startBattle':
                     this.startBattle();
@@ -262,6 +262,9 @@ TCG.Game = function () {
                     this.units.move(event.cardId, event.x, event.y);
                     this.tryToShowNextUnitMove();
                     break;
+                case 'attack':
+                    this.units.attack(event.cardId, event.targetId);
+                    break;
                 case 'unitGetDamage':
                     this.units.damage(event.cardId, event.health, event.damage);
                     break;
@@ -274,6 +277,9 @@ TCG.Game = function () {
                     break;
                 case 'change':
                     this.units.change(event.cardId, event.dataType, event.data);
+                    break;
+                case 'cast':
+                    this.hand.removeCard(event.cardId);
                     break;
             }
         }
@@ -318,7 +324,8 @@ TCG.Game = function () {
             var dy = neibours[key][1];
             if (dx >= 0 && dy >= 0 && dx < this.width && dy < this.height) {
 
-                if (!$('.field .unit.x_' + dx + '.y_' + dy).length) {
+                var unitInCell = $('.field .unit.x_' + dx + '.y_' + dy);
+                if (!unitInCell.length || unitInCell.hasClass('dead')) {
                     // this cell is free
                     var newCell = $('.field .cell.x_' + dx + '.y_' + dy);
                     newCell.addClass('focus');

@@ -37,7 +37,7 @@ TCG.Units = function (game) {
 
     this.checkArmor = function(unit) {
         var armor = parseInt(unit.find('.armor .value').html())
-        if (armor <= 0) {
+        if (armor <= 0 || !armor) {
             unit.find('.armor').hide();
         } else {
             unit.find('.armor').show();
@@ -45,9 +45,6 @@ TCG.Units = function (game) {
     }
 
     this.deploy = function(playerId, card) {
-        // remove card from hand
-        $('.hand .card.id_' + card.id).remove();
-
         this.createUnit(card);
     }
 
@@ -62,11 +59,17 @@ TCG.Units = function (game) {
     }
 
     this.createUnit = function(card) {
-        var template = $('#template-field-unit').html();
-        Mustache.parse(template);   // optional, speeds up future uses
-        var rendered = Mustache.render(template, {card : card, x : card.unit.x, y : card.unit.y});
+        var templateCard = $('#template-field-unit').html();
+        Mustache.parse(templateCard);   // optional, speeds up future uses
+        var rendered = Mustache.render(templateCard, {card : card, x : card.unit.x, y : card.unit.y});
         var obj = $(rendered);
         this.setUnit(obj);
+        var templateInfo = $('#template-info-card').html();
+        Mustache.parse(templateInfo);   // optional, speeds up future uses
+        var renderedInfo = Mustache.render(templateInfo, {card : card});
+        obj.find('.info').popover({
+            'template' : renderedInfo
+        });
         $('.field .units').append(obj);
     }
 
@@ -81,6 +84,23 @@ TCG.Units = function (game) {
         this.setUnit(unit);
     }
 
+    this.attack = function(cardId, targetId) {
+        var unit = this.getUnitObj(cardId);
+        var target = this.getUnitObj(targetId);
+        var x = unit.data('x') * this.cellWidth;
+        var y = unit.data('y') * this.cellHeight;
+        var x2 = target.data('x') * this.cellWidth;;
+        var y2 = target.data('y') * this.cellHeight;;
+        var dx = Math.round((x2 - x)/2);
+        var dy = Math.round((y2 - y)/2);
+        unit.animate({
+            'left' : x + dx,
+            'top' : y +dy,
+        }, 500, function(el) {
+            TCG.Game.units.setUnit($(this));
+        });
+    }
+
     this.damage = function(cardId, health, damage) {
         var unit = this.getUnitObj(cardId);
         var healthObj = unit.find('.health .value');
@@ -90,17 +110,29 @@ TCG.Units = function (game) {
             return;
         }
         healthObj.html(health);
+        if (damage != 0) {
+            this.damageAnimation(unit, damage);
+        }
     }
 
-    this.armor = function(cardId, armor, aArmor) {
+    this.armor = function(cardId, armor, dArmor) {
         var unit = this.getUnitObj(cardId);
         unit.find('.armor .value').html(armor);
         this.checkArmor(unit);
+        this.armorAnimation(unit, dArmor);
     }
 
     this.death = function(cardId) {
         var unit = this.getUnitObj(cardId);
-        unit.remove();
+        unit.addClass('dead');
+        unit.animate({
+            'opacity' : 0
+        }, {
+            duration:3000,
+            'complete': function(el) {
+                $( this ).remove();
+            }
+        });
     }
 
     this.change = function(cardId, dataType, data) {
@@ -119,6 +151,34 @@ TCG.Units = function (game) {
                 keywordsObj.html(keywordsString);
                 break;
         }
+    }
+
+    this.damageAnimation = function(unit, damage) {
+        var dmgObj = $('<div></div').addClass('damage');
+        if (damage < 0) {
+            dmgObj.addClass('heal');
+            dmgObj.html('+' + (-damage + ''));    
+        } else {
+            dmgObj.html(-damage);
+        }
+        unit.prepend(dmgObj);
+        var queue = 'damage-unit-' + unit.data('id');
+        dmgObj.animate({
+            'opacity' : 0
+        }, {
+            duration:3000,
+            'queue': queue,
+            'complete': function(el) {
+                $( this ).remove();
+            }
+        });
+        dmgObj.dequeue(queue);
+        return dmgObj;
+    }
+    this.armorAnimation = function(unit, dArmor)
+    {
+        var dmgObj = this.damageAnimation(unit, -dArmor);
+        dmgObj.addClass('armor');
     }
 
     this.getUnitObj = function(cardId) {

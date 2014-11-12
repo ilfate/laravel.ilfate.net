@@ -26,6 +26,12 @@ TCG.Hand = function (game) {
         Mustache.parse(template);   // optional, speeds up future uses
         var rendered = Mustache.render(template, {card : card, isDeploy : this.game.isDeploy()});
         var obj = $(rendered);
+        this.game.units.checkArmor(obj);
         $('.hand.my-hand').append(obj);
+    }
+
+    this.removeCard = function(cardId) {
+        $('.hand .card.id_' + cardId).remove();
+        this.game.handCardInFocus = null;
     }
 }

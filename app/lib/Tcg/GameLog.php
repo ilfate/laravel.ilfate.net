@@ -20,6 +20,7 @@ class GameLog
     const LOG_TYPE_UNIT_CHANGE_ARMOR = 'unitChangeArmor';
     const LOG_TYPE_ATTACK            = 'attack';
     const LOG_TYPE_UNIT_DEATH        = 'death';
+    const LOG_TYPE_CAST              = 'cast';
     const LOG_TYPE_UNIT_CHANGE       = 'change';
 
     const RENDER_MODE_PUBLIC = 'public';
@@ -34,7 +35,9 @@ class GameLog
         self::LOG_TYPE_UNIT_GET_DAMAGE,
         self::LOG_TYPE_UNIT_CHANGE_ARMOR,
         self::LOG_TYPE_UNIT_DEATH,
+        self::LOG_TYPE_CAST,
         self::LOG_TYPE_UNIT_CHANGE,
+        self::LOG_TYPE_ATTACK,
     ];
 
     /**
@@ -186,6 +189,18 @@ class GameLog
         ];
     }
 
+    public function logCast($cardId, $spell, $data)
+    {
+        $this->log[] = [
+            self::LOG_TYPE_CAST,
+            [
+                $cardId,
+                $spell,
+                $data
+            ]
+        ];
+    }
+
     public function logUnitChange($cardId, $dataType, $data)
     {
         $this->log[] = [
@@ -198,15 +213,13 @@ class GameLog
         ];
     }
 
-    public function logAttack($unitName, $playerId, $targetName, $damage)
+    public function logAttack($cardId, $targetId)
     {
         $this->log[] = [
             self::LOG_TYPE_ATTACK,
             [
-                $unitName,
-                $playerId,
-                $targetName,
-                $damage
+                $cardId,
+                $targetId
             ]
         ];
     }
@@ -286,13 +299,22 @@ class GameLog
                     $event['health'] = $log[1][1];
                     $event['damage'] = $log[1][2];
                     break;
+                case self::LOG_TYPE_ATTACK:
+                    $event['cardId'] = $log[1][0];
+                    $event['targetId'] = $log[1][1];
+                    break;
                 case self::LOG_TYPE_UNIT_CHANGE_ARMOR:
                     $event['cardId'] = $log[1][0];
                     $event['armor']  = $log[1][1];
-                    $event['aArmor'] = $log[1][2];
+                    $event['dArmor'] = $log[1][2];
                     break;
                 case self::LOG_TYPE_UNIT_DEATH:
                     $event['cardId'] = $log[1][0];
+                    break;
+                case self::LOG_TYPE_CAST:
+                    $event['cardId'] = $log[1][0];
+                    $event['spell']  = $log[1][1];
+                    $event['data']   = $log[1][2];
                     break;
                 case self::LOG_TYPE_UNIT_CHANGE:
                     $event['cardId']   = $log[1][0];

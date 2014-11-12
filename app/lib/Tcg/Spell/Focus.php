@@ -19,7 +19,7 @@ class Focus extends Spell {
 		
 		$target->unit->addKeyword(Unit::KEYWORD_FOCUS);
 
-		$this->card->game->log->logText(__CLASS__ . " spell was cast on " . $target->unit->name );
+		//$this->card->game->log->logText(__CLASS__ . " spell was cast on " . $target->unit->name );
 	}
 
 

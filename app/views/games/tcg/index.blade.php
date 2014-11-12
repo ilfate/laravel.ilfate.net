@@ -7,6 +7,11 @@
 @stop
 
 
+@section('right-content')
+
+@include('games.tcg.order', array('field' => $game['field'], 'cardFocus' => $game['card']))
+
+@stop
 
 @section('sidebar')
 
