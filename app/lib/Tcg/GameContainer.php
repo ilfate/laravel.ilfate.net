@@ -16,6 +16,9 @@ class GameContainer {
     const PHASE_BATTLE           = 4;
     const PHASE_GAME_END         = 5;
 
+    const WIDTH = 5;
+    const HEIGHT = 5;
+
     const LOCATION_DECK  = 'decks';
     const LOCATION_HAND  = 'hands';
     const LOCATION_FIELD = 'field';
@@ -42,6 +45,10 @@ class GameContainer {
     const EVENT_TRIGGER_UNIT_MOVE_FROM_CELL = 'unit_move_from_cell';
     const EVENT_TRIGGER_UNIT_DEPLOY = 'unit_deploy';
     const EVENT_TRIGGER_UNIT_DEPLOY_TO_CELL = 'unit_deploy_to_cell';
+    const EVENT_TRIGGER_UNIT_DEATH = 'unit_death';
+
+    const IMPORT_TYPE_NORMAL = 'normal';
+    const IMPORT_TYPE_UPDATE = 'update';
 
     protected static $exportValues = array(
         'phase',
@@ -51,6 +58,7 @@ class GameContainer {
         'gameResult',
         'spellsPlayed',
         'events',
+        'eventsExpire',
     );
 
     /**
@@ -91,6 +99,11 @@ class GameContainer {
      */
     public $log;
 
+    public $gameType = 'battle';
+
+    public $data;
+    public $sessionType;
+
 
 
     /**
@@ -106,7 +119,15 @@ class GameContainer {
     public function getCard($id)
     {
         if (empty($this->cards[$id])) {
-            throw new \Exception('Card with id ' . $id. ' not found in game');
+            if ($this->sessionType == self::IMPORT_TYPE_UPDATE) {
+                if (empty($this->data['cards'][$id])) {
+                    throw new \Exception('During update we are trying to import card with id=' . $id. ', but it is missing');    
+                }
+                $this->addCard(Card::import($this->data['cards'][$id], $this));
+                return $this->cards[$id];
+            } else {
+                throw new \Exception('Card with id ' . $id. ' not found in game');
+            }
         }
         return $this->cards[$id];
     }
@@ -126,6 +147,9 @@ class GameContainer {
     public function addPlayer(Player $player)
     {
         $this->players[$player->id] = $player;
+        if (count($this->players) == 1) {
+            $player->isTopPlayer = true;
+        }
         if (!isset($this->teams[$player->team])) {
             $this->teams[$player->team] = [];
         }
@@ -152,7 +176,7 @@ class GameContainer {
         return $this->players[$this->playerTurnId]->type == Player::PLAYER_TYPE_BOT;
     }
 
-    protected function setUpCard(Card $card, $playerId)
+    public function setUpCard(Card $card, $playerId)
     {
         $newId          = count($this->cards);
         $card->id       = $newId;
@@ -163,7 +187,7 @@ class GameContainer {
         $this->decks[$playerId]->addCards([$card]);
     }
 
-    protected function createLocations()
+    public function createLocations()
     {
         foreach ($this->players as $player)
         {
@@ -175,5 +199,30 @@ class GameContainer {
         $this->field = new Field(array_keys($this->players), $this);
     }
 
+    public function isTopPlayer($playerId)
+    {
+        return $this->getPlayer($playerId)->isTopPlayer;
+    }
 
+    public function getPlayer($playerId)
+    {
+        return $this->players[$playerId];
+    }
+
+    public function convertCoordinats($x, $y, $playerId)
+    {
+        if ($this->isTopPlayer($playerId)) {
+            // yes we need to switch for top player
+            return $this->convert($x, $y);
+        }
+        return [$x, $y];
+    }
+
+    public function convert($x, $y)
+    {
+        // 0 -> 4, 1 -> 3, 2 -> 2, 3 -> 1, 4 -> 0
+        $x = (self::WIDTH - 1) - $x;
+        $y = (self::HEIGHT - 1) - $y;
+        return [$x, $y];
+    }
 }

@@ -117,7 +117,7 @@ TCG.Game = function () {
                 }
                 break;
             case 'skip' :
-                this.skip();
+                this.skip(obj);
                 break
 		}
 	}
@@ -224,10 +224,11 @@ TCG.Game = function () {
         }
     }
 
-    this.skip = function() {
+    this.skip = function(buttonObj) {
         if (this.isMyTurn()) {
+            var unit = buttonObj.parent('.unit');
             this.units.removeFocus();
-            this.action({'type' : 'skip', 'data' : {'action' : 'skip'}});
+            this.action({'type' : 'skip', 'data' : {'action' : 'skip', 'cardId' : unit.data('id')}});
         }
     }
     this.ping = function() {

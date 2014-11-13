@@ -12,7 +12,8 @@ namespace Tcg;
 trait Events {
 
 
-    public $events = [];
+    public $events       = [];
+    public $eventsExpire = [];
 
     public function triggerEvent($eventTrigger, $target, array $data = null)
     {
@@ -29,10 +30,17 @@ trait Events {
                 }
             }
         }
+        if (!empty($this->eventsExpire[$eventTrigger][$target])) {
+            $eventsToRemove = $this->eventsExpire[$eventTrigger][$target];
+            foreach ($eventsToRemove as $eventToRemove) {
+                $this->removeEvent($eventToRemove[0], $eventToRemove[1], $eventToRemove[2]);
+            }
+            unset($this->eventsExpire[$eventTrigger][$target]);
+        }
 
     }
 
-    public function addEvent($eventTrigger, $eventTarget, $event, $data, $times = null)
+    public function addEvent($eventTrigger, $eventTarget, $event, $data, $times = null, $expire = null)
     {
         if (!isset($this->events[$eventTrigger])) {
             $this->events[$eventTrigger] = [];
@@ -47,6 +55,15 @@ trait Events {
             $eventId = $lastEvent['id'] + 1;
         }
         $this->events[$eventTrigger][$eventTarget][$eventId] = ['obj' => $event, 'data' => $data, 'times' => $times, 'id' => $eventId];
+        if ($expire) {
+            foreach ($expire as $expireValue) {
+                if (!isset($this->eventsExpire[$expireValue[0]][$expireValue[1]])) {
+                    $this->eventsExpire[$expireValue[0]][$expireValue[1]] = [];
+                }
+                $this->eventsExpire[$expireValue[0]][$expireValue[1]][] = [$eventTrigger, $eventTarget, $eventId];
+            }
+            
+        }
         return $eventId;
     }
 

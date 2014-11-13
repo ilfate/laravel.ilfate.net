@@ -14,77 +14,34 @@ class Game extends GameContainer {
     /**
      * @return Game
      */
-	public static function create($currentPlayerId, $mode = 'bot')
-    {
-        
-        $player1 = new Player($currentPlayerId, 1);
-        $player2 = new Player(2, 2);
-        if ($mode == 'bot') {
-            $player2->type = Player::PLAYER_TYPE_BOT;
-        }
-
-        $game      = new Game($currentPlayerId);
-        $game->log = new GameLog($game);
-
-        $game->addPlayer($player1);
-        $game->addPlayer($player2);
-        $game->createLocations();
-
-        $configs = \Config::get('tcg.cards');
-        $deck1 = [
-            Card::createFromConfig($configs[0], $game),
-            Card::createFromConfig($configs[1], $game),
-            Card::createFromConfig($configs[2], $game),
-            Card::createFromConfig($configs[3], $game),
-            Card::createFromConfig($configs[4], $game),
-            Card::createFromConfig($configs[5], $game),
-            
-        ];
-        $deck2 = [
-            Card::createFromConfig($configs[51], $game),
-            Card::createFromConfig($configs[52], $game),
-            Card::createFromConfig($configs[53], $game),
-            Card::createFromConfig($configs[54], $game),
-            Card::createFromConfig($configs[55], $game),
-            Card::createFromConfig($configs[56], $game),
-            Card::createFromConfig($configs[57], $game),
-        ];
-        foreach ($deck2 as $card) {
-            $game->setUpCard(clone $card, $player1->id);
-            $game->setUpCard(clone $card, $player1->id);
-        }
-        foreach ($deck1 as $card) {
-            $game->setUpCard(clone $card, $player2->id);
-            $game->setUpCard(clone $card, $player2->id);
-        }
-        
-        $game->gameAutoActions();
-        return $game;
-    }
-
-    /**
-     * @return Game
-     */
-    public static function import($data, $currentPlayerId)
+    public static function import($type, $data, $currentPlayerId)
     {
         $game = new Game($currentPlayerId);
+        $game->sessionType = $type;
 
         foreach ($data['players'] as $player) {
             $game->addPlayer(Player::import($player));
         }
-        foreach ($data['decks'] as $deck) {
-            $game->addDeck(Deck::import($deck));
+
+        if ($type == self::IMPORT_TYPE_NORMAL) {
+            
+            foreach ($data['decks'] as $deck) {
+                $game->addDeck(Deck::import($deck));
+            }
+            foreach ($data['hands'] as $hand) {
+                $game->addHand(Hand::import($hand));
+            }
+            foreach ($data['graves'] as $grave) {
+                $game->addGrave(Grave::import($grave));
+            }
+            foreach ($data['cards'] as $card) {
+                $game->addCard(Card::import($card, $game));
+            }
+            $game->field = Field::importField($data['field'], array_keys($game->players), $game);
+        } else if($type == self::IMPORT_TYPE_UPDATE) {
+            $game->data = $data;
         }
-        foreach ($data['hands'] as $hand) {
-            $game->addHand(Hand::import($hand));
-        }
-        foreach ($data['graves'] as $grave) {
-            $game->addGrave(Grave::import($grave));
-        }
-        foreach ($data['cards'] as $card) {
-            $game->addCard(Card::import($card, $game));
-        }
-        $game->field = Field::importField($data['field'], array_keys($game->players), $game);
+        
         $game->log   = GameLog::import($data['log'], $game);
 
         foreach (self::$exportValues as $valueName) {
@@ -97,30 +54,36 @@ class Game extends GameContainer {
     public function export()
     {
         $game = $players = $decks = $hands = $graves = [];
+        if ($this->sessionType == self::IMPORT_TYPE_UPDATE) {
+            $game = $this->data;
+        }
 
         foreach ($this->players as $playerId => $player) {
             $players[] = $player->export();
-            $decks[] = $this->decks[$playerId]->export();
-            $hands[] = $this->hands[$playerId]->export();
-            $graves[] = $this->graves[$playerId]->export();
+            if ($this->sessionType == self::IMPORT_TYPE_NORMAL) {
+                $decks[] = $this->decks[$playerId]->export();
+                $hands[] = $this->hands[$playerId]->export();
+                $graves[] = $this->graves[$playerId]->export();
+            }
         }
         $game['players'] = $players;
-        $game['decks']   = $decks;
-        $game['hands']   = $hands;
-        $game['graves']  = $graves;
+        if ($decks) { $game['decks']   = $decks; }
+        if ($hands) { $game['hands']   = $hands; }
+        if ($graves) { $game['graves'] = $graves; }
 
         foreach (self::$exportValues as $valueName) {
             $game[$valueName] = $this->{$valueName};
         }
-
-        $game['field'] = $this->field->export();
-        $game['log']   = $this->log->export();
-
-        $cards = [];
-        foreach ($this->cards as $card) {
-            $cards[] = $card->export();
+        if ($this->sessionType == self::IMPORT_TYPE_NORMAL) {
+            $game['field'] = $this->field->export();
+            $cards = [];
+            foreach ($this->cards as $card) {
+                $cards[$card->id] = $card->export();
+            }
+            $game['cards'] = $cards;
         }
-        $game['cards'] = $cards;
+        $game['log'] = $this->log->export();
+        
         return $game;
     }
 
@@ -176,6 +139,9 @@ class Game extends GameContainer {
 
     public function action($name, $data = [])
     {
+        if ($this->sessionType == Game::IMPORT_TYPE_UPDATE) {
+            throw new \Exception("There is no way to do actions during ping!", 1);
+        }
         if ($this->phase == self::PHASE_GAME_END) {
             return;
         }
@@ -187,15 +153,7 @@ class Game extends GameContainer {
                 break;
 
             case self::GAME_ACTION_SKIP:
-                if ($this->phase == self::PHASE_UNIT_DEPLOYING) {
-                    if ($this->currentPlayerId != $this->playerTurnId) {
-                        throw new \Exception('not this player turn to skip');
-                    }
-                    $this->players[$this->currentPlayerId]->skippedTurn = true;
-                    $this->nextTurn();
-                } else if($this->phase == self::PHASE_BATTLE) {
-                    $this->unitAttack();
-                }
+                $this->actionSkip($data['cardId']);
                 break;
 
             case self::GAME_ACTION_MOVE:
@@ -222,11 +180,11 @@ class Game extends GameContainer {
         if ($card->owner != $this->playerTurnId) {
             throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to do deploy not on his turn", 1);
         }
-        if ($y < Field::HEIGHT - 2) {
+        if ($y < Game::HEIGHT - 2) {
             throw new \Exception("This field is forbidden for deploy", 1);
         }
 
-        list($x, $y) = $this->field->convertCoordinats($x, $y, $card->owner);
+        list($x, $y) = $this->convertCoordinats($x, $y, $card->owner);
         $card->unit->x = $x;
         $card->unit->y = $y;
         $this->moveCards([$card], self::LOCATION_HAND, self::LOCATION_FIELD);
@@ -243,11 +201,27 @@ class Game extends GameContainer {
             throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to move not his unit", 1);
         }
         if ($card->owner != $this->playerTurnId) {
-            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to do deploy not on his turn", 1);
+            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to move not on his turn", 1);
         }
         $leftSteps = $this->field->moveUnit($card, $x, $y);
 
         if (!$leftSteps) {
+            $this->unitAttack();
+        }
+    }
+
+    protected function actionSkip($cardId) 
+    {
+        if ($this->currentPlayerId != $this->playerTurnId) {
+                throw new \Exception('Player with id = ' . $this->currentPlayerId . ' is trying to Skip not on his turn');
+            }
+        if ($this->phase == self::PHASE_UNIT_DEPLOYING) {
+            $this->players[$this->currentPlayerId]->skippedTurn = true;
+            $this->nextTurn();
+        } else if($this->phase == self::PHASE_BATTLE) {
+            if ($cardId != $this->currentCardId) {
+                throw new \Exception('Player with id = ' . $this->currentPlayerId . ' is trying to Skip with cardId = ' . $cardId . ' when it is turn of ' . $this->currentCardId);    
+            }
             $this->unitAttack();
         }
     }
@@ -276,7 +250,7 @@ class Game extends GameContainer {
         switch ($this->phase) {
             case self::PHASE_GAME_NOT_STARTED:
                 // the game is just created
-                $handSize = \Config::get('tcg.game.handDraw');
+                $handSize = \Config::get('tcg.game.' . $this->gameType . '.handDraw');
                 foreach ($this->players as $playerId => $player) {
                     $this->drawCards($playerId, $handSize);
                 }
@@ -352,7 +326,7 @@ class Game extends GameContainer {
         $this->log->logStartBattle();
 
         foreach ($this->players as $id => $player) {
-            $this->drawCards($id, \Config::get('tcg.game.spellsDraw'));
+            $this->drawCards($id, \Config::get('tcg.game.' . $this->gameType . '.spellsDraw'));
         }
         $this->turnNumber = 1;
 

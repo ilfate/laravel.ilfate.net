@@ -9,8 +9,7 @@ namespace Tcg;
 
 class Field extends Location {
 
-	const WIDTH = 5;
-	const HEIGHT = 5;
+
 
 	/**
 	 * First player is on top.
@@ -39,7 +38,7 @@ class Field extends Location {
     {
     	$x = $card->unit->x;
     	$y = $card->unit->y;
-        if ($x >= self::WIDTH || $y >= self::HEIGHT || $x < 0 || $y < 0) {
+        if ($x >= Game::WIDTH || $y >= Game::HEIGHT || $x < 0 || $y < 0) {
             throw new \Exception("Unit added to field has wrong X or Y", 1);    
         }
         if (isset($this->map[$x][$y])) {
@@ -59,22 +58,10 @@ class Field extends Location {
     public function render($playerId, $isBattle)
     {
     	$data = [
-    		'width'  => self::WIDTH,
-    		'height' => self::HEIGHT,
+    		'width'  => Game::WIDTH,
+    		'height' => Game::HEIGHT,
     		'cards'  => $this->cards,
     	];
-//     	foreach ($this->map as $x => $col) {
-//     		foreach ($col as $y => $cardId) {
-// //                list($x1, $y1) = [$x, $y];
-// //    			if ($this->getTopPlayer() == $playerId) {
-// //    				list($x1, $y1) = $this->convert($x, $y);
-// //
-// //    			}
-//     			$data['cards'][] = $cardId;
-//     		}
-//     	}
-
-        // $data['order'] = $this->cards;
         
     	return $data;
     }
@@ -108,14 +95,7 @@ class Field extends Location {
         return $location;
     }
 
-    public function convertCoordinats($x, $y, $playerId)
-    {
-    	if ($this->getTopPlayer() == $playerId) {
-    		// yes we need to switch for top player
-    		return $this->convert($x, $y);
-    	}
-        return [$x, $y];
-    }
+
 
     public function removeUnit(Card $card)
     {
@@ -130,19 +110,6 @@ class Field extends Location {
         $key = array_search($card->id, $this->cards);
         unset($this->cards[$key]);
         $this->cards = array_diff( $this->cards, array( null ) );
-    }
-
-    protected function convert($x, $y)
-    {
-        // 0 -> 4, 1 -> 3, 2 -> 2, 3 -> 1, 4 -> 0
-    	$x = (self::WIDTH - 1) - $x;
-    	$y = (self::HEIGHT - 1) - $y;
-    	return [$x, $y];
-    }
-
-    public function getTopPlayer()
-    {
-    	return $this->players[0];
     }
 
     public function addCards(array $cards)
@@ -166,10 +133,10 @@ class Field extends Location {
 
     public function moveUnit(Card $card, $x, $y)
     {
-        if ($x >= self::WIDTH || $x < 0 || $y >= self::HEIGHT || $y < 0) {
+        if ($x >= Game::WIDTH || $x < 0 || $y >= Game::HEIGHT || $y < 0) {
             throw new \Exception("unit moved out of the field");
         }
-        list($x, $y) = $this->convertCoordinats($x, $y, $card->owner);
+        list($x, $y) = $this->game->convertCoordinats($x, $y, $card->owner);
         if (isset($this->map[$x][$y])) {
             throw new \Exception('Cant move to occupied cell');
         }
@@ -190,8 +157,8 @@ class Field extends Location {
     {
         $freeCells = $this->getFreeDeployCells($playerId);
         list($x, $y) = $freeCells[array_rand($freeCells)];
-        if ($this->getTopPlayer() == $playerId) {
-            list($x, $y) = $this->convert($x, $y);
+        if ($this->game->isTopPlayer($playerId)) {
+            list($x, $y) = $this->game->convert($x, $y);
         }
         return [$x, $y];
     }
@@ -217,7 +184,7 @@ class Field extends Location {
 
     public function getRelativeCoordinats($dx, $dy, $card)
     {
-        if ($this->getTopPlayer() == $card->owner) {
+        if ($this->game->isTopPlayer($card->owner)) {
             // this is top player we need to switch
             $dx = -$dx;
             $dy = -$dy;
@@ -232,7 +199,7 @@ class Field extends Location {
         $result = [];
         for($dx = $x - $range; $dx <= $x + $range; $dx++) {
             for($dy = $y - $range; $dy <= $y + $range; $dy++) {
-                if (($x == $dx && $y == $dy) || $dx < 0 || $dy < 0 || $dx >= self::WIDTH || $dy >= self::HEIGHT) {
+                if (($x == $dx && $y == $dy) || $dx < 0 || $dy < 0 || $dx >= Game::WIDTH || $dy >= Game::HEIGHT) {
                     continue;
                 }
                 if (isset($this->map[$dx][$dy])) {
@@ -249,15 +216,15 @@ class Field extends Location {
 
     public function getFreeDeployCells($playerId)
     {
-        if ($this->getTopPlayer() == $playerId) {
+        if ($this->game->isTopPlayer($playerId)) {
             $y1 = 0;
             $y2 = 1;
         } else {
-            $y1 = self::HEIGHT - 2;
-            $y2 = self::HEIGHT;
+            $y1 = Game::HEIGHT - 2;
+            $y2 = Game::HEIGHT;
         }
         $freeCells = [];
-        for ($x = 0; $x < self::WIDTH; $x++) {
+        for ($x = 0; $x < Game::WIDTH; $x++) {
             for ($y = $y1; $y < $y2; $y++) {
                 if (!isset($this->map[$x][$y])) {
                     $freeCells[] = [$x, $y];

@@ -71,38 +71,63 @@ class ChangeUnitInFront extends Event {
                 Game::EVENT_TRIGGER_UNIT_MOVE_TO_CELL,
                 $x . '_' . $y,
                 '\Tcg\Events\ChangeUnit',
-                ['action' => $this->data['action'], 'value' => $this->data['value']]
+                ['action' => $this->data['action'], 'value' => $this->data['value']],
+                null, [[Game::EVENT_TRIGGER_BEFORE_UNIT_MOVE, $card->id], [Game::EVENT_TRIGGER_UNIT_DEATH, $card->id]]
             );
 
             $moveToCellEventId2 = $this->game->addEvent(
                 Game::EVENT_TRIGGER_UNIT_MOVE_FROM_CELL,
                 $x . '_' . $y,
                 '\Tcg\Events\ChangeUnit',
-                ['action' => self::$opposite[$this->data['action']], 'value' => $this->data['value']]
+                ['action' => self::$opposite[$this->data['action']], 'value' => $this->data['value']],
+                null, [[Game::EVENT_TRIGGER_BEFORE_UNIT_MOVE, $card->id], [Game::EVENT_TRIGGER_UNIT_DEATH, $card->id]]
             );
-
-            $this->game->addEvent(
-                Game::EVENT_TRIGGER_BEFORE_UNIT_MOVE,
-                $card->id,
-                '\Tcg\Events\RemoveEvent',
-                [
-                    'eventTrigger' => Game::EVENT_TRIGGER_UNIT_MOVE_TO_CELL,
-                    'eventTarget' => $x . '_' . $y,
-                    'eventId' => [$moveToCellEventId]
-                ],
-                1
-            );
-            $this->game->addEvent(
-                Game::EVENT_TRIGGER_BEFORE_UNIT_MOVE,
-                $card->id,
-                '\Tcg\Events\RemoveEvent',
-                [
-                    'eventTrigger' => Game::EVENT_TRIGGER_UNIT_MOVE_FROM_CELL,
-                    'eventTarget' => $x . '_' . $y,
-                    'eventId' => [$moveToCellEventId2]
-                ],
-                1
-            );
+            // // when the source will live
+            // $this->game->addEvent(
+            //     Game::EVENT_TRIGGER_BEFORE_UNIT_MOVE,
+            //     $card->id,
+            //     '\Tcg\Events\RemoveEvent',
+            //     [
+            //         'eventTrigger' => Game::EVENT_TRIGGER_UNIT_MOVE_TO_CELL,
+            //         'eventTarget' => $x . '_' . $y,
+            //         'eventId' => [$moveToCellEventId]
+            //     ],
+            //     1
+            // );
+            // $this->game->addEvent(
+            //     Game::EVENT_TRIGGER_BEFORE_UNIT_MOVE,
+            //     $card->id,
+            //     '\Tcg\Events\RemoveEvent',
+            //     [
+            //         'eventTrigger' => Game::EVENT_TRIGGER_UNIT_MOVE_FROM_CELL,
+            //         'eventTarget' => $x . '_' . $y,
+            //         'eventId' => [$moveToCellEventId2]
+            //     ],
+            //     1
+            // );
+            // // when the source will die
+            // $this->game->addEvent(
+            //     Game::EVENT_TRIGGER_UNIT_DEATH,
+            //     $card->id,
+            //     '\Tcg\Events\RemoveEvent',
+            //     [
+            //         'eventTrigger' => Game::EVENT_TRIGGER_UNIT_MOVE_TO_CELL,
+            //         'eventTarget' => $x . '_' . $y,
+            //         'eventId' => [$moveToCellEventId]
+            //     ],
+            //     1, [[Game::EVENT_TRIGGER_BEFORE_UNIT_MOVE, $card->id]] 
+            // );
+            // $this->game->addEvent(
+            //     Game::EVENT_TRIGGER_UNIT_DEATH,
+            //     $card->id,
+            //     '\Tcg\Events\RemoveEvent',
+            //     [
+            //         'eventTrigger' => Game::EVENT_TRIGGER_UNIT_MOVE_FROM_CELL,
+            //         'eventTarget' => $x . '_' . $y,
+            //         'eventId' => [$moveToCellEventId2]
+            //     ],
+            //     1, [Game::EVENT_TRIGGER_BEFORE_UNIT_MOVE, $card->id]
+            // );
         }
     }
 }

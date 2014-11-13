@@ -2,8 +2,14 @@
 
 return array(
     'game' => [
-        'handDraw'   => 5,
-        'spellsDraw' => 2,
+        'battle' => [
+            'handDraw'   => 5,
+            'spellsDraw' => 2,
+        ],
+        'debug' => [
+            'handDraw'   => 2,
+            'spellsDraw' => 2,
+        ],
     ],
     'cards' => array(
         0 => ['card' => 0, 'unit' => 0, 'spell' => 0],

@@ -13,10 +13,10 @@
 
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
 
-    <meta content="ilfate ilya rubinchik ilya_rubinchik php web developer" name="keywords">
-    <meta content="Rubinchik Ilya`s personal site" name="description">
+    <meta content="tcg card game ilfate ilya rubinchik" name="keywords">
+    <meta content="Tcg - card game" name="description">
     <meta property="og:site_name" content="Ilfate">
-    <meta property="og:title" content="Ilfate - Rubinchik Ilya. Personal Site.">
+    <meta property="og:title" content="TCG - for The Command: Gambit">
     <meta property="og:image" content="/images/ilfate.png">
 
 </head>

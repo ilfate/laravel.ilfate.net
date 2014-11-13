@@ -23,6 +23,8 @@ class Player
 
     public $skippedTurn = false;
 
+    public $isTopPlayer = false;
+
     /**
      * player || bot
      * @var string
@@ -40,6 +42,7 @@ class Player
         $player                = new Player($data['id'], $data['team']);
         $player->type          = $data['type'];
         $player->lastEventSeen = $data['lastEventSeen'];
+        $player->isTopPlayer   = $data['isTopPlayer'];
         return $player;
     }
 
@@ -50,6 +53,7 @@ class Player
             'type'          => $this->type,
             'team'          => $this->team,
             'lastEventSeen' => $this->lastEventSeen,
+            'isTopPlayer'   => $this->isTopPlayer,
         ];
 
         return $data;

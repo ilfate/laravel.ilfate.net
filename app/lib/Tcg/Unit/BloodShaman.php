@@ -64,5 +64,11 @@ class BloodShaman extends Unit {
             ],
             1
         );
+        $deployEventId = $this->card->game->addEvent(
+            Game::EVENT_TRIGGER_UNIT_DEATH,
+            $this->card->id,
+            '\Tcg\Events\ChangeUnitInFront',
+            ['action' => ChangeUnitInFront::ACTION_REMOVE_KEYWORD, 'value' => ['word' => $keyword]]
+        );
     }
 }

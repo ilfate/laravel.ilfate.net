@@ -272,7 +272,7 @@ class GameLog
             ];
             switch ($log[0]) {
                 case self::LOG_TYPE_DEPLOY:
-                    $card              = $this->game->cards[$log[1][1]];
+                    $card              = $this->game->getCard($log[1][1]);
                     $event['playerId'] = $log[1][0];
                     $event['card']     = $card->render($this->game->currentPlayerId);
                     break;
@@ -280,7 +280,7 @@ class GameLog
                     break;
                 case self::LOG_TYPE_CARD_DRAW:
                     if ($this->game->currentPlayerId == $log[1][0]) {
-                        $event['card'] = $this->game->cards[$log[1][1]]->render($log[1][0]);
+                        $event['card'] = $this->game->getCard($log[1][1])->render($log[1][0]);
                     } else {
                         $event['card'] = true;
                     }
@@ -288,7 +288,7 @@ class GameLog
                     break;
                 case self::LOG_TYPE_MOVE:
                     $event['cardId'] = $log[1][0];
-                    list($event['x'], $event['y']) = $this->game->field->convertCoordinats(
+                    list($event['x'], $event['y']) = $this->game->convertCoordinats(
                         $log[1][1],
                         $log[1][2],
                         $this->game->currentPlayerId

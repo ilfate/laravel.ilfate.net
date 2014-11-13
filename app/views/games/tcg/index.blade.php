@@ -20,8 +20,9 @@ Turn player: <span class="playerTurnId">{{{$game['js']['playerTurnId']}}}</span>
 Turn number: {{{$game['js']['turnNumber']}}} <br>
 
 <h3>Actions</h3>
-<a class="btn btn-primary" href="/tcg/clear">Clear the game</a><br><br>
-<a class="btn btn-primary" href="/tcg/action?action=skip">Skip movement</a>
+<a class="btn btn-primary" href="/tcg/clear">Clear And create Battle</a><br><br>
+<a class="btn btn-primary" href="/tcg/clear?debug=true">Clear And create Debug Game</a><br><br>
+<a class="btn btn-primary" href="/tcg/clear?debug=true&bot=true">Clear And create Debug Game with Bot</a><br><br>
 
 <script>
 	$(document).ready(function() {

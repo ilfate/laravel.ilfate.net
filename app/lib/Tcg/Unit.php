@@ -134,10 +134,8 @@ class Unit
             'config' => $this->config,
             'attack' => $this->attack,
         ];
-        list ($x, $y) = $this->card->game->field->convertCoordinats($this->x, $this->y, $playerId);
-        //list($x, $y) = [$this->x, $this->y];
-//        $data['x'] = empty($extData['x']) ? $this->x : $extData['x'];
-//        $data['y'] = empty($extData['y']) ? $this->y : $extData['y'];
+        list ($x, $y) = $this->card->game->convertCoordinats($this->x, $this->y, $playerId);
+
         $data['x'] = $x;
         $data['y'] = $y;
         $data['keywords'] = $this->keywords;
@@ -292,9 +290,10 @@ class Unit
 
     public function death()
     {
-        $this->card->game->triggerEvent(Game::EVENT_UNIT_DEATH, ['target' => $this]);
+        //$this->card->game->triggerEvent(Game::EVENT_UNIT_DEATH, ['target' => $this]);
         $this->card->game->moveCards([$this->card], Game::LOCATION_FIELD, GAME::LOCATION_GRAVE);
         $this->card->game->log->logDeath($this->card->id);
+        $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_DEATH, $this->card->id);
     }
 
     public function move($x, $y)
