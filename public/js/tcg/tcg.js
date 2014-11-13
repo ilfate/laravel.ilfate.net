@@ -261,10 +261,11 @@ TCG.Game = function () {
                     break;
                 case 'move':
                     this.units.move(event.cardId, event.x, event.y);
-                    this.tryToShowNextUnitMove();
+                    newTurn = true;
                     break;
                 case 'attack':
                     this.units.attack(event.cardId, event.targetId);
+                    newTurn = true;
                     break;
                 case 'unitGetDamage':
                     this.units.damage(event.cardId, event.health, event.damage);

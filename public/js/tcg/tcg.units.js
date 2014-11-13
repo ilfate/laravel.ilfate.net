@@ -6,6 +6,7 @@ TCG.Units = function (game) {
     this.game = game;
     this.cellHeight = 110;
     this.cellWidth = 110;
+    this.animationsInQueue = [];
 
     this.init = function() {
         $('.field .unit').each(function() {
