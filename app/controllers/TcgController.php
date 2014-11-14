@@ -100,8 +100,13 @@ class TcgController extends \BaseController
         Cache::forget('tcg.userGame');
         $debug = Input::get('debug', false);
         $bot = Input::get('bot', false);
-        if ($debug || $bot) {
-            $this->game = GameBuilder::build(1, ['isBot' => $bot, 'debug' => $debug]);
+        $situation = Input::get('situation', false);
+        if ($debug || $bot || $situation) {
+            if ($situation) {
+                $this->game = GameBuilder::buildSituation(1, [], ['isBot' => $bot]);
+            } else {
+                $this->game = GameBuilder::build(1, ['isBot' => $bot, 'debug' => $debug]);
+            }
             $this->save();
         }   
         return Redirect::to('tcg');

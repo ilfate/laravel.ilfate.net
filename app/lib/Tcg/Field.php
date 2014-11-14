@@ -47,11 +47,13 @@ class Field extends Location {
     	if (!isset($this->map[$x])) {
     		$this->map[$x] = [];
     	}
+
     	$this->map[$x][$y] = $card->id;
         if (!isset($this->playerUnits[$card->owner])) {
             $this->playerUnits[$card->owner] = [];
         }
         $this->playerUnits[$card->owner][] = $card->id;
+        //var_dump($this->playerUnits); die;
         $this->cards[] = $card->id;
     }
 

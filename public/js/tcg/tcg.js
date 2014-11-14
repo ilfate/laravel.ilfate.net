@@ -283,6 +283,10 @@ TCG.Game = function () {
                 case 'cast':
                     this.hand.removeCard(event.cardId);
                     break;
+                case 'skip':
+                    newTurn = true;
+                    this.units.bounce(event.cardId);
+                    break;
             }
         }
         this.postProcessGameUpdate(newTurn);
@@ -302,6 +306,7 @@ TCG.Game = function () {
         return newTurn;
     }
     this.postProcessGameUpdate = function(newTurn) {
+        this.units.runAnimations();
         if (newTurn) {
             this.tryToShowNextUnitMove();
         }

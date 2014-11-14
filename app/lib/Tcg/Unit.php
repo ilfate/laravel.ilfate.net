@@ -393,7 +393,7 @@ class Unit
         $this->card->game->triggerEvent(Game::EVENT_TRIGGER_AFTER_UNIT_MOVE, $this->card->id);
     }
     protected function attackNoTargets() {
-
+        $this->card->game->log->logUnitSkip($this->card->id);
     }
     
 }

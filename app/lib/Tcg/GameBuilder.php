@@ -61,4 +61,74 @@ class GameBuilder {
         $game->gameAutoActions();
         return $game;
 	}
+
+    public static function buildSituation($currentPlayerId, $situation, $config)
+    {
+        $situation = [
+            'cards' => [
+                [
+                    'id'    => 1,
+                    'owner' => 1,
+                    'x' => 3,
+                    'y' => 2,
+                    'currentHealth' => 10,
+                    'armor' => 12,
+                    'maxHealth' => 99,
+                    'isCurrent' => true,
+                ],
+                [
+                    'id'    => 1,
+                    'owner' => 2,
+                    'x' => 3,
+                    'y' => 1,
+                    'currentHealth' => 10,
+                    'keywords' => ['focus'],
+                    'maxHealth' => 99
+                ],
+            ],
+            'playerTurnId' => 1,
+        ];
+
+        $game      = new Game($currentPlayerId);
+        $game->log = new GameLog($game);
+        $game->sessionType = Game::IMPORT_TYPE_NORMAL;
+
+        $player1 = new Player($currentPlayerId, 1);
+        $player2 = new Player(2, 2);
+        if (!empty($config['isBot'])) {
+            $player2->type = Player::PLAYER_TYPE_BOT;
+        }
+
+        $game->addPlayer($player1);
+        $game->addPlayer($player2);
+        $game->createLocations();
+        $game->playerTurnId = $situation['playerTurnId'];
+
+        $configs = \Config::get('tcg.cards');
+        foreach ($situation['cards'] as $cardData) {
+            $card = Card::createFromConfig($configs[$cardData['id']], $game);
+            $card->init();
+            $card->unit->deploy();
+            $game->setUpCard($card, $cardData['owner']);
+            $x = $cardData['x'];
+            $y = $cardData['y'];
+            list($x, $y) = $game->convertCoordinats($x, $y, $card->owner);
+            //var_dump($card); die;
+            $card->unit->x = $x;
+            $card->unit->y = $y;
+            $game->moveCards([$card], Game::LOCATION_HAND, Game::LOCATION_FIELD);
+            $keys = ['currentHealth', 'armor', 'maxArmor' , 'keywords', 'attack', 'maxHealth'];
+            foreach ($keys as $keyName) {
+                if (isset($cardData[$keyName])) {
+                    $card->unit->{$keyName} = $cardData[$keyName];
+                }
+            }
+            if (isset($cardData['isCurrent'])) {
+                $game->currentCardId = $card->id;
+            }
+        }
+        $game->phase = Game::PHASE_BATTLE;
+        $game->gameAutoActions();
+        return $game;
+    }
 }

@@ -23,6 +23,9 @@ Turn number: {{{$game['js']['turnNumber']}}} <br>
 <a class="btn btn-primary" href="/tcg/clear">Clear And create Battle</a><br><br>
 <a class="btn btn-primary" href="/tcg/clear?debug=true">Clear And create Debug Game</a><br><br>
 <a class="btn btn-primary" href="/tcg/clear?debug=true&bot=true">Clear And create Debug Game with Bot</a><br><br>
+<a class="btn btn-primary" href="/tcg/clear?situation=true">Create Situation</a><br><br>
+<a class="btn btn-primary" href="/tcg/clear?situation=true&bot=true">Create Situation with Bot</a><br><br>
+
 
 <script>
 	$(document).ready(function() {

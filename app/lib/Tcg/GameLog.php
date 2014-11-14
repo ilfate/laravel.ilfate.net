@@ -22,6 +22,8 @@ class GameLog
     const LOG_TYPE_UNIT_DEATH        = 'death';
     const LOG_TYPE_CAST              = 'cast';
     const LOG_TYPE_UNIT_CHANGE       = 'change';
+    const LOG_TYPE_UNIT_SKIP         = 'skip';
+    
 
     const RENDER_MODE_PUBLIC = 'public';
     const RENDER_MODE_ADMIN  = 'admin';
@@ -38,6 +40,7 @@ class GameLog
         self::LOG_TYPE_CAST,
         self::LOG_TYPE_UNIT_CHANGE,
         self::LOG_TYPE_ATTACK,
+        self::LOG_TYPE_UNIT_SKIP,
     ];
 
     /**
@@ -223,6 +226,15 @@ class GameLog
             ]
         ];
     }
+    public function logUnitSkip($cardId)
+    {
+        $this->log[] = [
+            self::LOG_TYPE_UNIT_SKIP,
+            [
+                $cardId
+            ]
+        ];
+    }
 
     protected function renderMessage($type, $data)
     {
@@ -320,6 +332,9 @@ class GameLog
                     $event['cardId']   = $log[1][0];
                     $event['dataType'] = $log[1][1];
                     $event['data']     = $log[1][2];
+                    break;
+                case self::LOG_TYPE_UNIT_SKIP:
+                    $event['cardId'] = $log[1][0];
                     break;
                 default :
                     throw new \Exception('Not implemented log update render');

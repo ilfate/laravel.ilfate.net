@@ -67,10 +67,11 @@ min-height: 900px;
 }
 .field .cell {
     margin: 1px;
-	width:110px;
-	height:110px;
+	width:120px;
+	height:120px;
 	float:left;
 	border: 1px solid #494949;
+	border-radius: 3px;
 }
 
 .field .cell.focus {
@@ -79,9 +80,10 @@ min-height: 900px;
 }
 
 .field .unit {
-	width: 110px;
-	height: 110px;
+	width: 120px;
+	height: 120px;
     position: absolute;
+    text-align: center;
 }
 .field .unit.focus {
     font-weight: bold;
@@ -92,6 +94,47 @@ min-height: 900px;
 .field .unit.focus .skip {
     display: inline;
 }
+
+.field .unit .middle-panel {
+	width: 90%;
+	text-align: center;
+	background-color: #DDDDDD;
+	position: absolute;
+
+	bottom: 26px;
+	left: 3px;
+}
+
+.field .unit .keywords {
+
+}
+
+
+.field .unit .health-panel {
+	position: absolute;
+	bottom: 3px;
+	left: 3px;
+}
+
+.field .unit .info {
+	width: 16px;
+	height: 20px;
+	position:absolute;
+	bottom: 3px;
+	right: 3px;
+}
+
+.field .info-card {
+	font-weight: normal;
+	margin: 5px;
+	width:150px;
+	height: 200px;
+
+	border: 1px solid #494949;
+    cursor: pointer;
+    background-color: #FFFFFF;
+}
+
 .field .unit .damage {
     position: absolute;
     font-size: 40px;
@@ -106,15 +149,4 @@ min-height: 900px;
 }
 .field .unit .damage.armor {
 	color: blue;
-}
-
-.field .info-card {
-	margin: 5px;
-	width:150px;
-	height: 200px;
-
-	border: 1px solid #494949;
-    cursor: pointer;
-    background-color: #FFFFFF;
-
 }
