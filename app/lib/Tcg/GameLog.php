@@ -56,6 +56,8 @@ class GameLog
      */
     protected $log = [];
 
+    public $newActions = [];
+
     public function __construct(Game $game)
     {
         $this->game = $game;
@@ -96,144 +98,150 @@ class GameLog
 
     public function logText($text)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_TEXT,
             [
                 $text
             ]
-        ];
+        );
     }
 
     public function logAction($actionName, $data, $playerId)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_PLAYER_ACTION,
             [
                 $actionName,
                 $data,
                 $playerId
             ]
-        ];
+        );
     }
 
     public function logDeploy($playerId, $cardId)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_DEPLOY,
             [
                 $playerId,
                 $cardId
             ]
-        ];
+        );
     }
 
     public function logStartBattle()
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_START_BATTLE,
             []
-        ];
+        );
     }
 
     public function logDraw($playerId, $cardId)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_CARD_DRAW,
             [
                 $playerId,
                 $cardId
             ]
-        ];
+        );
     }
 
     public function logMove($cardId, $x, $y)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_MOVE,
             [
                 $cardId,
                 $x,
                 $y
             ]
-        ];
+        );
     }
 
     public function logUnitGetDamage($cardId, $health, $damage)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_UNIT_GET_DAMAGE,
             [
                 $cardId,
                 $health,
                 $damage
             ]
-        ];
+        );
     }
 
     public function logUnitChangeArmor($cardId, $armor, $dArmor)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_UNIT_CHANGE_ARMOR,
             [
                 $cardId,
                 $armor,
                 $dArmor
             ]
-        ];
+        );
     }
 
     public function logDeath($cardId)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_UNIT_DEATH,
             [
                 $cardId
             ]
-        ];
+        );
     }
 
     public function logCast($cardId, $spell, $data)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_CAST,
             [
                 $cardId,
                 $spell,
                 $data
             ]
-        ];
+        );
     }
 
     public function logUnitChange($cardId, $dataType, $data)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_UNIT_CHANGE,
             [
                 $cardId,
                 $dataType,
                 $data
             ]
-        ];
+        );
     }
 
     public function logAttack($cardId, $targetId)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_ATTACK,
             [
                 $cardId,
                 $targetId
             ]
-        ];
+        );
     }
     public function logUnitSkip($cardId)
     {
-        $this->log[] = [
+        $this->addLog(
             self::LOG_TYPE_UNIT_SKIP,
             [
                 $cardId
             ]
-        ];
+        );
+    }
+
+    protected function addLog($type, $data)
+    {
+        $this->log[] = [$type, $data];
+        $this->newActions[] = [$type, $data];
     }
 
     protected function renderMessage($type, $data)

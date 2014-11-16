@@ -1,7 +1,10 @@
+<?php /*
+ <div class="name" >{{card.unit.config.name}}({{card.id}})</div>
+ */ ?>
 
 <script id="template-field-unit" type="x-tmpl-mustache">
     <div class="card unit id_{{card.id}} x_{{x}} y_{{y}}" data-id="{{card.id}}" data-x="{{x}}" data-y="{{y}}"  data-active="false">
-        <div class="name" >{{card.unit.config.name}}({{card.id}})</div>
+
         
         <div class="middle-panel">
             <div class="attack">

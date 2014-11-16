@@ -10,6 +10,7 @@ namespace Tcg;
 class Game extends GameContainer {
 
     use Events;
+    use Sockets;
 
     /**
      * @return Game
@@ -47,8 +48,14 @@ class Game extends GameContainer {
         foreach (self::$exportValues as $valueName) {
             $game->{$valueName} = $data[$valueName];
         }
-
+        $game->start();
         return $game;
+    }
+
+    public function start()
+    {
+        $this->initSockets();
+        $this->setUpPlayersKeys();
     }
 
     public function export()
@@ -97,6 +104,7 @@ class Game extends GameContainer {
                 'card'            => $this->currentCardId,
                 'playerTurnId'    => $this->playerTurnId,
                 'turnNumber'      => $this->turnNumber,
+                'subscriptionKey' => $this->getPlayerKey($this->currentPlayerId),
                 //'isIm'
                 'currentPlayerId' => $this->currentPlayerId
             ],
@@ -128,13 +136,26 @@ class Game extends GameContainer {
         $data = [];
         $lastEvent = $this->players[$this->currentPlayerId]->lastEventSeen;
         $data['log'] = $this->log->renderUpdate($lastEvent);
-        $data['game'] = [
+        $data['game'] = $this->getGameUpdate();
+        $this->players[$this->currentPlayerId]->lastEventSeen = $this->log->getNextEventId();
+        return $data;
+    }
+
+    protected function getGameUpdate()
+    {
+        return [
             'turnNumber'   => $this->turnNumber,
             'playerTurnId' => $this->playerTurnId,
             'card'         => $this->currentCardId,
         ];
-        $this->players[$this->currentPlayerId]->lastEventSeen = $this->log->getNextEventId();
-        return $data;
+    }
+
+    public function pushActions()
+    {
+        foreach ($this->log->newActions as $action) {
+            $this->pushActionsPrepare($action);
+        }
+        $this->pushActionsSend();
     }
 
     public function action($name, $data = [])

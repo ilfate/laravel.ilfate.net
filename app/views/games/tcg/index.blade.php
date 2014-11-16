@@ -38,6 +38,24 @@ Turn number: {{{$game['js']['turnNumber']}}} <br>
 	});
 </script>
 
+<script>
+    var conn = new ab.Session('ws://localhost:8080',
+        function() {
+            conn.subscribe('{{$game['js']['subscriptionKey']}}', function(topic, data) {
+                // This is where you would add the new article to the DOM (beyond the scope of this tutorial)
+                //console.log('New article published to category "' + topic + '" : ' + data.title);
+                info(data);
+                TCG.Game.processLog(data);
+            });
+        },
+        function() {
+            console.warn('WebSocket connection closed');
+        },
+        {'skipSubprotocolCheck': true}
+    );
+</script>
+
+
 @include('games.tcg.templates')
 
 @stop

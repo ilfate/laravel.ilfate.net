@@ -16,8 +16,8 @@ class GameContainer {
     const PHASE_BATTLE           = 4;
     const PHASE_GAME_END         = 5;
 
-    const WIDTH = 5;
-    const HEIGHT = 5;
+    const WIDTH = 8;
+    const HEIGHT = 8;
 
     const LOCATION_DECK  = 'decks';
     const LOCATION_HAND  = 'hands';
@@ -103,6 +103,7 @@ class GameContainer {
 
     public $data;
     public $sessionType;
+    public $gameId = 555;
 
 
 

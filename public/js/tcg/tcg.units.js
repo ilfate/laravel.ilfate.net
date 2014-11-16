@@ -4,9 +4,10 @@
 
 TCG.Units = function (game) {
     this.game = game;
-    this.cellHeight = 120;
-    this.cellWidth = 120;
+    this.cellHeight = 75;
+    this.cellWidth = 75;
     this.animationsInQueue = [];
+    this.animationsRunning = [];
     this.units = [];
 
     this.init = function() {

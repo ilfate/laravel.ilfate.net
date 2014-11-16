@@ -11,4 +11,5 @@
     @endfor
     <div class="units" >
     </div>
+    <div class="clear" ></div>
 </div>

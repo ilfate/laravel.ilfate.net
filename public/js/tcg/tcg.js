@@ -35,27 +35,32 @@ $(document).ready(function() {
 
 TCG.Game = function () {
 
-    this.width = 5;
-    this.height = 5;
+    this.width = 8;
+    this.height = 8;
 	this.handCardInFocus;
 	this.fieldCardInFocus;
 	this.phase = 0;
     this.currentPlayerId;
     this.playerTurnId;
     this.currentCardId;
-    this.units = new TCG.Units(this);
-    this.hand  = new TCG.Hand(this);
-    this.order = new TCG.Order(this);
-    this.spell = new TCG.Spell(this);
+    this.gameId;
+    this.units  = new TCG.Units(this);
+    this.hand   = new TCG.Hand(this);
+    this.order  = new TCG.Order(this);
+    this.spell  = new TCG.Spell(this);
+    this.socket = new TCG.Socket(this);
 
 	this.init = function(data) {
 		this.phase = data.phase;
         this.playerTurnId = data.playerTurnId;
         this.currentPlayerId = data.currentPlayerId;
         this.currentCardId = data.card;
+        this.gameId = data.gameId;
         
 		this.bindObjects();
         this.units.init();
+
+        //this.socket.initConnection(data.subscriptionKey);
 	}
 
     this.renderFieldUnits = function(units) {
@@ -239,6 +244,11 @@ TCG.Game = function () {
 
     this.processLog = function(data)
     {
+        if (!data.log) {
+            info('Empty data');
+            return;
+        }
+        info(data);
         var log = data.log;
         var newTurn = this.processGameUpdate(data.game);
         for(var i in log) {
@@ -359,9 +369,10 @@ TCG.Game = function () {
     }
     this.tryToSetUpConnection = function() {
         if (!this.isMyTurn()) {
-            setTimeout(function() {
-                TCG.Game.ping()
-            }, 2000);
+            info('Ajax updates are disabled')
+//            setTimeout(function() {
+//                TCG.Game.ping()
+//            }, 2000);
         }
     }
 

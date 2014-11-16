@@ -24,6 +24,7 @@
 
 <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
 <script type="text/javascript" src="/packages/mustache.js"></script>
+<script type="text/javascript" src="/packages/autobahn/autobahn.min.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 
 <script type="text/javascript" src="/js/events.js"></script>
@@ -39,6 +40,7 @@
 <script type="text/javascript" src="/js/tcg/tcg.order.js"></script>
 <script type="text/javascript" src="/js/tcg/tcg.hand.js"></script>
 <script type="text/javascript" src="/js/tcg/tcg.spell.js"></script>
+<script type="text/javascript" src="/js/tcg/tcg.socket.js"></script>
 
 @yield('layout')
 

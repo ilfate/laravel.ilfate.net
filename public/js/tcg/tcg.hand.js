@@ -27,7 +27,7 @@ TCG.Hand = function (game) {
         var rendered = Mustache.render(template, {card : card, isDeploy : this.game.isDeploy()});
         var obj = $(rendered);
         this.game.units.checkArmor(obj);
-        $('.hand.my-hand').append(obj);
+        $('.hand.my-hand .clear').before(obj);
     }
 
     this.removeCard = function(cardId) {

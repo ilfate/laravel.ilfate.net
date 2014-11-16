@@ -57,7 +57,7 @@ class GameBuilder {
             $game->setUpCard(clone $card, $player2->id);
             $game->setUpCard(clone $card, $player2->id);
         }
-        
+        $game->start();
         $game->gameAutoActions();
         return $game;
 	}
@@ -74,6 +74,7 @@ class GameBuilder {
                     'currentHealth' => 10,
                     'armor' => 12,
                     'maxHealth' => 99,
+                    'keywords' => ['focus'],
                     'isCurrent' => true,
                 ],
                 [
@@ -128,6 +129,7 @@ class GameBuilder {
             }
         }
         $game->phase = Game::PHASE_BATTLE;
+        $game->start();
         $game->gameAutoActions();
         return $game;
     }
