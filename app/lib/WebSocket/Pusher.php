@@ -14,6 +14,7 @@ class Pusher implements WampServerInterface
 
     public function onSubscribe(ConnectionInterface $conn, $topic) {
         $this->subscribedTopics[$topic->getId()] = $topic;
+        echo "New subscriber! ({$topic})\n";
     }
 
     /**
@@ -31,11 +32,14 @@ class Pusher implements WampServerInterface
 
         // re-send the data to all the clients subscribed to that category
         $topic->broadcast($entryData);
+
+        echo "New action sent to ({$entryData['key']})\n";
     }
 
     public function onUnSubscribe(ConnectionInterface $conn, $topic) {
     }
     public function onOpen(ConnectionInterface $conn) {
+        echo "New connection! ({$conn->resourceId})\n";
     }
     public function onClose(ConnectionInterface $conn) {
     }
