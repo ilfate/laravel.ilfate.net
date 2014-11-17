@@ -15,4 +15,6 @@ return array(
 
 	'debug' => true,
 
+    'url' => 'http://localhost',
+    'wsUrl' => 'ws://localhost:8080',
 );

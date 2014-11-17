@@ -39,7 +39,7 @@ Turn number: {{{$game['js']['turnNumber']}}} <br>
 </script>
 
 <script>
-    var conn = new ab.Session('ws://localhost:8080',
+    var conn = new ab.Session('{{Config::get('app.wsUrl')}}',
         function() {
             conn.subscribe('{{$game['js']['subscriptionKey']}}', function(topic, data) {
                 // This is where you would add the new article to the DOM (beyond the scope of this tutorial)

@@ -26,7 +26,8 @@ return array(
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => 'http://ilfate.net',
+    'wsUrl' => 'ws://ilfate.net:8080',
 
 	/*
 	|--------------------------------------------------------------------------
