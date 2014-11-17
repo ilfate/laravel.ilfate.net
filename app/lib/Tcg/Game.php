@@ -156,6 +156,10 @@ class Game extends GameContainer {
             $this->pushActionsPrepare($action);
         }
         $this->pushActionsSend();
+        foreach ($this->players as $playerId => $value) {
+            $this->players[$playerId]->lastEventSeen = $this->log->getNextEventId();
+        }
+        
     }
 
     public function action($name, $data = [])

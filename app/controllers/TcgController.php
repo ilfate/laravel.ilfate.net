@@ -57,15 +57,6 @@ class TcgController extends \BaseController
         , 'when'     => time()
         );
 
-
-//        $context = new ZMQContext();
-//        $socket = $context->getSocket(ZMQ::SOCKET_PUSH, 'my pusher');
-//        $socket->connect("tcp://localhost:5555");
-//
-//        $socket->send(json_encode($entryData));
-//
-//        var_dump(ZMQ::SOCKET_PUSH);
-//        die;
         $this->breadcrumbs->addLink(action('GamesController' . '@' . 'index'), 'Games');
         $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Math Effect');
 
@@ -163,10 +154,10 @@ class TcgController extends \BaseController
             $this->doAction($action);
         }
 
-        //$data = $this->game->renderUpdate();
+        $data = $this->game->renderUpdate();
         $this->game->pushActions();
         $this->save();
-        return ['log' => false];//json_encode($data);
+        return json_encode($data);
     }
 
     private function doAction($action)

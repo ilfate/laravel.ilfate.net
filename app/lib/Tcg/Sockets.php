@@ -55,11 +55,11 @@ trait Sockets {
             'type' => $type
         ];
         $toPush = [];
+        $allTargets = $this->getAllKeysButCurrent();
         switch ($type) {
             case GameLog::LOG_TYPE_DEPLOY:
-                $targets = $this->getAllKeys();
                 $card    = $this->getCard($data[1]);
-                foreach ($targets as $playerId => $key) {
+                foreach ($allTargets as $playerId => $key) {
                     $event = [
                         'type' => $type,
                         'playerId' => $data[0],
@@ -72,8 +72,7 @@ trait Sockets {
                 $toPush[] = ['all', $event];
                 break;
             case GameLog::LOG_TYPE_CARD_DRAW:
-                $targets = $this->getAllKeys();
-                foreach ($targets as $playerId => $key) {
+                foreach ($allTargets as $playerId => $key) {
                     $event = [
                         'type' => $type
                     ];
@@ -88,8 +87,7 @@ trait Sockets {
                 break;
             case GameLog::LOG_TYPE_MOVE:
                 $event['cardId'] = $data[0];
-                $targets = $this->getAllKeys();
-                foreach ($targets as $playerId => $key) {
+                foreach ($allTargets as $playerId => $key) {
                     list($event['x'], $event['y']) = $this->convertCoordinats(
                         $data[1],
                         $data[2],
@@ -143,7 +141,7 @@ trait Sockets {
             $target = $pushData[0];
             $event = $pushData[1];
             if ($target === 'all') {
-                foreach ($this->playerKeys as $playerId => $key) {
+                foreach ($allTargets as $playerId => $key) {
                     $this->addPreparedAction($playerId, $event);
                 }
             } else {
@@ -177,5 +175,16 @@ trait Sockets {
     public function getAllKeys()
     {
         return $this->playerKeys;
+    }
+
+    public function getAllKeysButCurrent()
+    {
+        $result = [];
+        foreach ($this->playerKeys as $playerId => $value) {
+            if ($playerId != $this->currentPlayerId) {
+                $result[$playerId] = $value;
+            }
+        }
+        return $result;
     }
 } 
