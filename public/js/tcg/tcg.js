@@ -300,6 +300,9 @@ TCG.Game = function () {
                     newTurn = true;
                     this.units.bounce(event.cardId);
                     break;
+                case 'battleEnd':
+                    this.showResultModal();
+                    break;
             }
         }
         this.postProcessGameUpdate(newTurn);
@@ -407,6 +410,14 @@ TCG.Game = function () {
 			this.handCardInFocus = obj;
 		}
 	}
+
+    this.showResultModal = function() {
+        $("#myModal").modal({                    // wire up the actual modal functionality and show the dialog
+            "backdrop"  : "static",
+            "keyboard"  : true,
+            "show"      : true                     // ensure the modal is shown immediately
+        });
+    }
 
     this.getNeiboursCells = function(x, y) {
         return [

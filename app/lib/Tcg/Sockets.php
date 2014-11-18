@@ -133,6 +133,9 @@ trait Sockets {
                 $event['cardId'] = $data[0];
                 $toPush[] = ['all', $event];
                 break;
+            case GameLog::LOG_TYPE_BATTLE_END:
+                $toPush[] = ['all', $event];
+                break;
             default:
                 return;
         }

@@ -106,6 +106,9 @@ class Card {
 
     public function init()
     {
+        if ($this->unit || $this->spell) {
+            return;
+        }
         $config = \Config::get('tcg.cards.' .  $this->card);
         $this->unit  = Unit::createFromConfig(\Config::get('tcg.units.' . $config['unit']), $this);
         $this->spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $config['spell']), $this);

@@ -145,10 +145,12 @@ class GameContainer {
 
     public function setKings() 
     {
-        foreach ($this->cards as $crdsId => $card) {
+        foreach ($this->cards as $card) {
             if ($card->isKing) {
                 $card->init();
-                $this->moveCards([$card], Game::LOCATION_DECK, Game::LOCATION_HAND);        
+                if ($card->location == Card::CARD_LOCATION_DECK) {
+                    $this->moveCards([$card], Game::LOCATION_DECK, Game::LOCATION_HAND);
+                }
                 $this->kings[$card->owner] = $card->id;
             }
         }

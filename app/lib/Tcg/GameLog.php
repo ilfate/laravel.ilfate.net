@@ -23,6 +23,7 @@ class GameLog
     const LOG_TYPE_CAST              = 'cast';
     const LOG_TYPE_UNIT_CHANGE       = 'change';
     const LOG_TYPE_UNIT_SKIP         = 'skip';
+    const LOG_TYPE_BATTLE_END        = 'battleEnd';
     
 
     const RENDER_MODE_PUBLIC = 'public';
@@ -41,6 +42,7 @@ class GameLog
         self::LOG_TYPE_UNIT_CHANGE,
         self::LOG_TYPE_ATTACK,
         self::LOG_TYPE_UNIT_SKIP,
+        self::LOG_TYPE_BATTLE_END,
     ];
 
     /**
@@ -54,7 +56,7 @@ class GameLog
      *
      * @var array
      */
-    protected $log = [];
+    public $log = [];
 
     public $newActions = [];
 
@@ -237,6 +239,13 @@ class GameLog
             ]
         );
     }
+    public function logBattleEnd()
+    {
+        $this->addLog(
+            self::LOG_TYPE_BATTLE_END,
+            []
+        );
+    }
 
     protected function addLog($type, $data)
     {
@@ -343,6 +352,8 @@ class GameLog
                     break;
                 case self::LOG_TYPE_UNIT_SKIP:
                     $event['cardId'] = $log[1][0];
+                    break;
+                case self::LOG_TYPE_BATTLE_END:
                     break;
                 default :
                     throw new \Exception('Not implemented log update render');

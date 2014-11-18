@@ -12,6 +12,11 @@ class Game extends GameContainer {
     use Events;
     use Sockets;
 
+    public function init()
+    {
+        $this->setKings();
+    }
+
     /**
      * @return Game
      */
@@ -56,7 +61,6 @@ class Game extends GameContainer {
     {
         $this->initSockets();
         $this->setUpPlayersKeys();
-        $this->setKings();
     }
 
     public function export()
@@ -113,6 +117,8 @@ class Game extends GameContainer {
         ];
         $data['hand']  = $this->renderHand($playerId);
         $data['field'] = $this->renderField($playerId);
+//        var_dump($data['field']); die;
+//        var_dump(array_slice($this->log->log, -10)); die;
         $data['opponentHand'] = $this->renderOpponentHand($playerId);
 
         if ($this->gameResult) {
@@ -368,12 +374,14 @@ class Game extends GameContainer {
     public function checkGameEnd()
     {
         $playersLost = [];
-        foreach ($this->players as $id => $player) {
-            if (!count($this->field->getPlayerUnits($id))) {
-                $playersLost[] = $id;
+        foreach ($this->kings as $playerId => $kingId) {
+            $king = $this->getCard($kingId);
+            if ($king->location == Card::CARD_LOCATION_GRAVE) {
+                $playersLost[] = $playerId;
             }
         }
         if ($playersLost) {
+            $this->log->logBattleEnd();
             $result = [];
             if (count($playersLost) == 1) {
                 $result['loser'] = $playersLost[0];

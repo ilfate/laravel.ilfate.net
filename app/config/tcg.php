@@ -19,6 +19,7 @@ return array(
         4 => ['card' => 4, 'unit' => 4, 'spell' => 0],
         5 => ['card' => 5, 'unit' => 5, 'spell' => 0],
         6 => ['card' => 6, 'unit' => 6, 'spell' => 0, 'isKing' => true],
+        7 => ['card' => 7, 'unit' => 7, 'spell' => 0],
         50 => ['card' => 50, 'unit' => 50, 'spell' => 0],
         51 => ['card' => 51, 'unit' => 51, 'spell' => 0],
         52 => ['card' => 52, 'unit' => 52, 'spell' => 0],
@@ -85,6 +86,14 @@ return array(
             'armor'  => 40,
             'text' => 'King',
         ],
+        7 => [
+            'unit' => '\Tcg\Unit\Common',
+            'name' => 'Rockthrower',
+            'totalHealth' => 5,
+            'attack' => [1, 4],
+            'text' => 'Range 2',
+            'attackRange' => 2,
+        ],
         //bloodthirst
         50 => [
             'unit' => '\Tcg\Unit\Common',
@@ -149,6 +158,13 @@ return array(
             'attack' => [3, 8],
             'text' => 'Can attack only diagonal',
         ],
+//        58 => [
+//            'unit' => '\Tcg\Unit\Harpoon',
+//            'name'  => 'Harpoon',
+//            'totalHealth' => 8,
+//            'attack' => [2, 5],
+//            'text' => 'On deploy: pull enemy unit closer (range 2)',
+//        ],
         999 => [
             'unit' => '\Tcg\Unit\Common',
             'name'  => 'Example dude',

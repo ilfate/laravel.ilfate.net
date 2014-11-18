@@ -32,33 +32,35 @@ class GameBuilder {
 
         $configs = \Config::get('tcg.cards');
         $deck1 = [
-            Card::createFromConfig($configs[0], $game),
-            Card::createFromConfig($configs[1], $game),
-            Card::createFromConfig($configs[2], $game),
-            Card::createFromConfig($configs[3], $game),
-            Card::createFromConfig($configs[4], $game),
-            Card::createFromConfig($configs[5], $game),
-            Card::createFromConfig($configs[6], $game),
+            [Card::createFromConfig($configs[0], $game), 2],
+            [Card::createFromConfig($configs[1], $game), 2],
+            [Card::createFromConfig($configs[2], $game), 2],
+            [Card::createFromConfig($configs[3], $game), 2],
+            [Card::createFromConfig($configs[4], $game), 2],
+            [Card::createFromConfig($configs[5], $game), 2],
+            [Card::createFromConfig($configs[6], $game), 1],
         ];
         $deck2 = [
-            Card::createFromConfig($configs[51], $game),
-            Card::createFromConfig($configs[52], $game),
-            Card::createFromConfig($configs[53], $game),
-            Card::createFromConfig($configs[54], $game),
-            Card::createFromConfig($configs[55], $game),
-            Card::createFromConfig($configs[56], $game),
-            Card::createFromConfig($configs[57], $game),
-            Card::createFromConfig($configs[6], $game),
+            [Card::createFromConfig($configs[51], $game), 2],
+            [Card::createFromConfig($configs[52], $game), 2],
+            [Card::createFromConfig($configs[53], $game), 2],
+            [Card::createFromConfig($configs[54], $game), 2],
+            [Card::createFromConfig($configs[55], $game), 2],
+            [Card::createFromConfig($configs[56], $game), 2],
+            [Card::createFromConfig($configs[57], $game), 2],
+            [Card::createFromConfig($configs[6], $game),  1],
         ];
         foreach ($deck2 as $card) {
-            $game->setUpCard(clone $card, $player1->id);
-            $game->setUpCard(clone $card, $player1->id);
+            for($i = 0; $i < $card[1]; $i++) {
+                $game->setUpCard(clone $card[0], $player1->id);
+            }
         }
         foreach ($deck1 as $card) {
-            $game->setUpCard(clone $card, $player2->id);
-            $game->setUpCard(clone $card, $player2->id);
+            for($i = 0; $i < $card[1]; $i++) {
+                $game->setUpCard(clone $card[0], $player2->id);
+            }
         }
-
+        $game->init();
         $game->start();
         $game->gameAutoActions();
         return $game;
@@ -69,11 +71,12 @@ class GameBuilder {
         $situation = [
             'cards' => [
                 [
-                    'id'    => 1,
+                    'id'    => 7,
                     'owner' => 1,
-                    'x' => 3,
-                    'y' => 2,
-                    'currentHealth' => 10,
+                    'x' => 1,
+                    'y' => 1,
+                    'currentHealth' => 1,
+                    'isKing' => true,
                     'armor' => 12,
                     'maxHealth' => 99,
                     'keywords' => ['focus'],
@@ -83,8 +86,9 @@ class GameBuilder {
                     'id'    => 1,
                     'owner' => 2,
                     'x' => 3,
-                    'y' => 1,
-                    'currentHealth' => 10,
+                    'y' => 3,
+                    'isKing' => true,
+                    'currentHealth' => 20,
                     'keywords' => ['focus'],
                     'maxHealth' => 99
                 ],
@@ -109,7 +113,12 @@ class GameBuilder {
 
         $configs = \Config::get('tcg.cards');
         foreach ($situation['cards'] as $cardData) {
-            $card = Card::createFromConfig($configs[$cardData['id']], $game);
+            $cardConfig = $configs[$cardData['id']];
+            if (!empty($cardData['isKing'])) {
+                $cardConfig['isKing'] = true;
+                unset($cardData['isKing']);
+            }
+            $card = Card::createFromConfig($cardConfig, $game);
             $card->init();
             $card->unit->deploy();
             $game->setUpCard($card, $cardData['owner']);
@@ -130,6 +139,7 @@ class GameBuilder {
                 $game->currentCardId = $card->id;
             }
         }
+        $game->init();
         $game->phase = Game::PHASE_BATTLE;
         $game->start();
         $game->gameAutoActions();
