@@ -40,7 +40,7 @@ class Unit
         'effects',
         'keywords',
         'attack',
-        'data',
+        'data'
     );
 
     /**
@@ -59,6 +59,7 @@ class Unit
     public $attack = [0, 0];
     public $x;
     public $y;
+    public $isKing = false;
 
     public $data;
 

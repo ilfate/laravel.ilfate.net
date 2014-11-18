@@ -59,14 +59,16 @@ class GameContainer {
         'spellsPlayed',
         'events',
         'eventsExpire',
+        'kings',
     );
 
     /**
      * @var Player[]
      */
-    public $players = array();
-    public $teams   = array();
+    public $players    = array();
+    public $teams      = array();
     public $maxPlayers = 2;
+    public $kings      = [];
 
     public $phase = 0;
     public $playerTurnId;
@@ -131,6 +133,25 @@ class GameContainer {
             }
         }
         return $this->cards[$id];
+    }
+
+    public function getKing($playerId)
+    {
+        if (!isset($this->kings[$playerId])) {
+            throw new Exception("King for player with id = " . $playerId . ' not found', 1);
+        }
+        return $this->cards[$this->kings[$playerId]];
+    }
+
+    public function setKings() 
+    {
+        foreach ($this->cards as $crdsId => $card) {
+            if ($card->isKing) {
+                $card->init();
+                $this->moveCards([$card], Game::LOCATION_DECK, Game::LOCATION_HAND);        
+                $this->kings[$card->owner] = $card->id;
+            }
+        }
     }
 
     public function addDeck(Deck $deck)

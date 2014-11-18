@@ -35,6 +35,9 @@ $(document).ready(function() {
 
 TCG.Game = function () {
 
+    this.phase_battle = 4;
+    this.phase_deploy = 3;
+
     this.width = 8;
     this.height = 8;
 	this.handCardInFocus;
@@ -90,7 +93,7 @@ TCG.Game = function () {
 				if(obj.hasClass('card')) {
 					this.cardClick(obj);
                     switch(this.phase) {
-                        case 3: // Deploy phase
+                        case this.phase_deploy: // Deploy phase
                             // light them up!
                             if (this.handCardInFocus) {
                                 this.lightUpDeployArea();
@@ -98,7 +101,7 @@ TCG.Game = function () {
                                 this.unFocusDeployArea();
                             }
                             break;
-                        case 4: // battle
+                        case this.phase_battle: // battle
                             this.toggleCastButton(obj);
                             // we need to hide current focused cells for unit
                             break;
@@ -324,7 +327,7 @@ TCG.Game = function () {
     }
 
     this.startBattle = function() {
-        this.phase = 4;
+        this.phase = this.phase_battle;
         this.tryToShowNextUnitMove();
     }
 
@@ -419,10 +422,10 @@ TCG.Game = function () {
     }
 
     this.isBattle = function() {
-        return this.phase == 4;
+        return this.phase == this.phase_battle;
     }
     this.isDeploy = function() {
-        return this.phase == 3;
+        return this.phase == this.phase_deploy;
     }
 
 }

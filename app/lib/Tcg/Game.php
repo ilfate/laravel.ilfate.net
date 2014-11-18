@@ -56,6 +56,7 @@ class Game extends GameContainer {
     {
         $this->initSockets();
         $this->setUpPlayersKeys();
+        $this->setKings();
     }
 
     public function export()

@@ -38,7 +38,7 @@ class GameBuilder {
             Card::createFromConfig($configs[3], $game),
             Card::createFromConfig($configs[4], $game),
             Card::createFromConfig($configs[5], $game),
-            
+            Card::createFromConfig($configs[6], $game),
         ];
         $deck2 = [
             Card::createFromConfig($configs[51], $game),
@@ -48,6 +48,7 @@ class GameBuilder {
             Card::createFromConfig($configs[55], $game),
             Card::createFromConfig($configs[56], $game),
             Card::createFromConfig($configs[57], $game),
+            Card::createFromConfig($configs[6], $game),
         ];
         foreach ($deck2 as $card) {
             $game->setUpCard(clone $card, $player1->id);
@@ -57,6 +58,7 @@ class GameBuilder {
             $game->setUpCard(clone $card, $player2->id);
             $game->setUpCard(clone $card, $player2->id);
         }
+
         $game->start();
         $game->gameAutoActions();
         return $game;

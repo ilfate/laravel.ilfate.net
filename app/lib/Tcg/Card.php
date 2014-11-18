@@ -68,6 +68,8 @@ class Card {
      */
     public $card;
 
+    public $isKing = false;
+
     public function __construct(Game $game)
     {
     	$this->game = $game;
@@ -77,6 +79,9 @@ class Card {
 	{
 		$card = new Card($game);
         $card->card = $config['card'];
+        if (isset($config['isKing'])) {
+            $card->isKing = true;
+        }
 
 		return $card;
 	}
@@ -89,6 +94,7 @@ class Card {
 		$card->id       = $data['id'];
 		$card->owner    = $data['owner'];
 		$card->location = $data['location'];
+        $card->isKing   = $data['isKing'];
 
         if (!empty($data['unit'])) {
             $card->unit  = Unit::import($data['unit'], $cardConfig['unit'], $card);
@@ -112,6 +118,7 @@ class Card {
             'owner'    => $this->owner,
             'location' => $this->location,
             'card'     => $this->card,
+            'isKing'   => $this->isKing,
 		];
         if ($this->unit && $this->spell) {
             $data['unit'] = $this->unit->export();

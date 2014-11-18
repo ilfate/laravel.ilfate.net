@@ -18,6 +18,7 @@ return array(
         3 => ['card' => 3, 'unit' => 3, 'spell' => 0],
         4 => ['card' => 4, 'unit' => 4, 'spell' => 0],
         5 => ['card' => 5, 'unit' => 5, 'spell' => 0],
+        6 => ['card' => 6, 'unit' => 6, 'spell' => 0, 'isKing' => true],
         50 => ['card' => 50, 'unit' => 50, 'spell' => 0],
         51 => ['card' => 51, 'unit' => 51, 'spell' => 0],
         52 => ['card' => 52, 'unit' => 52, 'spell' => 0],
@@ -75,6 +76,14 @@ return array(
             'attack' => [2, 6],
             'armor'  => 2,
             'text' => '',
+        ],
+        6 => [ 
+            'unit' => '\Tcg\Unit\Common',
+            'name' => 'Dwarf King',
+            'totalHealth' => 15,
+            'attack' => [2, 3],
+            'armor'  => 40,
+            'text' => 'King',
         ],
         //bloodthirst
         50 => [
