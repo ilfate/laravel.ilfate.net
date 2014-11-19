@@ -44,11 +44,11 @@ class GameBuilder {
             [Card::createFromConfig($configs[51], $game), 2],
             [Card::createFromConfig($configs[52], $game), 2],
             [Card::createFromConfig($configs[53], $game), 2],
-            [Card::createFromConfig($configs[54], $game), 2],
+           // [Card::createFromConfig($configs[54], $game), 2],
             [Card::createFromConfig($configs[55], $game), 2],
             [Card::createFromConfig($configs[56], $game), 2],
             [Card::createFromConfig($configs[57], $game), 2],
-            [Card::createFromConfig($configs[7], $game),  1],
+            [Card::createFromConfig($configs[59], $game), 1],
         ];
         foreach ($deck2 as $card) {
             for($i = 0; $i < $card[1]; $i++) {

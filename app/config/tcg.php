@@ -28,6 +28,7 @@ return array(
         55 => ['card' => 55, 'unit' => 55, 'spell' => 1, 'image' => 'pl_m.png'],
         56 => ['card' => 56, 'unit' => 56, 'spell' => 1, 'image' => 'pl_m.png'],
         57 => ['card' => 57, 'unit' => 57, 'spell' => 1, 'image' => 'pl_m.png'],
+        59 => ['card' => 59, 'unit' => 59, 'spell' => 1, 'image' => 'pl_m.png', 'isKing' => true],
     ),
     'units' => [
     // Dwarfs
@@ -173,10 +174,10 @@ return array(
         59 => [
             'unit' => '\Tcg\Unit\Common',
             'name'  => 'Viking Leader',
-            'totalHealth' => 11,
-            'attack' => [3, 8],
+            'totalHealth' => 25,
+            'attack' => [3, 5],
             'moveSteps' => 2,
-            'text' => 'Can attack only diagonal',
+            'text' => 'King',
         ],
         999 => [
             'unit' => '\Tcg\Unit\Common',
