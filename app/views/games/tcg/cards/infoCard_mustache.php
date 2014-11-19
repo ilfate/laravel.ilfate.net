@@ -1,6 +1,6 @@
 <script id="template-info-card" type="x-tmpl-mustache">
 
-<div class="info-card popover">
+<div class="info-card id_{{card.id}}">
 <div class="arrow"></div>
 	<div class="info-unit">
 		<div class="name" >{{{card.unit.config.name}}}({{{card.id}}})</div>

@@ -32,13 +32,13 @@ class GameBuilder {
 
         $configs = \Config::get('tcg.cards');
         $deck1 = [
-            [Card::createFromConfig($configs[0], $game), 2],
             [Card::createFromConfig($configs[1], $game), 2],
             [Card::createFromConfig($configs[2], $game), 2],
             [Card::createFromConfig($configs[3], $game), 2],
             [Card::createFromConfig($configs[4], $game), 2],
             [Card::createFromConfig($configs[5], $game), 2],
-            [Card::createFromConfig($configs[6], $game), 1],
+            [Card::createFromConfig($configs[6], $game), 2],
+            [Card::createFromConfig($configs[7], $game), 1],
         ];
         $deck2 = [
             [Card::createFromConfig($configs[51], $game), 2],
@@ -48,7 +48,7 @@ class GameBuilder {
             [Card::createFromConfig($configs[55], $game), 2],
             [Card::createFromConfig($configs[56], $game), 2],
             [Card::createFromConfig($configs[57], $game), 2],
-            [Card::createFromConfig($configs[6], $game),  1],
+            [Card::createFromConfig($configs[7], $game),  1],
         ];
         foreach ($deck2 as $card) {
             for($i = 0; $i < $card[1]; $i++) {
@@ -71,7 +71,7 @@ class GameBuilder {
         $situation = [
             'cards' => [
                 [
-                    'id'    => 7,
+                    'id'    => 1,
                     'owner' => 1,
                     'x' => 1,
                     'y' => 1,
@@ -83,7 +83,7 @@ class GameBuilder {
                     'isCurrent' => true,
                 ],
                 [
-                    'id'    => 1,
+                    'id'    => 52,
                     'owner' => 2,
                     'x' => 3,
                     'y' => 3,
@@ -129,7 +129,7 @@ class GameBuilder {
             $card->unit->x = $x;
             $card->unit->y = $y;
             $game->moveCards([$card], Game::LOCATION_HAND, Game::LOCATION_FIELD);
-            $keys = ['currentHealth', 'armor', 'maxArmor' , 'keywords', 'attack', 'maxHealth'];
+            $keys = ['currentHealth', 'armor', 'maxArmor' , 'keywords', 'attack', 'maxHealth', 'moveSteps', 'moveType'];
             foreach ($keys as $keyName) {
                 if (isset($cardData[$keyName])) {
                     $card->unit->{$keyName} = $cardData[$keyName];

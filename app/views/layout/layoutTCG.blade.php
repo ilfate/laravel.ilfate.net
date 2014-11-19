@@ -9,13 +9,10 @@
         <div class="col-md-1">
             @yield('left-content')
         </div>
-        <div class="col-md-6">
+        <div class="col-md-7">
             @yield('content')
         </div>
-        <div class="col-md-2">
-            @yield('right-content')
-        </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             @yield('sidebar')
         </div>
     </div>

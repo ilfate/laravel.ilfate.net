@@ -1,9 +1,16 @@
 <?php /*
  <div class="name" >{{card.unit.config.name}}({{card.id}})</div>
+
+ <div class="keywords">
+                {{#card.unit.keywords}}
+                    <span class="keyword">{{.}}</span>
+                {{/card.unit.keywords}}
+            </div>
  */ ?>
 
 <script id="template-field-unit" type="x-tmpl-mustache">
-    <div class="card unit id_{{card.id}} x_{{x}} y_{{y}}" data-id="{{card.id}}" data-x="{{x}}" data-y="{{y}}"  data-active="false">
+    <div class="card unit id_{{card.id}} x_{{x}} y_{{y}}" data-move="{{card.unit.moveType}}" data-id="{{card.id}}" data-x="{{x}}" data-y="{{y}}" data-active="false" 
+    style="background-image:url('/images/game/tcg/{{card.image}}')">
 
         
         <div class="middle-panel">
@@ -14,11 +21,7 @@
                         {{card.unit.attack.1}}
                     </span>
                 </div>
-            <div class="keywords">
-                {{#card.unit.keywords}}
-                    <span class="keyword">{{.}}</span>
-                {{/card.unit.keywords}}
-            </div>
+            
         </div>
         <div class='health-panel'>
             <span class="health">
@@ -34,10 +37,6 @@
                 {{card.unit.armor}}
                 </span>
             </span>
-        </div>
-
-        <div class="info" data-toggle="popover" data-trigger="hover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">
-            <i class="fa fa-info-circle"></i>
         </div>
 
         <a class="skip btn btn-warning btn-xs" >Attack</a>

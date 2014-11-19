@@ -7,7 +7,7 @@
 @stop
 
 
-@section('right-content')
+@section('left-content')
 
 @include('games.tcg.order', array('field' => $game['field'], 'cardFocus' => $game['card']))
 
@@ -18,6 +18,10 @@
 <h3>Info</h3>
 Turn player: <span class="playerTurnId">{{{$game['js']['playerTurnId']}}}</span> <br>
 Turn number: {{{$game['js']['turnNumber']}}} <br>
+
+
+@include('games.tcg.cardInfo')
+
 
 <h3>Actions</h3>
 <a class="btn btn-primary" href="/tcg/clear">Clear And create Battle</a><br><br>

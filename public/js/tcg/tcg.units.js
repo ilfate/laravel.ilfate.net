@@ -53,8 +53,10 @@ TCG.Units = function (game) {
 
     this.focusUnit = function(cardId)
     {
-        this.game.fieldCardInFocus = this.getUnitObj(cardId);
-        this.game.fieldCardInFocus.addClass('focus');
+        var unit = this.getUnitObj(cardId);
+        this.game.fieldCardInFocus = unit;
+        unit.addClass('focus');
+        return unit;
     }
     this.removeFocus = function() {
         $('.field .unit').removeClass('focus');
@@ -70,10 +72,14 @@ TCG.Units = function (game) {
         var templateInfo = $('#template-info-card').html();
         Mustache.parse(templateInfo);   // optional, speeds up future uses
         var renderedInfo = Mustache.render(templateInfo, {card : card});
-        obj.find('.info').popover({
-            'template' : renderedInfo
-        });
+        $('.info-zone').append(renderedInfo);
         $('.field .units').append(obj);
+        obj.find('.skip').on('click', function(){ TCG.Game.event('skip', $(this)) });
+        obj.on({
+            mouseenter : function(){ TCG.Game.units.mouseenter($(this)) },
+            mouseleave : function(){ TCG.Game.units.mouseleave($(this)) },
+            click : function(){ TCG.Game.event('unitClick', $(this)) }
+        });
     }
 
     this.move = function(cardId, x ,y) {
@@ -127,16 +133,18 @@ TCG.Units = function (game) {
         var keywordsObj = this.getUnitObj(cardId).find('.keywords');
         switch (dataType) {
             case 'keyword':
-                keywordsObj.html('');
-                keywordsString = '';
-                for (var key in data.words) {
-                    var word = data.words[key];
-                    if (data['word'] !== undefined) {
-                        word += ' ' + data['word'];
+                if (keywordsObj.length) {
+                    keywordsObj.html('');
+                    keywordsString = '';
+                    for (var key in data.words) {
+                        var word = data.words[key];
+                        if (data['word'] !== undefined) {
+                            word += ' ' + data['word'];
+                        }
+                        keywordsString += '<span class="keyword">' + word + '</span> ';
                     }
-                    keywordsString += '<span class="keyword">' + word + '</span> ';
+                    keywordsObj.html(keywordsString);
                 }
-                keywordsObj.html(keywordsString);
                 break;
         }
     }
@@ -275,7 +283,7 @@ TCG.Units = function (game) {
         x = xy[0];
         y = xy[1];
         var n = 4;
-        var intence = 3;
+        var intence = 2;
         var totalTime = 0;
         for(var i = 0; i <= n; i++) {
             var time = 80+i*5
@@ -298,6 +306,78 @@ TCG.Units = function (game) {
     {
         var dmgObj = this.damageAnimation(cardId, -dArmor);
         dmgObj.addClass('armor');
+    }
+
+    this.mouseenter = function(unit) {
+        $('.info-zone .info-card').hide();
+        $('.info-zone .info-card.id_' + unit.data('id')).show();
+    }
+    this.mouseleave = function(unit) {
+        //$('.info-zone .info-card').fadeOut(300);
+    }
+
+    this.markMoveForCardId = function(cardId) {
+
+        var unit = this.focusUnit(cardId);
+        var neibours = this.getNeiboursCells(unit);
+
+        for (var key in neibours) {
+            var dx = neibours[key][0];
+            var dy = neibours[key][1];
+            if (dx >= 0 && dy >= 0 && dx < this.game.width && dy < this.game.height) {
+
+                var unitInCell = $('.field .unit.x_' + dx + '.y_' + dy);
+                if (!unitInCell.length || unitInCell.hasClass('dead')) {
+                    // this cell is free
+                    var newCell = $('.field .cell.x_' + dx + '.y_' + dy);
+                    newCell.addClass('focus');
+                }
+            }
+        }
+    }
+
+    this.getNeiboursCells = function(unit) {
+        var x = unit.data('x');
+        var y = unit.data('y');
+        var moveType = unit.data('move');
+        switch (moveType) {
+            case 1:
+                return [
+                    [x - 1, y],
+                    [x + 1, y],
+                    [x, y - 1],
+                    [x, y + 1],
+                ];    
+            case 2:
+                return [
+                    [x - 1, y - 1],
+                    [x + 1, y + 1],
+                    [x + 1, y - 1],
+                    [x - 1, y + 1],
+                ];
+            case 3:
+                return [
+                    [x - 1, y],
+                    [x + 1, y],
+                    [x, y - 1],
+                    [x, y + 1],
+                    [x - 1, y - 1],
+                    [x + 1, y + 1],
+                    [x + 1, y - 1],
+                    [x - 1, y + 1],
+                ];
+            case 4:
+                return [
+                    [x - 1, y - 2],
+                    [x - 2, y - 1],
+                    [x + 1, y + 2],
+                    [x + 2, y + 1],
+                    [x + 1, y - 2],
+                    [x + 2, y - 1],
+                    [x - 1, y + 2],
+                    [x - 2, y + 1],
+                ];
+        }
     }
 
     this.getUnitObj = function(cardId) {

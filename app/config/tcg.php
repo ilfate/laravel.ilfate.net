@@ -12,56 +12,58 @@ return array(
         ],
     ],
     'cards' => array(
-        0 => ['card' => 0, 'unit' => 0, 'spell' => 0],
-        1 => ['card' => 1, 'unit' => 1, 'spell' => 0],
-        2 => ['card' => 2, 'unit' => 2, 'spell' => 0],
-        3 => ['card' => 3, 'unit' => 3, 'spell' => 0],
-        4 => ['card' => 4, 'unit' => 4, 'spell' => 0],
-        5 => ['card' => 5, 'unit' => 5, 'spell' => 0],
-        6 => ['card' => 6, 'unit' => 6, 'spell' => 0, 'isKing' => true],
-        7 => ['card' => 7, 'unit' => 7, 'spell' => 0],
-        50 => ['card' => 50, 'unit' => 50, 'spell' => 0],
-        51 => ['card' => 51, 'unit' => 51, 'spell' => 0],
-        52 => ['card' => 52, 'unit' => 52, 'spell' => 0],
-        53 => ['card' => 53, 'unit' => 53, 'spell' => 0],
-        54 => ['card' => 54, 'unit' => 54, 'spell' => 0],
-        55 => ['card' => 55, 'unit' => 55, 'spell' => 0],
-        56 => ['card' => 56, 'unit' => 56, 'spell' => 0],
-        57 => ['card' => 57, 'unit' => 57, 'spell' => 0],
+        1 => ['card' => 1, 'unit' => 1, 'spell' => 1, 'image' => 'pl_f.png'],
+        2 => ['card' => 2, 'unit' => 2, 'spell' => 1, 'image' => 'pl_f.png'],
+        3 => ['card' => 3, 'unit' => 3, 'spell' => 1, 'image' => 'pl_f.png'],
+        4 => ['card' => 4, 'unit' => 4, 'spell' => 1, 'image' => 'pl_f.png'],
+        5 => ['card' => 5, 'unit' => 5, 'spell' => 1, 'image' => 'pl_f.png'],
+        6 => ['card' => 6, 'unit' => 6, 'spell' => 1, 'image' => 'pl_f.png'],
+        7 => ['card' => 7, 'unit' => 7, 'spell' => 1, 'image' => 'pl_f.png', 'isKing' => true],
+        8 => ['card' => 8, 'unit' => 8, 'spell' => 1, 'image' => 'pl_f.png'],
+        50 => ['card' => 50, 'unit' => 50, 'spell' => 1, 'image' => 'pl_m.png'],
+        51 => ['card' => 51, 'unit' => 51, 'spell' => 1, 'image' => 'pl_m.png'],
+        52 => ['card' => 52, 'unit' => 52, 'spell' => 1, 'image' => 'pl_m.png'],
+        53 => ['card' => 53, 'unit' => 53, 'spell' => 1, 'image' => 'pl_m.png'],
+        54 => ['card' => 54, 'unit' => 54, 'spell' => 1, 'image' => 'pl_m.png'],
+        55 => ['card' => 55, 'unit' => 55, 'spell' => 1, 'image' => 'pl_m.png'],
+        56 => ['card' => 56, 'unit' => 56, 'spell' => 1, 'image' => 'pl_m.png'],
+        57 => ['card' => 57, 'unit' => 57, 'spell' => 1, 'image' => 'pl_m.png'],
     ),
     'units' => [
     // Dwarfs
-        0 => [ 
+        1 => [ 
             'unit' => '\Tcg\Unit\Common',
             'name' => 'Guudlin',
             'totalHealth' => 8,
             'attack' => [1,4],
             'armor'  => 8,
+            'moveType' => 2,
+            'moveSteps' => 2,
             'text' => '',
         ],
-        1 => [ 
+        2 => [ 
             'unit' => '\Tcg\Unit\Dvallin',
             'name' => 'Dvallin',
             'totalHealth' => 12,
             'attack' => [2,4],
             'text' => 'On Attack gets + X armor where X is dealt damage.',
         ],
-        2 => [ 
+        3 => [ 
             'unit' => '\Tcg\Unit\TheMashine',
             'name' => 'The Mashine',
             'totalHealth' => 5,
-            'attack' => [5,10],
+            'attack' => [7,10],
             'armor'  => 20,
             'text' => 'Can attack only in front direction',
         ],
-        3 => [ 
+        4 => [ 
             'unit' => '\Tcg\Unit\GudTheSmith',
             'name' => 'Gud the Smith',
             'totalHealth' => 4,
             'attack' => [1,4],
             'text' => 'Can repair 3 armor to nearby frendly unit if there is no targets to attack',
         ],
-        4 => [ 
+        5 => [ 
             'unit' => '\Tcg\Unit\Common',
             'name' => 'The Defender',
             'totalHealth' => 4,
@@ -70,7 +72,7 @@ return array(
             'text' => 'Focus',
             'keywords' => ['focus']
         ],
-        5 => [ 
+        6 => [ 
             'unit' => '\Tcg\Unit\Common',
             'name' => 'Swordsdwarf',
             'totalHealth' => 10,
@@ -78,15 +80,15 @@ return array(
             'armor'  => 2,
             'text' => '',
         ],
-        6 => [ 
+        7 => [ 
             'unit' => '\Tcg\Unit\Common',
             'name' => 'Dwarf King',
             'totalHealth' => 15,
             'attack' => [2, 3],
-            'armor'  => 40,
+            'armor'  => 30,
             'text' => 'King',
         ],
-        7 => [
+        8 => [
             'unit' => '\Tcg\Unit\Common',
             'name' => 'Rockthrower',
             'totalHealth' => 5,
@@ -109,14 +111,15 @@ return array(
             'totalHealth' => 16,
             'attack' => [5, 5],
             'text' => 'On attack: get 2 damage',
-            'keywords' => ['bloodthirst', 'fast'],
-            'moveDistance' => 2, // not mandatory
+            'keywords' => ['bloodthirst'],
+            'moveSteps' => 2, // not mandatory
         ],
         52 => [
             'unit' => '\Tcg\Unit\Common',
             'name'  => 'Flying Rage',
             'totalHealth' => 14,
             'attack' => [4, 4],
+            'moveSteps' => 2,
             'text' => '',
             'keywords' => ['bloodthirst'],
         ],
@@ -142,13 +145,14 @@ return array(
             'attack' => [1, 7],
             'text' => 'Fast',
             'keywords' => ['fast'],
-            'moveDistance' => 2, // not mandatory
+            'moveSteps' => 3, // not mandatory
         ],
         56 => [
             'unit' => '\Tcg\Unit\BloodShaman',
             'name'  => 'Blood Shaman',
             'totalHealth' => 5,
             'attack' => [0, 1],
+            'moveSteps' => 2,
             'text' => 'Unit in front of Blood Shaman has: -3 damage from any source',
         ],
         57 => [
@@ -156,6 +160,7 @@ return array(
             'name'  => 'Aarr',
             'totalHealth' => 11,
             'attack' => [3, 8],
+            'moveSteps' => 2,
             'text' => 'Can attack only diagonal',
         ],
 //        58 => [
@@ -165,6 +170,14 @@ return array(
 //            'attack' => [2, 5],
 //            'text' => 'On deploy: pull enemy unit closer (range 2)',
 //        ],
+        59 => [
+            'unit' => '\Tcg\Unit\Common',
+            'name'  => 'Viking Leader',
+            'totalHealth' => 11,
+            'attack' => [3, 8],
+            'moveSteps' => 2,
+            'text' => 'Can attack only diagonal',
+        ],
         999 => [
             'unit' => '\Tcg\Unit\Common',
             'name'  => 'Example dude',
@@ -174,16 +187,18 @@ return array(
             'armor' => 2,
             'text' => 'Bloodthirst',
             'keywords' => ['bloodthirst', 'fast'],
-            'moveDistance' => 1, // not mandatory
+            'moveSteps' => 1, // not mandatory
+            'moveType'     => 1
         ],
     ],
     'spells' => [
-        [
+        1 => [
             'spell' => '\Tcg\Spell\Focus',
             'name'  => 'Focus',
             'type' => 'unit',
             'text' => 'Put focus on target unit'
         ],
     ],
+
 
 );

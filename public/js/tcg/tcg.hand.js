@@ -28,6 +28,7 @@ TCG.Hand = function (game) {
         var obj = $(rendered);
         this.game.units.checkArmor(obj);
         $('.hand.my-hand .clear').before(obj);
+        obj.on('click', function(){ TCG.Game.event('cardClick', $(this)) });
     }
 
     this.removeCard = function(cardId) {

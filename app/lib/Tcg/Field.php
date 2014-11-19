@@ -144,9 +144,7 @@ class Field extends Location {
         }
         $oldX = $card->unit->x;
         $oldy = $card->unit->y;
-        if ($oldX != $x && $oldy != $y) {
-            throw new \Exception('Unit can move only on close cell');
-        }
+        
         $leftSteps = $card->unit->checkIsUnitAbleToMove($x, $y) - 1;
         $card->unit->move($x, $y);
         $this->map[$x][$y] = $card->id;

@@ -70,6 +70,8 @@ class Card {
 
     public $isKing = false;
 
+    public $config;
+
     public function __construct(Game $game)
     {
     	$this->game = $game;
@@ -77,8 +79,9 @@ class Card {
 
 	public static function createFromConfig($config, Game $game, $isImport = false)
 	{
-		$card = new Card($game);
-        $card->card = $config['card'];
+		$card         = new Card($game);
+        $card->card   = $config['card'];
+        $card->config = $config;
         if (isset($config['isKing'])) {
             $card->isKing = true;
         }
@@ -88,8 +91,8 @@ class Card {
 
 	public static function import($data, $game)
 	{
-        $cardConfig = \Config::get('tcg.cards.' .  $data['card']);
-        $card       = Card::createFromConfig($cardConfig, $game, true);
+        $config = \Config::get('tcg.cards.' .  $data['card']);
+        $card         = Card::createFromConfig($config, $game, true);
 
 		$card->id       = $data['id'];
 		$card->owner    = $data['owner'];
@@ -97,8 +100,8 @@ class Card {
         $card->isKing   = $data['isKing'];
 
         if (!empty($data['unit'])) {
-            $card->unit  = Unit::import($data['unit'], $cardConfig['unit'], $card);
-            $card->spell = Spell::import($data['spell'], $cardConfig['spell'], $card);
+            $card->unit  = Unit::import($data['unit'], $config['unit'], $card);
+            $card->spell = Spell::import($data['spell'], $config['spell'], $card);
         }
 
 		return $card;
@@ -139,6 +142,7 @@ class Card {
 
         $data['unit'] = $this->unit->render($playerId);
         $data['spell'] = $this->spell->render();
+        $data['image'] = $this->config['image'];
 
 		return $data;
 	}

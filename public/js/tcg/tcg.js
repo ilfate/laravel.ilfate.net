@@ -81,10 +81,7 @@ TCG.Game = function () {
 
 	this.bindObjects = function()
 	{
-		$('.hand .my-card').live('click', function(){ TCG.Game.event('cardClick', $(this)) });
-        $('.field .cell').live('click', function(){ TCG.Game.event('cellClick', $(this)) });
-        $('.field .unit').live('click', function(){ TCG.Game.event('unitClick', $(this)) });
-        $('.field .unit .skip').live('click', function(){ TCG.Game.event('skip', $(this)) });
+        $('.field .cell').on('click', function(){ TCG.Game.event('cellClick', $(this)) });   
 	}
 
 	this.event = function(name, obj) {
@@ -334,31 +331,6 @@ TCG.Game = function () {
         this.tryToShowNextUnitMove();
     }
 
-    this.markMoveForCardId = function(cardId) {
-
-        this.units.focusUnit(cardId);
-        //var cell = $(this.fieldCardInFocus.parent());
-        var x = this.fieldCardInFocus.data('x');
-        var y = this.fieldCardInFocus.data('y');
-        var neibours = this.getNeiboursCells(x, y);
-
-        for (var key in neibours) {
-            var dx = neibours[key][0];
-            var dy = neibours[key][1];
-            if (dx >= 0 && dy >= 0 && dx < this.width && dy < this.height) {
-
-                var unitInCell = $('.field .unit.x_' + dx + '.y_' + dy);
-                if (!unitInCell.length || unitInCell.hasClass('dead')) {
-                    // this cell is free
-                    var newCell = $('.field .cell.x_' + dx + '.y_' + dy);
-                    newCell.addClass('focus');
-                }
-
-            }
-        }
-    }
-
-
     this.processGame = function() {
         this.tryToShowNextUnitMove();
         this.tryToSetUpConnection();
@@ -367,7 +339,7 @@ TCG.Game = function () {
     this.tryToShowNextUnitMove = function() {
         if (this.isBattle()) {
             if (this.isMyTurn()) {
-                this.markMoveForCardId(this.currentCardId);
+                this.units.markMoveForCardId(this.currentCardId);
             }
             this.order.setCurrentCard(this.currentCardId);
         }
@@ -417,15 +389,6 @@ TCG.Game = function () {
             "keyboard"  : true,
             "show"      : true                     // ensure the modal is shown immediately
         });
-    }
-
-    this.getNeiboursCells = function(x, y) {
-        return [
-            [x - 1, y],
-            [x + 1, y],
-            [x, y - 1],
-            [x, y + 1],
-        ];
     }
 
     this.isMyTurn = function() {

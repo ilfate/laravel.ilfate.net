@@ -11,6 +11,7 @@ use ClassPreloader\Config;
 
 class Unit
 {
+    use UnitMove;
 
     const RENDER_TYPE_UNIT = 'unit';
     const RENDER_TYPE_CARD = 'card';
@@ -28,6 +29,11 @@ class Unit
     const KEYWORD_BLOODTHIRST = 'bloodthirst';
     const KEYWORD_FOCUS       = 'focus';
     const KEYWORD_SHIELD      = 'shield';
+
+    const MOVE_TYPE_NORMAL   = 1;
+    const MOVE_TYPE_DIAGONAL = 2;
+    const MOVE_TYPE_AROUND   = 3;
+    const MOVE_TYPE_JUMP     = 4;
 
     protected static $exportValues = array(
         'maxHealth',
@@ -140,7 +146,8 @@ class Unit
         $data['x'] = $x;
         $data['y'] = $y;
         $data['keywords'] = $this->keywords;
-        $data['armor'] = $this->armor;
+        $data['armor']    = $this->armor;
+        $data['moveType'] = $this->getMoveType();
 
         if ($this->card->location == Card::CARD_LOCATION_FIELD) {
             $data['currentHealth'] = $this->currentHealth;
@@ -309,16 +316,17 @@ class Unit
 
     public function checkIsUnitAbleToMove($x, $y)
     {
-        $distance = $this->card->game->field->getDistance($this->x, $this->y, $x, $y) + $this->stepsMade;
-        if (empty($this->config['moveDistance'])) {
-            $moveDistance = self::DEFAULT_MOVE_DISTANCE;
+        //$distance = $this->card->game->field->getDistance($this->x, $this->y, $x, $y) + $this->stepsMade;
+        $isPossibleMove = $this->checkMoveToCell($this->x, $this->y, $x, $y, $this->getMoveType());
+        if (!$isPossibleMove) {
+            throw new \Exception('This is not a possible cell to move');
+        }
+        if (empty($this->config['moveSteps'])) {
+            $moveSteps = self::DEFAULT_MOVE_DISTANCE;
         } else {
-            $moveDistance = $this->config['moveDistance'];
+            $moveSteps = $this->config['moveSteps'];
         }
-        if ($moveDistance < $distance) {
-            throw new \Exception('Unit cant move that far distance is = ' . $distance);
-        }
-        return $moveDistance - $this->stepsMade;
+        return $moveSteps - $this->stepsMade;
     }
 
     public function endOfTurn()
@@ -377,6 +385,14 @@ class Unit
             return $this->data[self::KEYWORD_SHIELD];
         }
         return false;
+    }
+
+    public function getMoveType()
+    {
+        if (!empty($this->config['moveType'])) {
+            return $this->config['moveType'];
+        }
+        return self::MOVE_TYPE_NORMAL;
     }
 
     protected function beforeAttack($damage, Card $target) {
