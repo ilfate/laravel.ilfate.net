@@ -309,15 +309,19 @@ TCG.Units = function (game) {
     }
 
     this.mouseenter = function(unit) {
+        var id = unit.data('id');
         $('.info-zone .info-card').hide();
-        $('.info-zone .info-card.id_' + unit.data('id')).show();
+        $('.info-zone .info-card.id_' + id).show();
+        $('.hover').removeClass('hover');
+        this.getUnitObj(id).addClass('hover');
+
     }
     this.mouseleave = function(unit) {
-        //$('.info-zone .info-card').fadeOut(300);
+        $('.hover').removeClass('hover');
     }
 
     this.markMoveForCardId = function(cardId) {
-
+        $('.enemy-focus').removeClass('enemy-focus');
         var unit = this.focusUnit(cardId);
         var neibours = this.getNeiboursCells(unit);
 
@@ -334,6 +338,12 @@ TCG.Units = function (game) {
                 }
             }
         }
+    }
+
+    this.showEnemyUnit = function(cardId) {
+        var unit = this.getUnitObj(cardId);
+        $('.enemy-focus').removeClass('enemy-focus');
+        unit.addClass('enemy-focus');
     }
 
     this.getNeiboursCells = function(unit) {

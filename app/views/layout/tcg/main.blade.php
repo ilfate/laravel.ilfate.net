@@ -1,4 +1,4 @@
-@extends('layout.headTCG')
+@extends('layout.tcg.head')
 
 @section('layout')
 
@@ -6,10 +6,7 @@
 
 <div class="container main">
     <div class="row">
-        <div class="col-md-1">
-            @yield('left-content')
-        </div>
-        <div class="col-md-7">
+        <div class="col-md-8">
             @yield('content')
         </div>
         <div class="col-md-4">

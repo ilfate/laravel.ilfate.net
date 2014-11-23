@@ -40,9 +40,16 @@ Route::post('MathEffect/save', array('before' => 'csrf', 'uses' => 'MathEffectCo
 Route::post('MathEffect/saveName', array('before' => 'csrf', 'uses' => 'MathEffectController@saveName'));
 Route::get('MathEffect/stats', 'MathEffectController@statistic');
 
-Route::get('tcg', 'TcgController@index');
-Route::get('tcg/clear', 'TcgController@dropGame');
-Route::get('tcg/action', 'TcgController@action');
-Route::post('tcg/action', 'TcgController@actionAjax');
+Route::get('tcg/me', 'TcgPlayerController@index');
+Route::get('tcg/register', 'TcgPlayerController@registerForm');
+Route::post('tcg/register/submit', 'TcgPlayerController@registerSubmit');
+Route::get('tcg/login', 'TcgPlayerController@login');
+Route::post('tcg/login/submit', 'TcgPlayerController@loginSubmit');
+Route::get('tcg/logout', 'TcgPlayerController@logout');
 
-Route::get('tcgb', 'TcgController@bot');
+Route::get('tcg/test', 'TcgController@index');
+Route::get('tcg/test/player2', 'TcgController@bot');
+Route::get('tcg/test/clear', 'TcgController@dropGame');
+Route::get('tcg/test/action', 'TcgController@action');
+Route::post('tcg/test/action', 'TcgController@actionAjax');
+

@@ -128,7 +128,7 @@ Ajax = function() {
   
   this.init = function()
   {
-    $("form[method='post']").each(function() {
+    $("form[method='post'].ajax").each(function() {
       var form = $(this);
       if (form.attr("inited") != "inited") {
         form.bind("submit", function() {

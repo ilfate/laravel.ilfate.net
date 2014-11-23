@@ -52,6 +52,7 @@ TCG.Game = function () {
     this.order  = new TCG.Order(this);
     this.spell  = new TCG.Spell(this);
     this.socket = new TCG.Socket(this);
+    this.actionUrl = '/tcg/test/action';
 
 	this.init = function(data) {
 		this.phase = data.phase;
@@ -131,11 +132,11 @@ TCG.Game = function () {
         switch(data.type) {
             case 'ping':
                 var type = 'ajax';
-                var url = '/tcg/action?f=f';
+                var url = this.actionUrl + '?f=f';
                 break;
             default:
                 var type = 'get';
-                var url = '/tcg/action?';
+                var url = this.actionUrl + '?';
                 var first = true;
                 for(var key in data.data) {
                     var value = data.data[key];
@@ -271,11 +272,9 @@ TCG.Game = function () {
                     break;
                 case 'move':
                     this.units.move(event.cardId, event.x, event.y);
-                    newTurn = true;
                     break;
                 case 'attack':
                     this.units.attack(event.cardId, event.targetId);
-                    newTurn = true;
                     break;
                 case 'unitGetDamage':
                     this.units.damage(event.cardId, event.health, event.damage);
@@ -294,7 +293,6 @@ TCG.Game = function () {
                     this.hand.removeCard(event.cardId);
                     break;
                 case 'skip':
-                    newTurn = true;
                     this.units.bounce(event.cardId);
                     break;
                 case 'battleEnd':
@@ -320,9 +318,9 @@ TCG.Game = function () {
     }
     this.postProcessGameUpdate = function(newTurn) {
         this.units.runAnimations();
-        if (newTurn) {
-            this.tryToShowNextUnitMove();
-        }
+
+        this.tryToShowNextUnitMove();
+
         this.tryToSetUpConnection();
     }
 
@@ -340,6 +338,8 @@ TCG.Game = function () {
         if (this.isBattle()) {
             if (this.isMyTurn()) {
                 this.units.markMoveForCardId(this.currentCardId);
+            } else {
+                this.units.showEnemyUnit(this.currentCardId);
             }
             this.order.setCurrentCard(this.currentCardId);
         }

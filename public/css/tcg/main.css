@@ -95,6 +95,10 @@ min-height: 900px;
 .field .unit.focus {
     font-weight: bold;
 }
+.field .unit.enemy-focus .middle-panel, .field .unit.focus .middle-panel, .field .unit:hover .middle-panel, .field .unit.hover .middle-panel {
+    font-weight: bold;
+    display: block;
+}
 .field .unit .skip {
     display: none;
 }
@@ -112,6 +116,7 @@ min-height: 900px;
 	left: 3px;
 
 	opacity: 0.7;
+    display: none;
 }
 
 .field .unit .keywords {

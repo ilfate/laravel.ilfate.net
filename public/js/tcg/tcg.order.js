@@ -17,6 +17,11 @@ TCG.Order = function (game) {
         var rendered = Mustache.render(template, {card : card});
         var obj = $(rendered);
         $('.order').append(obj);
+        obj.on({
+            mouseenter : function(){ TCG.Game.units.mouseenter($(this)) },
+            mouseleave : function(){ TCG.Game.units.mouseleave($(this)) },
+            click : function(){ TCG.Game.event('unitClick', $(this)) }
+        });
     }
 
     this.setCurrentCard = function(cardId) {

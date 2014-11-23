@@ -8,8 +8,8 @@
 
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" >
 
-    <link href="css/tcg/main.css" rel="stylesheet">
-    <link href="font-awesome-4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/tcg/main.css" rel="stylesheet">
+    <link href="/font-awesome-4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
 
@@ -29,11 +29,7 @@
 
 <script type="text/javascript" src="/js/events.js"></script>
 
-<script type="text/javascript" src="/js/index.js"></script>
 <script type="text/javascript" src="/js/ajax.js"></script>
-<script type="text/javascript" src="/js/modal.js"></script>
-<script type="text/javascript" src="/js/form.js"></script>
-<script type="text/javascript" src="/js/pages.js"></script>
 
 <script type="text/javascript" src="/js/tcg/tcg.js"></script>
 <script type="text/javascript" src="/js/tcg/tcg.units.js"></script>

@@ -34,41 +34,24 @@ class TcgController extends \BaseController
      */
     public function index()
     {
-        $this->breadcrumbs->addLink(action('GamesController' . '@' . 'index'), 'Games');
-        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Math Effect');
-
-        $name = Session::get('userName', null);
-
         $currentPlayerId = 1;
         $this->play($currentPlayerId);
         $game = $this->render($currentPlayerId);
         $this->save();
         View::share('game', $game);
 
-        return View::make('games.tcg.index');//, array('game' => $game)
+        return View::make('games.tcg.testIndex');//, array('game' => $game)
     }
 
     public function bot()
     {
-        $entryData = array(
-            'category' => 'kittensCategory'
-        , 'title'    => 'awdawd'
-        , 'article'  => 'awdawddddddd'
-        , 'when'     => time()
-        );
-
-        $this->breadcrumbs->addLink(action('GamesController' . '@' . 'index'), 'Games');
-        $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Math Effect');
-
-        $name = Session::get('userName', null);
-
         $currentPlayerId = 2;
         $this->play($currentPlayerId);
         $game = $this->render($currentPlayerId);
         $this->save();
         View::share('game', $game);
 
-        return View::make('games.tcg.index');//, array('game' => $game)
+        return View::make('games.tcg.testIndex');//, array('game' => $game)
     }
 
 
@@ -116,23 +99,7 @@ class TcgController extends \BaseController
             }
             $this->save();
         }   
-        return Redirect::to('tcg');
-    }
-
-    public function action()
-    {
-        $currentPlayerId = Input::get('playerId', 1);
-        $this->play($currentPlayerId);
-        
-        $action = Input::get('action');
-
-        $this->doAction($action);
-        $this->save();
-
-        if ($currentPlayerId == 2) {
-            return Redirect::to('tcgb');
-        }
-        return Redirect::to('tcg');   
+        return Redirect::to('tcg/test');
     }
 
     public function actionAjax()
