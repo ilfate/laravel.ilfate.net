@@ -23,6 +23,11 @@
                 {{{card.unit.config.attack.1}}}
             </span>
         </div>
+        <div class="move">
+            {{#card.unit.config.moveSteps}}
+            Move {{{card.unit.config.moveSteps}}}
+            {{/card.unit.config.moveSteps}}
+        </div>
 		<p>
 			{{{card.unit.config.text}}}
 		</p>

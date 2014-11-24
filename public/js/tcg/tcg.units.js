@@ -153,25 +153,20 @@ TCG.Units = function (game) {
     }
 
     this.addAnimation = function(cardId, data) {
-        if (this.animationsInQueue[cardId] == undefined) {
-                this.animationsInQueue[cardId] = [];
-            }
-        this.animationsInQueue[cardId].push(data);
+        data.cardId = cardId;
+        this.animationsInQueue.push(data);
     }
 
     this.runAnimations = function() {
         if (!this.animationsInQueue.length) {
             return;
         }
-        for (var cardId in this.animationsInQueue) {
-            this.runSingleCardAnimations(cardId);
-        
-        }
-        //this.animationsInQueue = [];
+        this.runSingleCardAnimations();
     }
-    this.runSingleCardAnimations = function(cardId) {
-        if (this.animationsInQueue[cardId].length) {
-            var animation = this.animationsInQueue[cardId][0];
+    this.runSingleCardAnimations = function() {
+        if (this.animationsInQueue.length) {
+            var animation = this.animationsInQueue[0];
+            var cardId = animation.cardId;
             switch (animation.type) {
                 case 'damage':
                     this.damageAnimation(cardId, animation.damage);
@@ -193,8 +188,7 @@ TCG.Units = function (game) {
                     break;
                     
             }
-
-            this.animationsInQueue[cardId] = this.animationsInQueue[cardId].slice(1);
+            this.animationsInQueue = this.animationsInQueue.slice(1);
         }
     }
 
