@@ -9,14 +9,9 @@ namespace Tcg;
 
 class Field extends Location {
 
-
-
-	/**
-	 * First player is on top.
-	 *
-	 * @var array
-	 */
-	public $players;
+    const MAP_TYPE_EMPTY = 'empty';
+    const MAP_TYPE_RANDOM = 'random';
+    const MAP_TYPE_FIXED = 'fixed';
 
     /**
      * @var Game
@@ -26,88 +21,137 @@ class Field extends Location {
     /** @var array */
     public $map = array();
 
-    public $playerUnits = array();
-
-    public function __construct($players, Game $game)
-    {
-    	$this->players = $players;
-        $this->game    = $game;
-    }
-
-    public function addCard(Card $card)
-    {
-    	$x = $card->unit->x;
-    	$y = $card->unit->y;
-        if ($x >= Game::WIDTH || $y >= Game::HEIGHT || $x < 0 || $y < 0) {
-            throw new \Exception("Unit added to field has wrong X or Y", 1);    
-        }
-        if (isset($this->map[$x][$y])) {
-            throw new \Exception("You can't deploy on occupied cell", 12);        
-        }
-    	if (!isset($this->map[$x])) {
-    		$this->map[$x] = [];
-    	}
-
-    	$this->map[$x][$y] = $card->id;
-        if (!isset($this->playerUnits[$card->owner])) {
-            $this->playerUnits[$card->owner] = [];
-        }
-        $this->playerUnits[$card->owner][] = $card->id;
-        //var_dump($this->playerUnits); die;
-        $this->cards[] = $card->id;
-    }
-
-    public function render($playerId, $isBattle)
-    {
-    	$data = [
-    		'width'  => Game::WIDTH,
-    		'height' => Game::HEIGHT,
-    		'cards'  => $this->cards,
-    	];
-        
-    	return $data;
-    }
-
     /**
-     * @return int[]
+     * @var array objectIds
      */
-    public function getPlayerUnits($playerId)
+    public $objectMap = [];
+    /**
+     * @var FieldObject[]
+     */
+    public $objects = [];
+
+    public function __construct(Game $game)
     {
-        return $this->playerUnits[$playerId];
+        $this->game = $game;
     }
 
-    public static function importField($data, $players, Game $game)
+    public function init()
     {
-        $location = new Field($players, $game);
+        $mapType = $this->game->config['mapType'];
+        switch ($mapType) {
+            case self::MAP_TYPE_EMPTY:
+
+                break;
+            case self::MAP_TYPE_FIXED:
+
+                //var_dump($config); die;
+                $fieldObject = FieldObject::createFromConfig(1, $this);
+                $fieldObject->x = 5;
+                $fieldObject->y = 5;
+                $this->addObject($fieldObject);
+                break;
+        }
+    }
+
+    public static function importField($data, Game $game)
+    {
+        $location = new Field($game);
 
         $location->map         = $data['map'];
         $location->cards       = $data['cards'];
-        $location->playerUnits = $data['playerUnits'];
+        foreach ($data['objects'] as $object) {
+            $fieldObject = FieldObject::import($object, $location);
+            $location->addObject($fieldObject);
+        }
 
         return $location;
     }
 
     public function export()
     {
+        $objects = $this->exportObjects();
         $location = [
             'cards'       => $this->cards,
-            'playerUnits' => $this->playerUnits,
             'map'         => $this->map,
+            'objects'     => $objects,
         ];
         return $location;
     }
 
+    public function addCard(Card $card)
+    {
+        $x = $card->unit->x;
+        $y = $card->unit->y;
+        if ($x >= Game::WIDTH || $y >= Game::HEIGHT || $x < 0 || $y < 0) {
+            throw new \Exception("Unit added to field has wrong X or Y", 1);
+        }
+        if (isset($this->map[$x][$y])) {
+            throw new \Exception("You can't deploy on occupied cell", 12);
+        }
+        if (!isset($this->map[$x])) {
+            $this->map[$x] = [];
+        }
 
+        $this->map[$x][$y] = $card->id;
+
+        $this->cards[] = $card->id;
+    }
+
+    public function render($playerId, $isBattle)
+    {
+        $objects = [];
+        foreach ($this->objects as $fieldObject) {
+            $objects[] = $fieldObject->render($playerId);
+        }
+        $data = [
+            'width'  => Game::WIDTH,
+            'height' => Game::HEIGHT,
+            'cards'  => $this->cards,
+            'objects' => $objects,
+        ];
+
+        return $data;
+    }
+
+    public function exportObjects()
+    {
+        $data = [];
+        foreach ($this->objects as $object)
+        {
+            $data[] = $object->export();
+        }
+        return $data;
+    }
+
+    public function addObject(FieldObject $object)
+    {
+        if (!$object->id) {
+            $newId          = count($this->objects);
+            $object->id = $newId;
+            $this->objects[] = $object;
+        } else {
+            $this->objects[$object->id] = $object;
+        }
+        $this->objectMap[$object->x][$object->y] = $object->id;
+    }
+
+    public function getObject($objectId)
+    {
+        return $this->objects[$objectId];
+    }
+    public function findObject($x, $y)
+    {
+        if (isset($this->objectMap[$x][$y])) {
+            return $this->objects[$this->objectMap[$x][$y]];
+        }
+        return false;
+    }
 
     public function removeUnit(Card $card)
     {
-    	$x = $card->unit->x;
-    	$y = $card->unit->y;
-    	unset($this->map[$x][$y]);
-
-        $key = array_search($card->id, $this->playerUnits[$card->owner]);
-        unset($this->playerUnits[$card->owner][$key]);
-        $this->playerUnits[$card->owner] = array_diff( $this->playerUnits[$card->owner], array( null ) );
+        $x = $card->unit->x;
+        $y = $card->unit->y;
+        unset($this->map[$x][$y]);
 
         $key = array_search($card->id, $this->cards);
         unset($this->cards[$key]);
@@ -116,7 +160,7 @@ class Field extends Location {
 
     public function addCards(array $cards)
     {
-    	throw new Exception("Add Cards is not working for field", 1);
+        throw new Exception("Add Cards is not working for field", 1);
     }
 
     public function getNextCard($cardId = null)
@@ -144,7 +188,7 @@ class Field extends Location {
         }
         $oldX = $card->unit->x;
         $oldy = $card->unit->y;
-        
+
         $leftSteps = $card->unit->checkIsUnitAbleToMove($x, $y) - 1;
         $card->unit->move($x, $y);
         $this->map[$x][$y] = $card->id;

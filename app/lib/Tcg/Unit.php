@@ -43,7 +43,6 @@ class Unit
         'x',
         'y',
         'stepsMade',
-        'effects',
         'keywords',
         'attack',
         'data'
@@ -74,14 +73,8 @@ class Unit
      */
     public $card;
 
-    public $effects   = [];
     public $keywords  = [];
     public $stepsMade = 0;
-
-    /**
-     * @var Effect\Effect[]
-     */
-    protected $effectObjects = array();
 
     public static function createFromConfig($config, Card $card)
     {
@@ -101,13 +94,11 @@ class Unit
             $unit->{$valueName} = $data[$valueName];
         }
 
-        $unit->initEffects();
         return $unit;
     }
 
     public function export()
     {
-        $this->updateEffects();
         $data = [];
         foreach (self::$exportValues as $valueName) {
             $data[$valueName] = $this->{$valueName};
@@ -358,21 +349,6 @@ class Unit
             $key = array_search($word, $this->keywords);
             unset($this->keywords[$key]);
             $this->card->game->log->logUnitChange($this->card->id, 'keyword', ['words' => $this->keywords, 'data' => $this->data]);
-        }
-    }
-
-    protected function initEffects()
-    {
-        foreach ($this->effects as $effect) {
-            $this->effectObjects[] = new $effect[0]($effect[1]);
-        }
-    }
-
-    protected function updateEffects()
-    {
-        $this->effects = array();
-        foreach ($this->effectObjects as $effect) {
-            $this->effects[] = [get_class($effect), $effect->export()];
         }
     }
 

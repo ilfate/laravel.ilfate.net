@@ -50,6 +50,10 @@ class GameContainer {
     const IMPORT_TYPE_NORMAL = 'normal';
     const IMPORT_TYPE_UPDATE = 'update';
 
+    const GAME_TYPE_TEST = 'test';
+    const GAME_TYPE_DEBUG = 'debug';
+    const GAME_TYPE_BATTLE = 'battle';
+
     protected static $exportValues = array(
         'phase',
         'turnNumber',
@@ -60,6 +64,7 @@ class GameContainer {
         'events',
         'eventsExpire',
         'kings',
+        'gameType',
     );
 
     /**
@@ -102,10 +107,14 @@ class GameContainer {
     public $log;
 
     public $gameType = 'battle';
+    // Game config is based on gameType
+    public $config = [];
 
     public $data;
     public $sessionType;
     public $gameId = 555;
+    // important game configuration for frontEnd
+    public $actionUrl = '';
 
 
 
@@ -124,7 +133,7 @@ class GameContainer {
         if (empty($this->cards[$id])) {
             if ($this->sessionType == self::IMPORT_TYPE_UPDATE) {
                 if (empty($this->data['cards'][$id])) {
-                    throw new \Exception('During update we are trying to import card with id=' . $id. ', but it is missing');    
+                    throw new \Exception('During update we are trying to import card with id=' . $id. ', but it is missing');
                 }
                 $this->addCard(Card::import($this->data['cards'][$id], $this));
                 return $this->cards[$id];
@@ -143,7 +152,7 @@ class GameContainer {
         return $this->cards[$this->kings[$playerId]];
     }
 
-    public function setKings() 
+    public function setKings()
     {
         foreach ($this->cards as $card) {
             if ($card->isKing) {
@@ -220,7 +229,8 @@ class GameContainer {
             $this->graves[$player->id] = new Grave($player->id);
             $this->spellsPlayed[$player->id] = 0;
         }
-        $this->field = new Field(array_keys($this->players), $this);
+        $this->field = new Field($this);
+        $this->field->init();
     }
 
     public function isTopPlayer($playerId)

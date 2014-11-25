@@ -9,6 +9,8 @@
             </div>
         @endfor
     @endfor
+    <div class="objects" >
+    </div>
     <div class="units" >
     </div>
     <div class="clear" ></div>

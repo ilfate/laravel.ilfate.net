@@ -9,10 +9,10 @@ namespace Tcg;
 
 class GameBuilder {
 
-	public static function build($currentPlayerId, $config)
-	{
+    public static function buildTest($currentPlayerId, $config)
+    {
 
-		$player1 = new Player($currentPlayerId, 1);
+        $player1 = new Player($currentPlayerId, 1);
         $player2 = new Player(2, 2);
         if (!empty($config['isBot'])) {
             $player2->type = Player::PLAYER_TYPE_BOT;
@@ -20,10 +20,11 @@ class GameBuilder {
 
         $game      = new Game($currentPlayerId);
         $game->log = new GameLog($game);
-
+        $game->gameType = Game::GAME_TYPE_TEST;
         if (!empty($config['debug'])) {
-        	$game->gameType = 'debug';
+            $game->gameType = Game::GAME_TYPE_DEBUG;
         }
+        $game->setUpGameObject();
         $game->sessionType = Game::IMPORT_TYPE_NORMAL;
 
         $game->addPlayer($player1);
@@ -44,7 +45,7 @@ class GameBuilder {
             [Card::createFromConfig($configs[51], $game), 2],
             [Card::createFromConfig($configs[52], $game), 2],
             [Card::createFromConfig($configs[53], $game), 2],
-           // [Card::createFromConfig($configs[54], $game), 2],
+            // [Card::createFromConfig($configs[54], $game), 2],
             [Card::createFromConfig($configs[55], $game), 2],
             [Card::createFromConfig($configs[56], $game), 2],
             [Card::createFromConfig($configs[57], $game), 2],
@@ -64,7 +65,7 @@ class GameBuilder {
         $game->start();
         $game->gameAutoActions();
         return $game;
-	}
+    }
 
     public static function buildSituation($currentPlayerId, $situation, $config)
     {
@@ -99,6 +100,8 @@ class GameBuilder {
         $game      = new Game($currentPlayerId);
         $game->log = new GameLog($game);
         $game->sessionType = Game::IMPORT_TYPE_NORMAL;
+        $game->gameType = Game::GAME_TYPE_TEST;
+        $game->setUpGameObject();
 
         $player1 = new Player($currentPlayerId, 1);
         $player2 = new Player(2, 2);

@@ -2,13 +2,17 @@
 
 return array(
     'game' => [
-        'battle' => [
+        'test' => [
             'handDraw'   => 5,
             'spellsDraw' => 2,
+            'actionUrl'  => '/tcg/test/action',
+            'mapType'    => 'fixed',
         ],
         'debug' => [
             'handDraw'   => 2,
             'spellsDraw' => 2,
+            'actionUrl'  => '/tcg/test/action',
+            'mapType'    => 'fixed',
         ],
     ],
     'cards' => array(
@@ -31,8 +35,8 @@ return array(
         59 => ['card' => 59, 'unit' => 59, 'spell' => 1, 'image' => 'pl_m.png', 'isKing' => true],
     ),
     'units' => [
-    // Dwarfs
-        1 => [ 
+        // Dwarfs
+        1 => [
             'unit' => '\Tcg\Unit\Common',
             'name' => 'Guudlin',
             'totalHealth' => 8,
@@ -42,14 +46,14 @@ return array(
             'moveSteps' => 2,
             'text' => '',
         ],
-        2 => [ 
+        2 => [
             'unit' => '\Tcg\Unit\Dvallin',
             'name' => 'Dvallin',
             'totalHealth' => 12,
             'attack' => [2,4],
             'text' => 'On Attack gets + X armor where X is dealt damage.',
         ],
-        3 => [ 
+        3 => [
             'unit' => '\Tcg\Unit\TheMashine',
             'name' => 'The Mashine',
             'totalHealth' => 5,
@@ -57,14 +61,14 @@ return array(
             'armor'  => 20,
             'text' => 'Can attack only in front direction',
         ],
-        4 => [ 
+        4 => [
             'unit' => '\Tcg\Unit\GudTheSmith',
             'name' => 'Gud the Smith',
             'totalHealth' => 4,
             'attack' => [1,4],
             'text' => 'Can repair 3 armor to nearby frendly unit if there is no targets to attack',
         ],
-        5 => [ 
+        5 => [
             'unit' => '\Tcg\Unit\Common',
             'name' => 'The Defender',
             'totalHealth' => 4,
@@ -73,7 +77,7 @@ return array(
             'text' => 'Focus',
             'keywords' => ['focus']
         ],
-        6 => [ 
+        6 => [
             'unit' => '\Tcg\Unit\Common',
             'name' => 'Swordsdwarf',
             'totalHealth' => 10,
@@ -81,7 +85,7 @@ return array(
             'armor'  => 2,
             'text' => '',
         ],
-        7 => [ 
+        7 => [
             'unit' => '\Tcg\Unit\Common',
             'name' => 'Dwarf King',
             'totalHealth' => 15,
@@ -200,6 +204,12 @@ return array(
             'text' => 'Put focus on target unit'
         ],
     ],
+    'fieldObjects' => [
+        1 => [
+            'class' => '\Tcg\FieldObject\Common',
+            'image' => 'pl_f.png'
+        ],
+    ]
 
 
 );

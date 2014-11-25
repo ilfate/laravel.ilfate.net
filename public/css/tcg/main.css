@@ -91,6 +91,7 @@ min-height: 900px;
 	height: 75px;
     position: absolute;
     text-align: center;
+    z-index: 25;
 }
 .field .unit.focus {
     font-weight: bold;
@@ -167,6 +168,13 @@ min-height: 900px;
 }
 .field .unit .damage.armor {
 	color: blue;
+}
+
+.field .object {
+    width:75px;
+    height:75px;
+    position: absolute;
+    z-index: 10;
 }
 
 .info-zone {

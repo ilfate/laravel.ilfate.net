@@ -25,12 +25,18 @@ class Game extends GameContainer {
         $game = new Game($currentPlayerId);
         $game->sessionType = $type;
 
+        foreach (self::$exportValues as $valueName) {
+            $game->{$valueName} = $data[$valueName];
+        }
+
+        $game->setUpGameObject();
+
         foreach ($data['players'] as $player) {
             $game->addPlayer(Player::import($player));
         }
 
         if ($type == self::IMPORT_TYPE_NORMAL) {
-            
+
             foreach ($data['decks'] as $deck) {
                 $game->addDeck(Deck::import($deck));
             }
@@ -43,18 +49,20 @@ class Game extends GameContainer {
             foreach ($data['cards'] as $card) {
                 $game->addCard(Card::import($card, $game));
             }
-            $game->field = Field::importField($data['field'], array_keys($game->players), $game);
+            $game->field = Field::importField($data['field'], $game);
         } else if($type == self::IMPORT_TYPE_UPDATE) {
             $game->data = $data;
         }
-        
+
         $game->log   = GameLog::import($data['log'], $game);
 
-        foreach (self::$exportValues as $valueName) {
-            $game->{$valueName} = $data[$valueName];
-        }
         $game->start();
         return $game;
+    }
+
+    public function setUpGameObject()
+    {
+        $this->config = \Config::get('tcg.game.' . $this->gameType);
     }
 
     public function start()
@@ -95,13 +103,13 @@ class Game extends GameContainer {
             $game['cards'] = $cards;
         }
         $game['log'] = $this->log->export();
-        
+
         return $game;
     }
 
     public function render($playerId)
     {
-        //var_dump($this); die;
+        //var_dump($this->gameType); die;
         $data = [
             'card'     => $this->currentCardId,
             'js'       => [
@@ -110,15 +118,13 @@ class Game extends GameContainer {
                 'playerTurnId'    => $this->playerTurnId,
                 'turnNumber'      => $this->turnNumber,
                 'subscriptionKey' => $this->getPlayerKey($this->currentPlayerId),
-                //'isIm'
-                'currentPlayerId' => $this->currentPlayerId
+                'currentPlayerId' => $this->currentPlayerId,
+                'actionUrl'       => $this->config['actionUrl'],
             ],
             'log' => $this->log->render(GameLog::RENDER_MODE_ADMIN)
         ];
         $data['hand']  = $this->renderHand($playerId);
         $data['field'] = $this->renderField($playerId);
-//        var_dump($data['field']); die;
-//        var_dump(array_slice($this->log->log, -10)); die;
         $data['opponentHand'] = $this->renderOpponentHand($playerId);
 
         if ($this->gameResult) {
@@ -166,7 +172,7 @@ class Game extends GameContainer {
         foreach ($this->players as $playerId => $value) {
             $this->players[$playerId]->lastEventSeen = $this->log->getNextEventId();
         }
-        
+
     }
 
     public function action($name, $data = [])
@@ -242,17 +248,17 @@ class Game extends GameContainer {
         }
     }
 
-    protected function actionSkip($cardId) 
+    protected function actionSkip($cardId)
     {
         if ($this->currentPlayerId != $this->playerTurnId) {
-                throw new \Exception('Player with id = ' . $this->currentPlayerId . ' is trying to Skip not on his turn');
-            }
+            throw new \Exception('Player with id = ' . $this->currentPlayerId . ' is trying to Skip not on his turn');
+        }
         if ($this->phase == self::PHASE_UNIT_DEPLOYING) {
             $this->players[$this->currentPlayerId]->skippedTurn = true;
             $this->nextTurn();
         } else if($this->phase == self::PHASE_BATTLE) {
             if ($cardId != $this->currentCardId) {
-                throw new \Exception('Player with id = ' . $this->currentPlayerId . ' is trying to Skip with cardId = ' . $cardId . ' when it is turn of ' . $this->currentCardId);    
+                throw new \Exception('Player with id = ' . $this->currentPlayerId . ' is trying to Skip with cardId = ' . $cardId . ' when it is turn of ' . $this->currentCardId);
             }
             $this->unitAttack();
         }
@@ -265,7 +271,7 @@ class Game extends GameContainer {
             throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to use wrong spell", 1);
         }
         if ($this->spellsPlayed[$this->playerTurnId] >= Spell::MAX_SPELL_PER_TURN) {
-            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying cast more spells in one turn then he can!", 1);   
+            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying cast more spells in one turn then he can!", 1);
         }
 
         $card->spell->cast($data);
@@ -282,7 +288,7 @@ class Game extends GameContainer {
         switch ($this->phase) {
             case self::PHASE_GAME_NOT_STARTED:
                 // the game is just created
-                $handSize = \Config::get('tcg.game.' . $this->gameType . '.handDraw');
+                $handSize = $this->config['handDraw'];
                 foreach ($this->players as $playerId => $player) {
                     $this->drawCards($playerId, $handSize);
                 }
@@ -358,7 +364,7 @@ class Game extends GameContainer {
         $this->log->logStartBattle();
 
         foreach ($this->players as $id => $player) {
-            $this->drawCards($id, \Config::get('tcg.game.' . $this->gameType . '.spellsDraw'));
+            $this->drawCards($id, $this->config['spellsDraw']);
         }
         $this->turnNumber = 1;
 
@@ -477,7 +483,7 @@ class Game extends GameContainer {
     {
         $this->currentCardId = $this->field->getNextCard($this->currentCardId);
         if ($this->currentCardId === null) {
-            
+
             $this->nextTurn();
             $this->nextBattleCard();
 

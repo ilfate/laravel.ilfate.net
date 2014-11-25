@@ -57,17 +57,17 @@ class TcgController extends \BaseController
 
     public function play($currentPlayerId, $type = Game::IMPORT_TYPE_NORMAL)
     {
-        
+
         //$gameData = Session::get('tcg.userGame', null);
         $gameData = Cache::get('tcg.userGame', null);
         if (!$gameData) {
-            $game = GameBuilder::build($currentPlayerId, ['isBot' => false]);
+            $game = GameBuilder::buildTest($currentPlayerId, ['isBot' => false]);
         } else {
-            
+
             $game = Game::import($type, $gameData, $currentPlayerId);
         }
         $this->game = $game;
-        
+
     }
 
     protected function render($currentPlayerId)
@@ -95,10 +95,10 @@ class TcgController extends \BaseController
             if ($situation) {
                 $this->game = GameBuilder::buildSituation(1, [], ['isBot' => $bot]);
             } else {
-                $this->game = GameBuilder::build(1, ['isBot' => $bot, 'debug' => $debug]);
+                $this->game = GameBuilder::buildTest(1, ['isBot' => $bot, 'debug' => $debug]);
             }
             $this->save();
-        }   
+        }
         return Redirect::to('tcg/test');
     }
 
@@ -116,7 +116,7 @@ class TcgController extends \BaseController
         }
 
         $this->play($currentPlayerId, $type);
-        
+
         if ($action) {
             $this->doAction($action);
         }
@@ -151,7 +151,7 @@ class TcgController extends \BaseController
                 break;
         }
     }
-    
+
     private function validateCastData(&$data) {
         if (isset($data['x']) && isset($data['y'])) {
             $data = [

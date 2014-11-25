@@ -27,8 +27,8 @@ function TCG () {
 TCG = new TCG();
 
 $(document).ready(function() {
-	TCG.Game = new TCG.Game();
-	
+    TCG.Game = new TCG.Game();
+
 
 });
 
@@ -40,37 +40,44 @@ TCG.Game = function () {
 
     this.width = 8;
     this.height = 8;
-	this.handCardInFocus;
-	this.fieldCardInFocus;
-	this.phase = 0;
+    this.handCardInFocus;
+    this.fieldCardInFocus;
+    this.phase = 0;
     this.currentPlayerId;
     this.playerTurnId;
     this.currentCardId;
     this.gameId;
-    this.units  = new TCG.Units(this);
-    this.hand   = new TCG.Hand(this);
-    this.order  = new TCG.Order(this);
-    this.spell  = new TCG.Spell(this);
-    this.socket = new TCG.Socket(this);
-    this.actionUrl = '/tcg/test/action';
+    this.units     = new TCG.Units(this);
+    this.objects   = new TCG.Objects(this);
+    this.hand      = new TCG.Hand(this);
+    this.order     = new TCG.Order(this);
+    this.spell     = new TCG.Spell(this);
+    this.socket    = new TCG.Socket(this);
+    this.actionUrl = '';
 
-	this.init = function(data) {
-		this.phase = data.phase;
+    this.init = function(data) {
+        this.phase = data.phase;
         this.playerTurnId = data.playerTurnId;
         this.currentPlayerId = data.currentPlayerId;
         this.currentCardId = data.card;
         this.gameId = data.gameId;
-        
-		this.bindObjects();
+        this.actionUrl = data.actionUrl;
+
+        this.bindObjects();
         this.units.init();
 
         //this.socket.initConnection(data.subscriptionKey);
-	}
+    }
 
     this.renderFieldUnits = function(units) {
         for(var i in units) {
             this.units.createUnit(units[i]);
             this.order.createCard(units[i]);
+        }
+    }
+    this.renderFieldObjects = function(objects) {
+        for(var i in objects) {
+            this.objects.createObject(objects[i]);
         }
     }
     this.renderHandCards = function(cards) {
@@ -80,16 +87,16 @@ TCG.Game = function () {
         }
     }
 
-	this.bindObjects = function()
-	{
-        $('.field .cell').on('click', function(){ TCG.Game.event('cellClick', $(this)) });   
-	}
+    this.bindObjects = function()
+    {
+        $('.field .cell').on('click', function(){ TCG.Game.event('cellClick', $(this)) });
+    }
 
-	this.event = function(name, obj) {
-		switch(name) {
-			case 'cardClick':
-				if(obj.hasClass('card')) {
-					this.cardClick(obj);
+    this.event = function(name, obj) {
+        switch(name) {
+            case 'cardClick':
+                if(obj.hasClass('card')) {
+                    this.cardClick(obj);
                     switch(this.phase) {
                         case this.phase_deploy: // Deploy phase
                             // light them up!
@@ -104,8 +111,8 @@ TCG.Game = function () {
                             // we need to hide current focused cells for unit
                             break;
                     }
-				}
-			break;
+                }
+                break;
             case 'cellClick':
                 if (this.isDeploy()) {
                     this.deploy(obj);
@@ -125,8 +132,8 @@ TCG.Game = function () {
             case 'skip' :
                 this.skip(obj);
                 break
-		}
-	}
+        }
+    }
 
     this.action = function(data) {
         switch(data.type) {
@@ -160,7 +167,7 @@ TCG.Game = function () {
         if (data.type == 'deploy' || data.type == 'move' || data.type == 'skip') {
             type = 'ajax';
         }
-            url += '&playerId=' + this.currentPlayerId;
+        url += '&playerId=' + this.currentPlayerId;
         switch (type) {
             case 'get':
                 window.location = url;
@@ -370,18 +377,18 @@ TCG.Game = function () {
         }
     }
 
-	this.cardClick = function(obj) {
-		if(obj.hasClass('focus')) {
-			obj.removeClass('focus');
+    this.cardClick = function(obj) {
+        if(obj.hasClass('focus')) {
+            obj.removeClass('focus');
             this.handCardInFocus = false;
-		} else {
-			if (this.handCardInFocus) {
-				this.handCardInFocus.removeClass('focus');
-			}
-			obj.addClass('focus');
-			this.handCardInFocus = obj;
-		}
-	}
+        } else {
+            if (this.handCardInFocus) {
+                this.handCardInFocus.removeClass('focus');
+            }
+            obj.addClass('focus');
+            this.handCardInFocus = obj;
+        }
+    }
 
     this.showResultModal = function() {
         $("#myModal").modal({                    // wire up the actual modal functionality and show the dialog

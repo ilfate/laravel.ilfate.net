@@ -195,7 +195,7 @@ TCG.Units = function (game) {
     this.damageAnimation = function(cardId, damage) {
 
         var unit = this.getUnitObj(cardId);
-        var dmgObj = $('<div></div').addClass('damage');
+        var dmgObj = $('<div></div>').addClass('damage');
         if (damage < 0) {
             dmgObj.addClass('heal');
             dmgObj.html('+' + (-damage + ''));    
@@ -245,7 +245,7 @@ TCG.Units = function (game) {
         var dy = Math.round((y2 - y)/2);
         unit.animate({
             'left' : x + dx,
-            'top' : y +dy,
+            'top' : y + dy
         }, {duration:100, 
             'complete': (function (cardId) {
                     return function() {
@@ -350,14 +350,14 @@ TCG.Units = function (game) {
                     [x - 1, y],
                     [x + 1, y],
                     [x, y - 1],
-                    [x, y + 1],
+                    [x, y + 1]
                 ];    
             case 2:
                 return [
                     [x - 1, y - 1],
                     [x + 1, y + 1],
                     [x + 1, y - 1],
-                    [x - 1, y + 1],
+                    [x - 1, y + 1]
                 ];
             case 3:
                 return [
@@ -368,7 +368,7 @@ TCG.Units = function (game) {
                     [x - 1, y - 1],
                     [x + 1, y + 1],
                     [x + 1, y - 1],
-                    [x - 1, y + 1],
+                    [x - 1, y + 1]
                 ];
             case 4:
                 return [
@@ -379,7 +379,7 @@ TCG.Units = function (game) {
                     [x + 1, y - 2],
                     [x + 2, y - 1],
                     [x - 1, y + 2],
-                    [x - 2, y + 1],
+                    [x - 2, y + 1]
                 ];
         }
     }
