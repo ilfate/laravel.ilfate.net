@@ -65,8 +65,9 @@ TCG.Units = function (game) {
 
     this.createUnit = function(card) {
         var templateCard = $('#template-field-unit').html();
+        var isEnemy = card.owner == this.game.currentPlayerId ? '' : 'enemy';
         Mustache.parse(templateCard);   // optional, speeds up future uses
-        var rendered = Mustache.render(templateCard, {card : card, x : card.unit.x, y : card.unit.y});
+        var rendered = Mustache.render(templateCard, {card : card, x : card.unit.x, y : card.unit.y, isEnemy : isEnemy});
         var obj = $(rendered);
         this.setUnit(obj);
         var templateInfo = $('#template-info-card').html();

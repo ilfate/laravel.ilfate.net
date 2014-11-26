@@ -108,6 +108,19 @@
     text-align: center;
     z-index: 25;
 }
+.field .unit .image {
+    width: 75px;
+    height: 75px;
+    position: absolute;
+    z-index:20;
+}
+.field .unit.enemy .image {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
 .field .unit.focus {
     font-weight: bold;
 }
@@ -137,6 +150,7 @@
 
     opacity: 0.9;
     display: none;
+    z-index:23;
 }
 
 .field .unit .keywords {

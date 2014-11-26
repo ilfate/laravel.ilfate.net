@@ -9,8 +9,8 @@
  */ ?>
 
 <script id="template-field-unit" type="x-tmpl-mustache">
-    <div class="card unit id_{{card.id}} x_{{x}} y_{{y}}" data-move="{{card.unit.moveType}}" data-id="{{card.id}}" data-x="{{x}}" data-y="{{y}}" data-active="false" 
-    style="background-image:url('/images/game/tcg/{{card.image}}')">
+    <div class="card unit id_{{card.id}} x_{{x}} y_{{y}} {{isEnemy}}" data-move="{{card.unit.moveType}}" data-id="{{card.id}}" data-x="{{x}}" data-y="{{y}}" data-active="false">
+    <div class="image" style="background-image:url('/images/game/tcg/{{card.image}}')"></div>
 
         
         <div class="middle-panel">
