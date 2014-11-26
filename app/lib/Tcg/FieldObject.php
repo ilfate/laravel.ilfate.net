@@ -78,6 +78,11 @@ class FieldObject
         return $data;
     }
 
+    public function isPassable()
+    {
+        return !! $this->config['passable'];
+    }
+
 
 
     public function death()
@@ -86,5 +91,5 @@ class FieldObject
 //        $this->card->game->log->logDeath($this->card->id);
 //        $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_DEATH, $this->card->id);
     }
-    
+
 }

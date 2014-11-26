@@ -90,6 +90,7 @@ TCG.Game = function () {
     this.bindObjects = function()
     {
         $('.field .cell').on('click', function(){ TCG.Game.event('cellClick', $(this)) });
+        $('.hand .skipTurn').on('click', function(){ TCG.Game.event('skip', $(this)) });
     }
 
     this.event = function(name, obj) {

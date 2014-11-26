@@ -1,7 +1,7 @@
 
 
 .main-content-well, .main-content-well-side {
-min-height: 900px;
+    min-height: 900px;
 }
 
 .clear {
@@ -13,18 +13,18 @@ min-height: 900px;
 }
 
 .hand {
-	position: relative;
-	/*display: block;*/
-	/*clear:both;*/
+    position: relative;
+    /*display: block;*/
+    /*clear:both;*/
 }
 
 .hand .card {
-	float:left;
-	margin: 5px;
-	width:150px;
-	height: 200px;
+    float:left;
+    margin: 5px;
+    width:150px;
+    height: 200px;
 
-	border: 1px solid #494949;
+    border: 1px solid #483018;
     cursor: pointer;
 }
 .hand .card-back {
@@ -33,62 +33,77 @@ min-height: 900px;
     width:100px;
     height: 30px;
 
-    border: 1px solid #494949;
+    border: 1px solid #483018;
 }
 
 .hand .card.focus {
-    border: 3px solid #494949;
+    border: 3px solid #483018;
 }
 
 .hand .card .name{
-	text-align: center;
+    text-align: center;
 }
 
 .hand .card .unit, .hand .card .spell {
-	text-align: center;
-	border: 1px solid #494949;
-	margin:2.5%;
-	width:95%;	
+    text-align: center;
+    border: 1px solid #483018;
+    margin:2.5%;
+    width:95%;
+}
+.hand .skipTurn {
+    float:left;
+    margin: 5px;
+    width:150px;
+    height: 200px;
+
+    border: 1px solid #483018;
+    cursor: pointer;
 }
 .order {
-	position: relative;
-	width:75px;
+    position: relative;
+    width:75px;
     clear: both;
 }
 
 .order .card {
-	width:75px;
-	height:75px;
+    width:75px;
+    height:75px;
+    opacity: 0.7;
 }
-.order .card.focus {
+.order .card.focus, .order .card:hover {
     font-weight: bold;
-    border: 2px solid #228017;
+    opacity: 1;
 }
 
 .field {
-	width :650px;
-	position: relative;
-	display: block;
+    width :601px;
+    height: 601px;
+    position: relative;
+    display: block;
     clear:both;
-    min-height: 650px;
+    border-right: 1px solid #483018;
+    border-bottom: 1px solid #483018;
 }
 .field .cell {
-    margin: 1px;
-	width:75px;
-	height:75px;
-	float:left;
-	border: 1px solid #494949;
-	border-radius: 3px;
+    /*margin: 1px;*/
+    width:75px;
+    height:75px;
+    float:left;
+    /*border: 1px solid #494949;*/
+    /*border-radius: 3px;*/
+    border-top: 1px solid #483018;
+    border-left: 1px solid #483018;
+    z-index: 10;
 }
 
 .field .cell.focus {
     cursor: pointer;
-    border: 2px solid #228017;
+    background-color: #FFD416;
 }
 
 .field .unit {
-	width: 75px;
-	height: 75px;
+    width: 75px;
+    height: 75px;
     position: absolute;
     text-align: center;
     z-index: 25;
@@ -97,9 +112,12 @@ min-height: 900px;
     font-weight: bold;
 }
 .field .unit.enemy-focus .middle-panel, .field .unit.focus .middle-panel, .field .unit:hover .middle-panel, .field .unit.hover .middle-panel {
-    font-weight: bold;
     display: block;
 }
+.field .unit.focus .health-panel, .field .unit:hover .health-panel {
+    opacity: 0.9;
+}
+
 .field .unit .skip {
     display: none;
 }
@@ -108,15 +126,16 @@ min-height: 900px;
 }
 
 .field .unit .middle-panel {
-	width: 90%;
-	text-align: center;
-	background-color: #DDDDDD;
-	position: absolute;
+    width: 90%;
+    text-align: center;
+    color: #FFD416;
+    background-color: #483018;
+    position: absolute;
 
-	bottom: 26px;
-	left: 3px;
+    bottom: 26px;
+    left: 3px;
 
-	opacity: 0.7;
+    opacity: 0.9;
     display: none;
 }
 
@@ -126,29 +145,30 @@ min-height: 900px;
 
 
 .field .unit .health-panel {
-	position: absolute;
-	bottom: 3px;
-	left: 3px;
+    position: absolute;
+    bottom: 3px;
+    left: 3px;
     z-index: 30;
-    background-color: #DDDDDD;
-    opacity: 0.7;
+    color:#FFD416;
+    background-color: #483018;
+    opacity: 0.6;
 }
 
 .field .unit .info {
-	width: 16px;
-	height: 20px;
-	position:absolute;
-	bottom: 3px;
-	right: 3px;
+    width: 16px;
+    height: 20px;
+    position:absolute;
+    bottom: 3px;
+    right: 3px;
 }
 
 .field .info-card {
-	font-weight: normal;
-	margin: 5px;
-	width:150px;
-	height: 200px;
+    font-weight: normal;
+    margin: 5px;
+    width:150px;
+    height: 200px;
 
-	border: 1px solid #494949;
+    border: 1px solid #483018;
     cursor: pointer;
     background-color: #FFFFFF;
 }
@@ -164,26 +184,26 @@ min-height: 900px;
     z-index: 60;
 }
 .field .unit .damage.heal {
-	color: green;
+    color: green;
 }
 .field .unit .damage.armor {
-	color: blue;
+    color: blue;
 }
 
 .field .object {
     width:75px;
     height:75px;
     position: absolute;
-    z-index: 10;
+    z-index: 8;
 }
 
 .info-zone {
 
-	width: 150px;
-	height: 200px;
+    width: 150px;
+    height: 200px;
 }
 
 .info-zone .info-card {
-	border: 1px solid #494949;
-	display: none;
+    border: 1px solid #483018;
+    display: none;
 }

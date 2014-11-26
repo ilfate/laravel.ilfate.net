@@ -43,6 +43,7 @@ class Player
         $player->type          = $data['type'];
         $player->lastEventSeen = $data['lastEventSeen'];
         $player->isTopPlayer   = $data['isTopPlayer'];
+        $player->skippedTurn   = $data['skippedTurn'];
         return $player;
     }
 
@@ -54,6 +55,7 @@ class Player
             'team'          => $this->team,
             'lastEventSeen' => $this->lastEventSeen,
             'isTopPlayer'   => $this->isTopPlayer,
+            'skippedTurn'   => $this->skippedTurn,
         ];
 
         return $data;

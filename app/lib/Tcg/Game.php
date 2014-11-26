@@ -223,6 +223,11 @@ class Game extends GameContainer {
         }
 
         list($x, $y) = $this->convertCoordinats($x, $y, $card->owner);
+
+        if (!$this->field->isDeployable($x, $y)) {
+            throw new \Exception("This field is forbidden for deploy", 1);
+        }
+
         $card->unit->x = $x;
         $card->unit->y = $y;
         $this->moveCards([$card], self::LOCATION_HAND, self::LOCATION_FIELD);
@@ -257,9 +262,6 @@ class Game extends GameContainer {
             $this->players[$this->currentPlayerId]->skippedTurn = true;
             $this->nextTurn();
         } else if($this->phase == self::PHASE_BATTLE) {
-            if ($cardId != $this->currentCardId) {
-                throw new \Exception('Player with id = ' . $this->currentPlayerId . ' is trying to Skip with cardId = ' . $cardId . ' when it is turn of ' . $this->currentCardId);
-            }
             $this->unitAttack();
         }
     }
@@ -301,10 +303,14 @@ class Game extends GameContainer {
                 break;
 
             case self::PHASE_UNIT_DEPLOYING:
-                if ($this->isItBotTurn() && $this->hands[$this->playerTurnId]->count() > 0) {
-                    $cardId = $this->hands[$this->playerTurnId]->getRandom();
-                    list($x, $y) = $this->field->getRandomDeployCell($this->playerTurnId);
-                    $this->deploy($cardId, $x, $y, true);
+                if ($this->isItBotTurn()) {
+                    if ($this->hands[$this->playerTurnId]->count() > 0) {
+                        $cardId = $this->hands[$this->playerTurnId]->getRandom();
+                        list($x, $y) = $this->field->getRandomDeployCell($this->playerTurnId);
+                        $this->deploy($cardId, $x, $y, true);
+                    } else {
+                        $this->nextTurn();
+                    }
                 }
                 $playersFinished = 0;
                 foreach ($this->players as $id => $player) {
@@ -313,8 +319,10 @@ class Game extends GameContainer {
                     }
                 }
                 if ($playersFinished == count($this->players)) {
-                    // GO to next phase!!
-                    $this->startBattle();
+                    if ($this->field->isEachPlayerPlayedEnoughCards()) {
+                        // GO to next phase!!
+                        $this->startBattle();
+                    }
                 }
                 break;
             case self::PHASE_BATTLE:

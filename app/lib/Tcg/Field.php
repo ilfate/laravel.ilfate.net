@@ -43,12 +43,14 @@ class Field extends Location {
 
                 break;
             case self::MAP_TYPE_FIXED:
+                $configMap = \Config::get('tcg.fieldMap.1');
+                foreach ($configMap as $configWall) {
+                    $fieldObject = FieldObject::createFromConfig($configWall['id'], $this);
+                    $fieldObject->x = $configWall['x'];
+                    $fieldObject->y = $configWall['y'];
+                    $this->addObject($fieldObject);
+                }
 
-                //var_dump($config); die;
-                $fieldObject = FieldObject::createFromConfig(1, $this);
-                $fieldObject->x = 5;
-                $fieldObject->y = 5;
-                $this->addObject($fieldObject);
                 break;
         }
     }
@@ -84,9 +86,6 @@ class Field extends Location {
         $y = $card->unit->y;
         if ($x >= Game::WIDTH || $y >= Game::HEIGHT || $x < 0 || $y < 0) {
             throw new \Exception("Unit added to field has wrong X or Y", 1);
-        }
-        if (isset($this->map[$x][$y])) {
-            throw new \Exception("You can't deploy on occupied cell", 12);
         }
         if (!isset($this->map[$x])) {
             $this->map[$x] = [];
@@ -186,6 +185,12 @@ class Field extends Location {
         if (isset($this->map[$x][$y])) {
             throw new \Exception('Cant move to occupied cell');
         }
+        if (isset($this->objectMap[$x][$y])) {
+            $object = $this->getObject($this->objectMap[$x][$y]);
+            if (!$object->isPassable()) {
+                throw new \Exception('Cant move to wall object');
+            }
+        }
         $oldX = $card->unit->x;
         $oldy = $card->unit->y;
 
@@ -276,5 +281,38 @@ class Field extends Location {
             }
         }
         return $freeCells;
+    }
+
+    public function isDeployable($x, $y)
+    {
+        if (isset($this->map[$x][$y])) {
+            return false;
+        }
+        if (isset($this->objectMap[$x][$y])) {
+            $object = $this->getObject($this->objectMap[$x][$y]);
+            if (!$object->isPassable()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function isEachPlayerPlayedEnoughCards()
+    {
+        $min = $this->game->config['minimumCardsInGame'];
+        $cards = [];
+        foreach ($this->cards as $cardId) {
+            $card = $this->game->getCard($cardId);
+            if (!isset($cards[$card->owner])) {
+                $cards[$card->owner] = 0;
+            }
+            $cards[$card->owner] ++;
+        }
+        foreach ($this->game->players as $playerId => $player) {
+            if (!isset($cards[$playerId]) || $cards[$playerId] < $min) {
+                return false;
+            }
+        }
+        return true;
     }
 }

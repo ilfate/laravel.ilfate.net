@@ -20,22 +20,22 @@ TCG.Units = function (game) {
         var x = obj.data('x');
         var y = obj.data('y');
         //var active = obj.data('active');
-        
+
         var xy = this.getCellPixels(x, y);
         x = xy[0];
         y = xy[1];
-        
+
         obj.css({
             'left' : x,
             'top' : y
         })
         obj.data('active', 'true');
-        
+
         //armor
         this.checkArmor(obj);
     }
     this.getCellPixels = function(x, y) {
-        return [x * this.cellHeight + x * 3, y * this.cellHeight + y * 3]
+        return [x * this.cellHeight, y * this.cellHeight]
     }
 
     this.checkArmor = function(unit) {
@@ -112,7 +112,7 @@ TCG.Units = function (game) {
         if (damage != 0) {
             //this.damageAnimation(unit, damage);
             this.addAnimation(cardId, {'type' : 'damage', 'damage' : damage});
-            
+
         }
     }
 
@@ -186,7 +186,7 @@ TCG.Units = function (game) {
                 case 'bounce':
                     this.bounceAnimation(cardId);
                     break;
-                    
+
             }
             this.animationsInQueue = this.animationsInQueue.slice(1);
         }
@@ -198,7 +198,7 @@ TCG.Units = function (game) {
         var dmgObj = $('<div></div>').addClass('damage');
         if (damage < 0) {
             dmgObj.addClass('heal');
-            dmgObj.html('+' + (-damage + ''));    
+            dmgObj.html('+' + (-damage + ''));
         } else {
             dmgObj.html(-damage);
         }
@@ -222,15 +222,15 @@ TCG.Units = function (game) {
         x = xy[0];
         y = xy[1];
         unit.animate({
-                left : x,
-                top : y
-            }, {duration:600,
-                'complete': (function (cardId) {
-                    return function() {
-                        TCG.Game.units.runSingleCardAnimations(cardId);
-                    }
-                })(cardId)
-            });
+            left : x,
+            top : y
+        }, {duration:600,
+            'complete': (function (cardId) {
+                return function() {
+                    TCG.Game.units.runSingleCardAnimations(cardId);
+                }
+            })(cardId)
+        });
     }
     this.attackAnimation = function(cardId, targetId) {
         var unit = this.getUnitObj(cardId);
@@ -246,13 +246,13 @@ TCG.Units = function (game) {
         unit.animate({
             'left' : x + dx,
             'top' : y + dy
-        }, {duration:100, 
+        }, {duration:100,
             'complete': (function (cardId) {
-                    return function() {
-                        TCG.Game.units.runSingleCardAnimations(cardId);
-                    }
-                })(cardId)
-            });
+                return function() {
+                    TCG.Game.units.runSingleCardAnimations(cardId);
+                }
+            })(cardId)
+        });
     }
     this.deathAnimation = function(cardId) {
         var unit = this.getUnitObj(cardId);
@@ -261,11 +261,11 @@ TCG.Units = function (game) {
         }, {
             duration:3000,
             'complete': (function (cardId) {
-                    return function() {
-                        $( this ).remove();
-                        TCG.Game.units.runSingleCardAnimations(cardId);
-                    }
-                })(cardId)
+                return function() {
+                    $( this ).remove();
+                    TCG.Game.units.runSingleCardAnimations(cardId);
+                }
+            })(cardId)
         });
     }
     this.bounceAnimation = function(cardId) {
@@ -285,15 +285,15 @@ TCG.Units = function (game) {
             var xRand = (rand(0, 1) === 1) ? 1 : -1;
             var yRand = (rand(0, 1) === 1) ? 1 : -1;
             unit.animate({
-              // 'top':((i%2===0 ? y + (n-i)*intence : y - (n-i)*intence)+'px'),
-              // 'left':((i%2===0 ? x + (n-i)*intence : x - (n-i)*intence)+'px')
-              'top':((rand(0, 1) ? y + (n-i)*intence : y - (n-i)*intence)+'px'),
-              'left':((rand(0, 1) ? x + (n-i)*intence : x - (n-i)*intence)+'px')
+                // 'top':((i%2===0 ? y + (n-i)*intence : y - (n-i)*intence)+'px'),
+                // 'left':((i%2===0 ? x + (n-i)*intence : x - (n-i)*intence)+'px')
+                'top':((rand(0, 1) ? y + (n-i)*intence : y - (n-i)*intence)+'px'),
+                'left':((rand(0, 1) ? x + (n-i)*intence : x - (n-i)*intence)+'px')
             }, time)
         }
         setTimeout(function() {
-                TCG.Game.units.runSingleCardAnimations(cardId);
-            }, totalTime);
+            TCG.Game.units.runSingleCardAnimations(cardId);
+        }, totalTime);
     }
 
     this.armorAnimation = function(cardId, dArmor)
@@ -351,7 +351,7 @@ TCG.Units = function (game) {
                     [x + 1, y],
                     [x, y - 1],
                     [x, y + 1]
-                ];    
+                ];
             case 2:
                 return [
                     [x - 1, y - 1],
@@ -387,11 +387,11 @@ TCG.Units = function (game) {
     this.getUnitObj = function(cardId) {
         if (this.units[cardId] == undefined) {
             var unit = $('.field .unit.id_' + cardId);
-            this.units[cardId] = unit;    
+            this.units[cardId] = unit;
         } else {
             var unit = this.units[cardId];
         }
-        
+
         if (unit.length != 0) {
             return unit;
         }

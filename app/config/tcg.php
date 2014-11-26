@@ -3,36 +3,38 @@
 return array(
     'game' => [
         'test' => [
-            'handDraw'   => 5,
-            'spellsDraw' => 2,
-            'actionUrl'  => '/tcg/test/action',
-            'mapType'    => 'fixed',
+            'handDraw'           => 5,
+            'spellsDraw'         => 2,
+            'actionUrl'          => '/tcg/test/action',
+            'mapType'            => 'fixed',
+            'minimumCardsInGame' => 3,
         ],
         'debug' => [
-            'handDraw'   => 2,
-            'spellsDraw' => 2,
-            'actionUrl'  => '/tcg/test/action',
-            'mapType'    => 'fixed',
+            'handDraw'           => 2,
+            'spellsDraw'         => 2,
+            'actionUrl'          => '/tcg/test/action',
+            'mapType'            => 'fixed',
+            'minimumCardsInGame' => 1,
         ],
     ],
     'cards' => array(
-        1 => ['card' => 1, 'unit' => 1, 'spell' => 1, 'image' => 'pl_f.png'],
-        2 => ['card' => 2, 'unit' => 2, 'spell' => 1, 'image' => 'pl_f.png'],
-        3 => ['card' => 3, 'unit' => 3, 'spell' => 1, 'image' => 'pl_f.png'],
-        4 => ['card' => 4, 'unit' => 4, 'spell' => 1, 'image' => 'pl_f.png'],
-        5 => ['card' => 5, 'unit' => 5, 'spell' => 1, 'image' => 'pl_f.png'],
-        6 => ['card' => 6, 'unit' => 6, 'spell' => 1, 'image' => 'pl_f.png'],
-        7 => ['card' => 7, 'unit' => 7, 'spell' => 1, 'image' => 'pl_f.png', 'isKing' => true],
-        8 => ['card' => 8, 'unit' => 8, 'spell' => 1, 'image' => 'pl_f.png'],
-        50 => ['card' => 50, 'unit' => 50, 'spell' => 1, 'image' => 'pl_m.png'],
-        51 => ['card' => 51, 'unit' => 51, 'spell' => 1, 'image' => 'pl_m.png'],
-        52 => ['card' => 52, 'unit' => 52, 'spell' => 1, 'image' => 'pl_m.png'],
-        53 => ['card' => 53, 'unit' => 53, 'spell' => 1, 'image' => 'pl_m.png'],
-        54 => ['card' => 54, 'unit' => 54, 'spell' => 1, 'image' => 'pl_m.png'],
-        55 => ['card' => 55, 'unit' => 55, 'spell' => 1, 'image' => 'pl_m.png'],
+        1 => ['card' => 1, 'unit' => 1, 'spell' => 1, 'image' => 'pl_m.png'],  //Guudlin
+        2 => ['card' => 2, 'unit' => 2, 'spell' => 1, 'image' => 'pl_m.png'],  // Dvallin
+        3 => ['card' => 3, 'unit' => 3, 'spell' => 1, 'image' => 'pl_m.png'],
+        4 => ['card' => 4, 'unit' => 4, 'spell' => 1, 'image' => 'dwa_1.png'],  // Gud the Smith
+        5 => ['card' => 5, 'unit' => 5, 'spell' => 1, 'image' => 'dwa_2.png'],   // The Defender
+        6 => ['card' => 6, 'unit' => 6, 'spell' => 1, 'image' => 'dwa_3.png'],   // Swordsdwarf
+        7 => ['card' => 7, 'unit' => 7, 'spell' => 1, 'image' => 'dwa_1_1.png', 'isKing' => true],
+        8 => ['card' => 8, 'unit' => 8, 'spell' => 1, 'image' => 'pl_m.png'],
+        50 => ['card' => 50, 'unit' => 50, 'spell' => 1, 'image' => 'vik_2.png'], // furyless
+        51 => ['card' => 51, 'unit' => 51, 'spell' => 1, 'image' => 'vik_4.png'],  // Blind Valkiry
+        52 => ['card' => 52, 'unit' => 52, 'spell' => 1, 'image' => 'vik_3_1.png'],   //Flying Rage
+        53 => ['card' => 53, 'unit' => 53, 'spell' => 1, 'image' => 'vik_1.png'], //Kruug
+        54 => ['card' => 54, 'unit' => 54, 'spell' => 1, 'image' => 'vik_2_1.png'],    // Axe thrower
+        55 => ['card' => 55, 'unit' => 55, 'spell' => 1, 'image' => 'vik_1_1.png'],     // Runner
         56 => ['card' => 56, 'unit' => 56, 'spell' => 1, 'image' => 'pl_m.png'],
-        57 => ['card' => 57, 'unit' => 57, 'spell' => 1, 'image' => 'pl_m.png'],
-        59 => ['card' => 59, 'unit' => 59, 'spell' => 1, 'image' => 'pl_m.png', 'isKing' => true],
+        57 => ['card' => 57, 'unit' => 57, 'spell' => 1, 'image' => 'vik_5.png'],    // Aarr
+        59 => ['card' => 59, 'unit' => 59, 'spell' => 1, 'image' => 'vik_3.png', 'isKing' => true],  //Viking Leader
     ),
     'units' => [
         // Dwarfs
@@ -207,8 +209,19 @@ return array(
     'fieldObjects' => [
         1 => [
             'class' => '\Tcg\FieldObject\Common',
-            'image' => 'pl_f.png'
+            'image' => 'f_castle.jpg',
+            'passable' => false,
         ],
+    ],
+    'fieldMap' => [
+        1 => [
+            ['x' => 2, 'y' => 2, 'id' => 1],
+            ['x' => 1, 'y' => 3, 'id' => 1],
+            ['x' => 0, 'y' => 3, 'id' => 1],
+            ['x' => 5, 'y' => 5, 'id' => 1],
+            ['x' => 6, 'y' => 4, 'id' => 1],
+            ['x' => 7, 'y' => 4, 'id' => 1],
+        ]
     ]
 
 
