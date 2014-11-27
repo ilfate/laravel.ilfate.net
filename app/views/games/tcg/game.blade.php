@@ -1,6 +1,4 @@
 
-<h3>Battle</h3>
-
 @include('games.tcg.opponentHand', array('hand' => $game['opponentHand']))
 
 

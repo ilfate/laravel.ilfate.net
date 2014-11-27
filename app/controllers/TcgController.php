@@ -118,7 +118,10 @@ class TcgController extends \BaseController
         $this->play($currentPlayerId, $type);
 
         if ($action) {
-            $this->doAction($action);
+            $error = $this->doAction($action);
+        }
+        if (!empty($error)) {
+            return json_encode(['error' => true, 'message' => $error]);
         }
 
         $data = $this->game->renderUpdate();
@@ -130,25 +133,29 @@ class TcgController extends \BaseController
     private function doAction($action)
     {
         $cardId = (int) Input::get('cardId');
-        switch ($action) {
-            case Game::GAME_ACTION_DEPLOY:
-                $x = (int) Input::get('x');
-                $y = (int) Input::get('y');
-                $this->game->action(Game::GAME_ACTION_DEPLOY, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
-                break;
-            case Game::GAME_ACTION_SKIP:
-                $this->game->action(Game::GAME_ACTION_SKIP, ['cardId' => $cardId]);
-                break;
-            case Game::GAME_ACTION_MOVE:
-                $x = (int) Input::get('x');
-                $y = (int) Input::get('y');
-                $this->game->action(Game::GAME_ACTION_MOVE, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
-                break;
-            case Game::GAME_ACTION_CAST:
-                $data = Input::get('data');
-                $this->validateCastData($data);
-                $this->game->action(Game::GAME_ACTION_CAST, ['cardId' => $cardId, 'data' => $data]);
-                break;
+        try {
+            switch ($action) {
+                case Game::GAME_ACTION_DEPLOY:
+                    $x = (int) Input::get('x');
+                    $y = (int) Input::get('y');
+                    $this->game->action(Game::GAME_ACTION_DEPLOY, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
+                    break;
+                case Game::GAME_ACTION_SKIP:
+                    $this->game->action(Game::GAME_ACTION_SKIP, ['cardId' => $cardId]);
+                    break;
+                case Game::GAME_ACTION_MOVE:
+                    $x = (int) Input::get('x');
+                    $y = (int) Input::get('y');
+                    $this->game->action(Game::GAME_ACTION_MOVE, ['cardId' => $cardId, 'x' => $x, 'y' =>$y]);
+                    break;
+                case Game::GAME_ACTION_CAST:
+                    $data = Input::get('data');
+                    $this->validateCastData($data);
+                    $this->game->action(Game::GAME_ACTION_CAST, ['cardId' => $cardId, 'data' => $data]);
+                    break;
+            }
+        } catch (\Tcg\Exception $e) {
+            return $e->getMessage();
         }
     }
 

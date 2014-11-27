@@ -273,7 +273,7 @@ class Game extends GameContainer {
             throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to use wrong spell", 1);
         }
         if ($this->spellsPlayed[$this->playerTurnId] >= Spell::MAX_SPELL_PER_TURN) {
-            throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying cast more spells in one turn then he can!", 1);
+            throw new Exception("Player with ID = " . $this->currentPlayerId . " is trying cast more spells in one turn then he can!", 1);
         }
 
         $card->spell->cast($data);

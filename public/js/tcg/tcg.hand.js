@@ -8,10 +8,10 @@ TCG.Hand = function (game) {
     this.game = game;
 
     this.init = function() {
-        
+
     }
 
-    
+
 
     this.drawCard = function(playerId, card) {
         info(card);
@@ -32,7 +32,16 @@ TCG.Hand = function (game) {
     }
 
     this.removeCard = function(cardId) {
-        $('.hand .card.id_' + cardId).remove();
+        var card = $('.hand .card.id_' + cardId);
+        card.animate({
+            'margin-top' : '-200px',
+            'opacity' : 0
+        }, {duration:400,
+            'complete': function () {
+                $(this).remove();
+            }
+        });
+
         this.game.handCardInFocus = null;
     }
 }

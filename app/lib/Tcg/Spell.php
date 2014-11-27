@@ -26,26 +26,26 @@ abstract class Spell {
 
     public $name;
 
-    /** 
+    /**
      * @var Card
      */
     public $card;
 
-	public static function createFromConfig($config, $card)
-	{
-		$spell = new $config['spell']();
+    public static function createFromConfig($config, $card)
+    {
+        $spell = new $config['spell']();
         $spell->config = $config;
         $spell->card = $card;
         $spell->name = $config[self::CONFIG_VALUE_NAME];
 
-		return $spell;
-	}
+        return $spell;
+    }
 
-	public static function import($data, $spellId, $card)
-	{
+    public static function import($data, $spellId, $card)
+    {
         $spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $spellId), $card);
-		return $spell;
-	}
+        return $spell;
+    }
 
     public function export()
     {
@@ -81,7 +81,7 @@ abstract class Spell {
                 }
                 $target = $this->card->game->getCard($data['targetId']);
                 if ($target->location != Card::CARD_LOCATION_FIELD) {
-                    throw new \Exception(__CLASS__ . " spell used on card that is not in field", 1);    
+                    throw new \Exception(__CLASS__ . " spell used on card that is not in field", 1);
                 }
                 $this->castUnit($target);
                 break;
@@ -89,5 +89,10 @@ abstract class Spell {
     }
 
     abstract public function castUnit(Card $target);
-    
+
+    public function logCast($data = array())
+    {
+        $this->card->game->log->logCast($this->card->id, $this->config['name'], $data);
+    }
+
 }

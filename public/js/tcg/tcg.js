@@ -52,7 +52,7 @@ TCG.Game = function () {
     this.hand      = new TCG.Hand(this);
     this.order     = new TCG.Order(this);
     this.spell     = new TCG.Spell(this);
-    this.socket    = new TCG.Socket(this);
+    this.helpers   = new TCG.Helpers(this);
     this.actionUrl = '';
 
     this.init = function(data) {
@@ -137,51 +137,33 @@ TCG.Game = function () {
     }
 
     this.action = function(data) {
-        switch(data.type) {
-            case 'ping':
-                var type = 'ajax';
-                var url = this.actionUrl + '?f=f';
-                break;
-            default:
-                var type = 'get';
-                var url = this.actionUrl + '?';
-                var first = true;
-                for(var key in data.data) {
-                    var value = data.data[key];
 
-                    if (is_object(value)) {
-                        for (var key2 in value) {
-                            url += '&' + key + '[' + key2 + ']=' + value[key2]
-                        }
-                    } else {
-                        if (first) {
-                            first = false;
-                        } else {
-                            url += '&';
-                        }
-                        url += key + '=' + value;
-                    }
+        var url = this.actionUrl + '?';
+        var first = true;
+        for(var key in data.data) {
+            var value = data.data[key];
+
+            if (is_object(value)) {
+                for (var key2 in value) {
+                    url += '&' + key + '[' + key2 + ']=' + value[key2]
                 }
-                break;
+            } else {
+                if (first) {
+                    first = false;
+                } else {
+                    url += '&';
+                }
+                url += key + '=' + value;
+            }
         }
 
-        if (data.type == 'deploy' || data.type == 'move' || data.type == 'skip') {
-            type = 'ajax';
-        }
         url += '&playerId=' + this.currentPlayerId;
-        switch (type) {
-            case 'get':
-                window.location = url;
-                break;
-            case 'ajax':
-                Ajax.json(url, {
-                    //params : '__csrf=' + Ajax.getCSRF(),
+        Ajax.json(url, {
+            //params : '__csrf=' + Ajax.getCSRF(),
 //                    data: 'turnsSurvived=' + this.statsTicksSurvived +
 //                        '&_token=' + $('#laravel-token').val()
-                    callBack : function(data){TCG.Game.processLog(data)}
-                });
-                break;
-        }
+            callBack : function(data){TCG.Game.processLog(data)}
+        });
 
     }
 
@@ -255,6 +237,11 @@ TCG.Game = function () {
     {
         if (!data.log) {
             info('Empty data');
+            if (data.error) {
+                info(data.message);
+                TCG.Game.helpers.createMessage(data.message);
+                this.tryToShowNextUnitMove();
+            }
             return;
         }
         info(data);
@@ -328,8 +315,6 @@ TCG.Game = function () {
         this.units.runAnimations();
 
         this.tryToShowNextUnitMove();
-
-        this.tryToSetUpConnection();
     }
 
     this.startBattle = function() {

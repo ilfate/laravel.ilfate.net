@@ -133,6 +133,8 @@
 
 .field .unit .skip {
     display: none;
+    z-index:23;
+    position: absolute;
 }
 .field .unit.focus .skip {
     display: inline;
@@ -157,7 +159,6 @@
 
 }
 
-
 .field .unit .health-panel {
     position: absolute;
     bottom: 3px;
@@ -174,17 +175,6 @@
     position:absolute;
     bottom: 3px;
     right: 3px;
-}
-
-.field .info-card {
-    font-weight: normal;
-    margin: 5px;
-    width:150px;
-    height: 200px;
-
-    border: 1px solid #483018;
-    cursor: pointer;
-    background-color: #FFFFFF;
 }
 
 .field .unit .damage {

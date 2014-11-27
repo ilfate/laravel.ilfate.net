@@ -14,13 +14,15 @@ use \Tcg\Unit;
 
 class Focus extends Spell {
 
-	public function castUnit(Card $target)
-	{
-		
-		$target->unit->addKeyword(Unit::KEYWORD_FOCUS);
+    public function castUnit(Card $target)
+    {
 
-		//$this->card->game->log->logText(__CLASS__ . " spell was cast on " . $target->unit->name );
-	}
+        $target->unit->addKeyword(Unit::KEYWORD_FOCUS);
+
+        $this->logCast();
+
+        //$this->card->game->log->logText(__CLASS__ . " spell was cast on " . $target->unit->name );
+    }
 
 
 }

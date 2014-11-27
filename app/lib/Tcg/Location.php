@@ -9,14 +9,14 @@ namespace Tcg;
 
 abstract class Location {
 
-	/**
-	 * Player Id
-	 *
-	 * @var int
-	 */
-	public $owner;
+    /**
+     * Player Id
+     *
+     * @var int
+     */
+    public $owner;
 
-	public $cards = array();
+    public $cards = array();
 
     public function __construct($playerId)
     {
@@ -31,12 +31,12 @@ abstract class Location {
         return $location;
     }
 
-	public function addCards(array $cards)
-	{
-		foreach ($cards as $card) {
-			$this->cards[$card->id] = $card->id;
-		}
-	}
+    public function addCards(array $cards)
+    {
+        foreach ($cards as $card) {
+            $this->cards[$card->id] = $card->id;
+        }
+    }
 
     public function addCardIds(array $cards)
     {
@@ -45,10 +45,10 @@ abstract class Location {
         }
     }
 
-	public function count()
-	{
-		return count($this->cards);
-	}
+    public function count()
+    {
+        return count($this->cards);
+    }
 
     public function export()
     {
@@ -71,8 +71,8 @@ abstract class Location {
         }
     }
 
-    public function hasCard($cardId) 
+    public function hasCard($cardId)
     {
-        return !empty($this->cards[$cardId]);
+        return isset($this->cards[$cardId]);
     }
 }

@@ -37,11 +37,11 @@
 <script type="text/javascript" src="/js/tcg/tcg.order.js"></script>
 <script type="text/javascript" src="/js/tcg/tcg.hand.js"></script>
 <script type="text/javascript" src="/js/tcg/tcg.spell.js"></script>
-<script type="text/javascript" src="/js/tcg/tcg.socket.js"></script>
+<script type="text/javascript" src="/js/tcg/tcg.helpers.js"></script>
+
+
 
 @yield('layout')
-
-
 
 <script>
     // (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
