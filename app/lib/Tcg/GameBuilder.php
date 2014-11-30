@@ -82,7 +82,8 @@ class GameBuilder {
                     'currentHealth' => 10,
                     'isKing' => true,
                     'armor' => 12,
-                    'maxHealth' => 99,
+                    'maxArmor' => 14,
+                    'maxHealth' => 10,
                     'keywords' => ['focus'],
                     'isCurrent' => true,
                 ],
@@ -91,6 +92,7 @@ class GameBuilder {
                     'owner' => 1,
                     'x' => 3,
                     'y' => 6,
+                    'attack' => [0,0],
                     'currentHealth' => 5,
                 ],
                 [
@@ -106,7 +108,7 @@ class GameBuilder {
                 ],
             ],
             'hands' => [
-                1 => [54, 54],
+                1 => [56, 54, 4, 8],
             ],
             'decks' => [
                 1 => [51, 52, 54],

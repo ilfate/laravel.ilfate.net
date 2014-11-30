@@ -20,21 +20,21 @@ return array(
     'cards' => array(
         1 => ['card' => 1, 'unit' => 1, 'spell' => 1, 'image' => 'pl_m.png'],  //Guudlin
         2 => ['card' => 2, 'unit' => 2, 'spell' => 1, 'image' => 'pl_m.png'],  // Dvallin
-        3 => ['card' => 3, 'unit' => 3, 'spell' => 1, 'image' => 'pl_m.png'],  // The Mashine
-        4 => ['card' => 4, 'unit' => 4, 'spell' => 1, 'image' => 2],  // Gud the Smith
-        5 => ['card' => 5, 'unit' => 5, 'spell' => 1, 'image' => 3],   // The Defender
+        3 => ['card' => 3, 'unit' => 3, 'spell' => 5, 'image' => 'pl_m.png'],  // The Mashine
+        4 => ['card' => 4, 'unit' => 4, 'spell' => 6, 'image' => 2],  // Gud the Smith
+        5 => ['card' => 5, 'unit' => 5, 'spell' => 5, 'image' => 3],   // The Defender
         6 => ['card' => 6, 'unit' => 6, 'spell' => 1, 'image' => 4],   // Swordsdwarf
         7 => ['card' => 7, 'unit' => 7, 'spell' => 1, 'image' => 1, 'isKing' => true],
-        8 => ['card' => 8, 'unit' => 8, 'spell' => 1, 'image' => 'pl_m.png'],
-        9 => ['card' => 9, 'unit' => 9, 'spell' => 1, 'image' => 'pl_m.png'],
+        8 => ['card' => 8, 'unit' => 8, 'spell' => 7, 'image' => 'pl_m.png'],
+        9 => ['card' => 9, 'unit' => 9, 'spell' => 7, 'image' => 'pl_m.png'],
         50 => ['card' => 50, 'unit' => 50, 'spell' => 1, 'image' => 7], // furyless
         51 => ['card' => 51, 'unit' => 51, 'spell' => 1, 'image' => 11],  // Blind Valkiry
         52 => ['card' => 52, 'unit' => 52, 'spell' => 1, 'image' => 10],   //Flying Rage
         53 => ['card' => 53, 'unit' => 53, 'spell' => 1, 'image' => 5], //Kruug
         54 => ['card' => 54, 'unit' => 54, 'spell' => 2, 'image' => 13],    // Axe thrower     // axe
         55 => ['card' => 55, 'unit' => 55, 'spell' => 2, 'image' => 6],     // Runner
-        56 => ['card' => 56, 'unit' => 56, 'spell' => 1, 'image' => 8],      // Blood Shaman
-        57 => ['card' => 57, 'unit' => 57, 'spell' => 1, 'image' => 12],    // Aarr
+        56 => ['card' => 56, 'unit' => 56, 'spell' => 4, 'image' => 8],      // Blood Shaman
+        57 => ['card' => 57, 'unit' => 57, 'spell' => 3, 'image' => 12],    // Aarr
         59 => ['card' => 59, 'unit' => 59, 'spell' => 1, 'image' => 9, 'isKing' => true],  //Viking Leader
     ),
     'units' => [
@@ -214,13 +214,48 @@ return array(
             'spell' => '\Tcg\Spell\Focus',
             'name'  => 'Focus',
             'type' => 'unit',
-            'text' => 'Put focus on target unit'
+            'text' => 'Put focus on target unit',
         ],
         2 => [
             'spell' => '\Tcg\Spell\Axe',
             'name'  => 'Axe',
             'type' => 'unit',
-            'text' => 'Throw an axe for 6 damage'
+            'text' => 'Throw an axe for 6 damage',
+        ],
+        3 => [
+            'spell' => '\Tcg\Spell\Heal',
+            'name'  => 'Heal beam',
+            'type' => 'unit',
+            'text' => 'Heal 3 damage from target unit',
+            'data' => ['value' => 3],
+        ],
+        4 => [
+            'spell' => '\Tcg\Spell\Heal',
+            'name'  => 'Heal stream',
+            'type' => 'unit',
+            'text' => 'Heal 6 damage from target unit',
+            'data' => ['value' => 6],
+        ],
+        5 => [
+            'spell' => '\Tcg\Spell\Armor',
+            'name'  => 'Restore armor',
+            'type' => 'unit',
+            'text' => 'Restore 6 armor to target unit',
+            'data' => ['value' => 6],
+        ],
+        6 => [
+            'spell' => '\Tcg\Spell\Armor',
+            'name'  => 'Recreate armor',
+            'type' => 'unit',
+            'text' => 'Restore 10 armor to target unit',
+            'data' => ['value' => 10],
+        ],
+        7 => [
+            'spell' => '\Tcg\Spell\Armor',
+            'name'  => 'Add armor',
+            'type' => 'unit',
+            'text' => 'Add 4 armor to target unit',
+            'data' => ['value' => 4, 'mode' => 'add'],
         ],
     ],
     'fieldObjects' => [
