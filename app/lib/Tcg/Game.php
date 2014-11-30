@@ -109,7 +109,7 @@ class Game extends GameContainer {
 
     public function render($playerId)
     {
-        //var_dump($this->gameType); die;
+        //var_dump($this->events['unit_move_to_cell']); die;
         $data = [
             'card'     => $this->currentCardId,
             'js'       => [
@@ -358,6 +358,7 @@ class Game extends GameContainer {
                 foreach ($this->field->cards as $cardId) {
                     $this->cards[$cardId]->unit->endOfTurn();
                 }
+                $this->triggerEvent(Game::EVENT_TRIGGER_END_OF_TURN);
                 $this->turnNumber++;
                 foreach ($this->spellsPlayed as &$value) {
                     $value = 0;
@@ -419,6 +420,9 @@ class Game extends GameContainer {
             throw new \Exception("No card to draw from deck", 1);
         }
         $cardsIds = $this->decks[$playerId]->getRandom($num);
+        if (!is_array($cardsIds)) {
+            $cardsIds = [$cardsIds];
+        }
         $cards = [];
         foreach ($cardsIds as $cardId) {
             $cards[] = $this->cards[$cardId];

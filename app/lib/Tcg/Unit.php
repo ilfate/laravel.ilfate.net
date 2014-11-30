@@ -45,7 +45,8 @@ class Unit
         'stepsMade',
         'keywords',
         'attack',
-        'data'
+        'data',
+        'attackRange'
     );
 
     /**
@@ -62,6 +63,7 @@ class Unit
     public $maxArmor = 0;
     public $armor = 0;
     public $attack = [0, 0];
+    public $attackRange = 0;
     public $x;
     public $y;
     public $isKing = false;
@@ -111,6 +113,10 @@ class Unit
         $this->currentHealth = $this->config[self::CONFIG_VALUE_TOTAL_HEALTH];
         $this->maxHealth     = $this->config[self::CONFIG_VALUE_TOTAL_HEALTH];
         $this->attack        = $this->config[self::CONFIG_VALUE_ATTACK];
+
+        if (!empty($this->config['attackRange'])) {
+            $this->attackRange = $this->config['attackRange'];
+        }
 
         if (!empty($this->config[self::CONFIG_VALUE_ARMOR])) {
             $this->armor    = $this->config[self::CONFIG_VALUE_ARMOR];
@@ -178,6 +184,9 @@ class Unit
         $range = self::DEFAULT_ATTACK_RANGE;
         if (isset($this->config['attackRange'])) {
             $range = $this->config['attackRange'];
+        }
+        if (!empty($this->attackRange)) {
+            $range = $this->attackRange;
         }
         $enemies = $this->card->game->getAllPlayerEnemies($this->card->owner);
         return $this->card->game->field->getAllPlayersUnitsInRange($this->x, $this->y, $range, $enemies);
@@ -350,6 +359,17 @@ class Unit
             unset($this->keywords[$key]);
             $this->card->game->log->logUnitChange($this->card->id, 'keyword', ['words' => $this->keywords, 'data' => $this->data]);
         }
+    }
+    public function setAttack($attack)
+    {
+        $this->attack = $attack;
+        $this->card->game->log->logUnitChange($this->card->id, 'attack', ['value' => $attack[0] . ' - ' . $attack[1]]);
+    }
+
+    public function set($attribute, $value)
+    {
+        $this->{$attribute} = $value;
+        $this->card->game->log->logUnitChange($this->card->id, $attribute, ['value' => $value]);
     }
 
     public function getShield()

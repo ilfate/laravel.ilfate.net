@@ -39,13 +39,16 @@ class GameBuilder {
             [Card::createFromConfig($configs[4], $game), 2],
             [Card::createFromConfig($configs[5], $game), 2],
             [Card::createFromConfig($configs[6], $game), 2],
+            [Card::createFromConfig($configs[8], $game), 2],
+            [Card::createFromConfig($configs[9], $game), 2],
             [Card::createFromConfig($configs[7], $game), 1],
         ];
         $deck2 = [
+            [Card::createFromConfig($configs[50], $game), 2],
             [Card::createFromConfig($configs[51], $game), 2],
             [Card::createFromConfig($configs[52], $game), 2],
             [Card::createFromConfig($configs[53], $game), 2],
-            // [Card::createFromConfig($configs[54], $game), 2],
+            [Card::createFromConfig($configs[54], $game), 2],
             [Card::createFromConfig($configs[55], $game), 2],
             [Card::createFromConfig($configs[56], $game), 2],
             [Card::createFromConfig($configs[57], $game), 2],
@@ -72,11 +75,11 @@ class GameBuilder {
         $situation = [
             'cards' => [
                 [
-                    'id'    => 1,
+                    'id'    => 3,
                     'owner' => 1,
-                    'x' => 1,
-                    'y' => 1,
-                    'currentHealth' => 1,
+                    'x' => 4,
+                    'y' => 6,
+                    'currentHealth' => 10,
                     'isKing' => true,
                     'armor' => 12,
                     'maxHealth' => 99,
@@ -84,15 +87,29 @@ class GameBuilder {
                     'isCurrent' => true,
                 ],
                 [
-                    'id'    => 52,
-                    'owner' => 2,
+                    'id'    => 9,
+                    'owner' => 1,
                     'x' => 3,
-                    'y' => 3,
+                    'y' => 6,
+                    'currentHealth' => 5,
+                ],
+                [
+                    'id'    => 1,
+                    'owner' => 2,
+                    'x' => 4,
+                    'y' => 6,
                     'isKing' => true,
-                    'currentHealth' => 20,
+                    'attack' => [5, 5],
+                    'currentHealth' => 200,
                     'keywords' => ['focus'],
                     'maxHealth' => 99
                 ],
+            ],
+            'hands' => [
+                1 => [54, 54],
+            ],
+            'decks' => [
+                1 => [51, 52, 54],
             ],
             'playerTurnId' => 1,
         ];
@@ -140,6 +157,26 @@ class GameBuilder {
             }
             if (isset($cardData['isCurrent'])) {
                 $game->currentCardId = $card->id;
+            }
+        }
+        if (!empty($situation['hands'])) {
+            foreach ($situation['hands'] as $playerId => $cards) {
+                foreach ($cards as $cardId) {
+                    $cardConfig = $configs[$cardId];
+                    $card = Card::createFromConfig($cardConfig, $game);
+                    $card->init();
+                    $game->setUpCard($card, $playerId);
+                    $game->moveCards([$card], Game::LOCATION_DECK, Game::LOCATION_HAND);
+                }
+            }
+        }
+        if (!empty($situation['decks'])) {
+            foreach ($situation['decks'] as $playerId => $cards) {
+                foreach ($cards as $cardId) {
+                    $cardConfig = $configs[$cardId];
+                    $card = Card::createFromConfig($cardConfig, $game);
+                    $game->setUpCard($card, $playerId);
+                }
             }
         }
         $game->init();

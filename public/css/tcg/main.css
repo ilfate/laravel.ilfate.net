@@ -211,3 +211,12 @@
     border: 1px solid #483018;
     display: none;
 }
+
+.tcg-message {
+    position: absolute;
+    background-color: #FFD416;
+    padding: 8px;
+}
+#message-container {
+    position: relative;
+}

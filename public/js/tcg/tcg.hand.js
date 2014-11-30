@@ -29,6 +29,10 @@ TCG.Hand = function (game) {
         this.game.units.checkArmor(obj);
         $('.hand.my-hand .clear').before(obj);
         obj.on('click', function(){ TCG.Game.event('cardClick', $(this)) });
+
+        if (card.imageAuthor) {
+            this.game.helpers.createAuthor(card.imageAuthor);
+        }
     }
 
     this.removeCard = function(cardId) {

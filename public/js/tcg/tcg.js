@@ -176,6 +176,10 @@ TCG.Game = function () {
             //this.action("/tcg/action?action=deploy&cardId=" + cardId + "&x=" + x + "&y=" + y);
             this.action({'type' : 'deploy', 'data' : {'action' : 'deploy', 'cardId' : cardId, 'x' : x, 'y' : y}});
             this.unFocusDeployArea();
+        } else {
+            if (this.handCardInFocus && !this.isMyTurn()) {
+                this.helpers.addMessage('This is not your turn to play card.')
+            }
         }
     }
 

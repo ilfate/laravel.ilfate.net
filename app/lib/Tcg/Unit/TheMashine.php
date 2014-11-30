@@ -15,12 +15,16 @@ class TheMashine extends Unit {
 
 	protected function getTargets()
     {
-    	$targets = [];
-    	$cardInFront = $this->card->game->field->getNeibourUnit($this->card, 0, -1);
-    	$team = $this->card->game->teams[$this->card->owner];
-    	if ($cardInFront && !in_array($cardInFront->owner, $team)) {
-    		$targets[] = $cardInFront;
-    	} 
-    	return $targets;
+        if ($this->stepsMade > 0) {
+            return [];
+        }
+        for ($i = 1; $i <= 3; $i ++) {
+    	    $cardInFront = $this->card->game->field->getNeibourUnit($this->card, 0, -$i);
+            $team = $this->card->game->teams[$this->card->owner];
+            if ($cardInFront && !in_array($cardInFront->owner, $team)) {
+                return [$cardInFront];
+            }
+        }
+    	return [];
     }
 }

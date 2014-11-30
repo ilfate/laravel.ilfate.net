@@ -81,6 +81,10 @@ TCG.Units = function (game) {
             mouseleave : function(){ TCG.Game.units.mouseleave($(this)) },
             click : function(){ TCG.Game.event('unitClick', $(this)) }
         });
+
+        if (card.imageAuthor) {
+            this.game.helpers.createAuthor(card.imageAuthor);
+        }
     }
 
     this.move = function(cardId, x ,y) {
@@ -131,9 +135,10 @@ TCG.Units = function (game) {
     }
 
     this.change = function(cardId, dataType, data) {
-        var keywordsObj = this.getUnitObj(cardId).find('.keywords');
+
         switch (dataType) {
             case 'keyword':
+                var keywordsObj = this.getUnitObj(cardId).find('.keywords');
                 if (keywordsObj.length) {
                     keywordsObj.html('');
                     keywordsString = '';
@@ -145,6 +150,12 @@ TCG.Units = function (game) {
                         keywordsString += '<span class="keyword">' + word + '</span> ';
                     }
                     keywordsObj.html(keywordsString);
+                }
+                break;
+            case 'attack':
+                var attackObj = this.getUnitObj(cardId).find('.attack .value');
+                if (attackObj.length) {
+                    attackObj.html(data.value);
                 }
                 break;
         }

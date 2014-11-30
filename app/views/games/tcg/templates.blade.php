@@ -3,6 +3,7 @@
 @include('games.tcg.cards.handCard_mustache')
 @include('games.tcg.cards.orderCard_mustache')
 @include('games.tcg.cards.infoCard_mustache')
+@include('games.tcg.other.message_mustache')
 
 
 <div id="myModal" class="modal fade">

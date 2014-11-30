@@ -15,18 +15,22 @@ trait Events {
     public $events       = [];
     public $eventsExpire = [];
 
-    public function triggerEvent($eventTrigger, $target, array $data = null)
+    public function triggerEvent($eventTrigger, $target = 'none', array $data = null)
     {
         if (!empty($this->events[$eventTrigger][$target])) {
-            foreach ($this->events[$eventTrigger][$target] as $key => &$eventData) {
+            foreach ($this->events[$eventTrigger][$target] as $eventId => &$eventData) {
                 if ($eventData['times'] === null || $eventData['times'] > 0) {
                     $event = new $eventData['obj']($eventData['data'], $this);
+                    $event->eventTrigger = $eventTrigger;
+                    $event->eventTarget = $target;
+                    $event->eventId = $eventId;
+
                     $event->execute($target, $data, $eventData['times']);
                     if ($eventData['times'] !== null) {
                         $eventData['times']--;
                     }
                 } else {
-                    unset ($this->events[$eventTrigger][$target][$key]);
+                    unset ($this->events[$eventTrigger][$target][$eventId]);
                 }
             }
         }
@@ -40,7 +44,7 @@ trait Events {
 
     }
 
-    public function addEvent($eventTrigger, $eventTarget, $event, $data, $times = null, $expire = null)
+    public function addEvent($eventTrigger, $eventTarget, $event, $data = [], $times = null, $expire = null)
     {
         if (!isset($this->events[$eventTrigger])) {
             $this->events[$eventTrigger] = [];

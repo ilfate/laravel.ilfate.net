@@ -20,21 +20,22 @@ return array(
     'cards' => array(
         1 => ['card' => 1, 'unit' => 1, 'spell' => 1, 'image' => 'pl_m.png'],  //Guudlin
         2 => ['card' => 2, 'unit' => 2, 'spell' => 1, 'image' => 'pl_m.png'],  // Dvallin
-        3 => ['card' => 3, 'unit' => 3, 'spell' => 1, 'image' => 'pl_m.png'],
-        4 => ['card' => 4, 'unit' => 4, 'spell' => 1, 'image' => 'dwa_1.png'],  // Gud the Smith
-        5 => ['card' => 5, 'unit' => 5, 'spell' => 1, 'image' => 'dwa_2.png'],   // The Defender
-        6 => ['card' => 6, 'unit' => 6, 'spell' => 1, 'image' => 'dwa_3.png'],   // Swordsdwarf
-        7 => ['card' => 7, 'unit' => 7, 'spell' => 1, 'image' => 'dwa_1_1.png', 'isKing' => true],
+        3 => ['card' => 3, 'unit' => 3, 'spell' => 1, 'image' => 'pl_m.png'],  // The Mashine
+        4 => ['card' => 4, 'unit' => 4, 'spell' => 1, 'image' => 2],  // Gud the Smith
+        5 => ['card' => 5, 'unit' => 5, 'spell' => 1, 'image' => 3],   // The Defender
+        6 => ['card' => 6, 'unit' => 6, 'spell' => 1, 'image' => 4],   // Swordsdwarf
+        7 => ['card' => 7, 'unit' => 7, 'spell' => 1, 'image' => 1, 'isKing' => true],
         8 => ['card' => 8, 'unit' => 8, 'spell' => 1, 'image' => 'pl_m.png'],
-        50 => ['card' => 50, 'unit' => 50, 'spell' => 1, 'image' => 'vik_2.png'], // furyless
-        51 => ['card' => 51, 'unit' => 51, 'spell' => 1, 'image' => 'vik_4.png'],  // Blind Valkiry
-        52 => ['card' => 52, 'unit' => 52, 'spell' => 1, 'image' => 'vik_3_1.png'],   //Flying Rage
-        53 => ['card' => 53, 'unit' => 53, 'spell' => 1, 'image' => 'vik_1.png'], //Kruug
-        54 => ['card' => 54, 'unit' => 54, 'spell' => 1, 'image' => 'vik_2_1.png'],    // Axe thrower
-        55 => ['card' => 55, 'unit' => 55, 'spell' => 1, 'image' => 'vik_1_1.png'],     // Runner
-        56 => ['card' => 56, 'unit' => 56, 'spell' => 1, 'image' => 'pl_m.png'],
-        57 => ['card' => 57, 'unit' => 57, 'spell' => 1, 'image' => 'vik_5.png'],    // Aarr
-        59 => ['card' => 59, 'unit' => 59, 'spell' => 1, 'image' => 'vik_3.png', 'isKing' => true],  //Viking Leader
+        9 => ['card' => 9, 'unit' => 9, 'spell' => 1, 'image' => 'pl_m.png'],
+        50 => ['card' => 50, 'unit' => 50, 'spell' => 1, 'image' => 7], // furyless
+        51 => ['card' => 51, 'unit' => 51, 'spell' => 1, 'image' => 11],  // Blind Valkiry
+        52 => ['card' => 52, 'unit' => 52, 'spell' => 1, 'image' => 10],   //Flying Rage
+        53 => ['card' => 53, 'unit' => 53, 'spell' => 1, 'image' => 5], //Kruug
+        54 => ['card' => 54, 'unit' => 54, 'spell' => 2, 'image' => 13],    // Axe thrower     // axe
+        55 => ['card' => 55, 'unit' => 55, 'spell' => 2, 'image' => 6],     // Runner
+        56 => ['card' => 56, 'unit' => 56, 'spell' => 1, 'image' => 8],      // Blood Shaman
+        57 => ['card' => 57, 'unit' => 57, 'spell' => 1, 'image' => 12],    // Aarr
+        59 => ['card' => 59, 'unit' => 59, 'spell' => 1, 'image' => 9, 'isKing' => true],  //Viking Leader
     ),
     'units' => [
         // Dwarfs
@@ -58,10 +59,11 @@ return array(
         3 => [
             'unit' => '\Tcg\Unit\TheMashine',
             'name' => 'The Mashine',
-            'totalHealth' => 5,
-            'attack' => [7,10],
-            'armor'  => 20,
-            'text' => 'Can attack only in front direction',
+            'totalHealth' => 1,
+            'attack' => [5,10],
+            'armor'  => 10,
+            'attackRange' => 3,
+            'text' => 'Can attack only in front direction. Cant attack after move',
         ],
         4 => [
             'unit' => '\Tcg\Unit\GudTheSmith',
@@ -99,9 +101,17 @@ return array(
             'unit' => '\Tcg\Unit\Common',
             'name' => 'Rockthrower',
             'totalHealth' => 5,
-            'attack' => [1, 4],
+            'attack' => [2, 5],
             'text' => 'Range 2',
             'attackRange' => 2,
+        ],
+        9 => [
+            'unit' => '\Tcg\Unit\DeepMiner',
+            'name' => 'Deep miner',
+            'totalHealth' => 10,
+            'attack' => [2, 3],
+            'armor'  => 4,
+            'text' => 'On death: Draw a card.',
         ],
         //bloodthirst
         50 => [
@@ -141,16 +151,17 @@ return array(
             'unit' => '\Tcg\Unit\AxeThrower',
             'name'  => 'Axe thrower',
             'totalHealth' => 6,
-            'attack' => [2, 4],
-            'text' => 'On deploy: Deal 4 damage to an enemy unit in front',
+            'attack' => [1, 1],
+            'attackRange' => 1,
+            'text' => 'Can throw an axe for 6 damage. Can pick up an axe.',
             'keywords' => ['bloodthirst'],
         ],
         55 => [
-            'unit' => '\Tcg\Unit\Common',
+            'unit' => '\Tcg\Unit\Runner',
             'name'  => 'Runner',
             'totalHealth' => 10,
-            'attack' => [1, 7],
-            'text' => 'Fast',
+            'attack' => [1, 4],
+            'text' => 'Fast. Can pick up an axe',
             'keywords' => ['fast'],
             'moveSteps' => 3, // not mandatory
         ],
@@ -204,6 +215,12 @@ return array(
             'name'  => 'Focus',
             'type' => 'unit',
             'text' => 'Put focus on target unit'
+        ],
+        2 => [
+            'spell' => '\Tcg\Spell\Axe',
+            'name'  => 'Axe',
+            'type' => 'unit',
+            'text' => 'Throw an axe for 6 damage'
         ],
     ],
     'fieldObjects' => [

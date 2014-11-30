@@ -8,24 +8,24 @@
 namespace Tcg\Spell;
 
 use ClassPreloader\Config;
-use Tcg\Events\ChangeUnit;
 use Tcg\Game;
 use Tcg\Spell;
 use Tcg\Card;
 use \Tcg\Unit;
 
-class Focus extends Spell {
+class Axe extends Spell {
 
     public function castUnit(Card $target)
     {
 
-        $target->unit->addKeyword(Unit::KEYWORD_FOCUS);
+        $target->unit->applyDamage(6, $this->card);
 
+        $x = $target->unit->x;
+        $y = $target->unit->y;
         $this->card->game->addEvent(
-            Game::EVENT_TRIGGER_END_OF_TURN,
-            Game::EVENT_TARGET_NONE,
-            '\Tcg\Events\ChangeUnit',
-            ['action' => ChangeUnit::ACTION_REMOVE_KEYWORD, 'value' => ['word' => Unit::KEYWORD_FOCUS]]
+            Game::EVENT_TRIGGER_UNIT_MOVE_TO_CELL,
+            $x . '_' . $y,
+            '\Tcg\Events\GetAxe'
         );
 
         $this->logCast();

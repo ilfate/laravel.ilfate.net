@@ -19,10 +19,10 @@ class Card {
     const CARD_STATUS_SPELL = 2;
 
     public static $locations = [
-    	Game::LOCATION_DECK  => 1,
-    	Game::LOCATION_HAND  => 2,
-    	Game::LOCATION_FIELD => 3,
-    	Game::LOCATION_GRAVE => 4,
+        Game::LOCATION_DECK  => 1,
+        Game::LOCATION_HAND  => 2,
+        Game::LOCATION_FIELD => 3,
+        Game::LOCATION_GRAVE => 4,
     ];
 
     /**
@@ -30,28 +30,28 @@ class Card {
      */
     public $game;
 
-	/**
-	 *  1 - deck
-	 *  2 - hand
-	 *  3 - field
-	 *  4 - grave
-	 *
-	 * @var int
-	 */
-	public $location;
+    /**
+     *  1 - deck
+     *  2 - hand
+     *  3 - field
+     *  4 - grave
+     *
+     * @var int
+     */
+    public $location;
 
-	/**
-	 * Player Id
-	 *
-	 * @var int
-	 */
-	public $owner;
-	/**
-	 * Ingame Id
-	 *
-	 * @var int
-	 */
-	public $id;
+    /**
+     * Player Id
+     *
+     * @var int
+     */
+    public $owner;
+    /**
+     * Ingame Id
+     *
+     * @var int
+     */
+    public $id;
 
     /**
      * @var Unit
@@ -74,29 +74,29 @@ class Card {
 
     public function __construct(Game $game)
     {
-    	$this->game = $game;
+        $this->game = $game;
     }
 
-	public static function createFromConfig($config, Game $game, $isImport = false)
-	{
-		$card         = new Card($game);
+    public static function createFromConfig($config, Game $game, $isImport = false)
+    {
+        $card         = new Card($game);
         $card->card   = $config['card'];
         $card->config = $config;
         if (isset($config['isKing'])) {
             $card->isKing = true;
         }
 
-		return $card;
-	}
+        return $card;
+    }
 
-	public static function import($data, $game)
-	{
+    public static function import($data, $game)
+    {
         $config = \Config::get('tcg.cards.' .  $data['card']);
         $card         = Card::createFromConfig($config, $game, true);
 
-		$card->id       = $data['id'];
-		$card->owner    = $data['owner'];
-		$card->location = $data['location'];
+        $card->id       = $data['id'];
+        $card->owner    = $data['owner'];
+        $card->location = $data['location'];
         $card->isKing   = $data['isKing'];
 
         if (!empty($data['unit'])) {
@@ -104,8 +104,8 @@ class Card {
             $card->spell = Spell::import($data['spell'], $config['spell'], $card);
         }
 
-		return $card;
-	}
+        return $card;
+    }
 
     public function init()
     {
@@ -117,35 +117,45 @@ class Card {
         $this->spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $config['spell']), $this);
     }
 
-	public function export()
-	{
-		$data = [
+    public function export()
+    {
+        $data = [
             'id'       => $this->id,
             'owner'    => $this->owner,
             'location' => $this->location,
             'card'     => $this->card,
             'isKing'   => $this->isKing,
-		];
+        ];
         if ($this->unit && $this->spell) {
             $data['unit'] = $this->unit->export();
             $data['spell'] = $this->spell->export();
         }
-		return $data;
-	}
+        return $data;
+    }
 
-	public function render($playerId)
-	{
-		$data = [
-			'id' => $this->id,
+    public function render($playerId)
+    {
+        $data = [
+            'id' => $this->id,
             'owner' => $this->owner,
-		];
+        ];
 
         $data['unit'] = $this->unit->render($playerId);
         $data['spell'] = $this->spell->render();
-        $data['image'] = $this->config['image'];
+        if ($this->config['image'] === (int) $this->config['image']) {
+            // this is an image Id. We have to load image and author
+            $imageConfig = \Config::get('tcgImages.images.' . $this->config['image']);
+            $data['image'] = $imageConfig['url'];
+            $author = \Config::get('tcgImages.authors.' . $imageConfig['author']);
+            $data['imageAuthor'] = ['text' => $author['text'], 'id' => $imageConfig['author']];
+        } else {
+            $data['image'] = $this->config['image'];
+            $data['imageAuthor'] = false;
+        }
 
-		return $data;
-	}
+
+        return $data;
+    }
 
     public function __clone()
     {

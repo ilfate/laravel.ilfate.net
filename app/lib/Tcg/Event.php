@@ -18,6 +18,10 @@ abstract class Event {
 
     public $data;
 
+    public $eventTrigger;
+    public $eventTarget;
+    public $eventId;
+
     public function __construct($data, $game) {
         $this->data = $data;
         $this->game = $game;

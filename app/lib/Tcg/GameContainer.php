@@ -46,6 +46,9 @@ class GameContainer {
     const EVENT_TRIGGER_UNIT_DEPLOY = 'unit_deploy';
     const EVENT_TRIGGER_UNIT_DEPLOY_TO_CELL = 'unit_deploy_to_cell';
     const EVENT_TRIGGER_UNIT_DEATH = 'unit_death';
+    const EVENT_TRIGGER_END_OF_TURN = 'end_of_turn';
+
+    const EVENT_TARGET_NONE = 'none';
 
     const IMPORT_TYPE_NORMAL = 'normal';
     const IMPORT_TYPE_UPDATE = 'update';
@@ -128,6 +131,12 @@ class GameContainer {
         $this->currentPlayerId = $currentPlayerId;
     }
 
+    /**
+     * @param $id
+     *
+     * @return Card
+     * @throws \Exception
+     */
     public function getCard($id)
     {
         if (empty($this->cards[$id])) {
