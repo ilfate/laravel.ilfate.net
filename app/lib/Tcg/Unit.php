@@ -144,7 +144,11 @@ class Unit
         $data['y'] = $y;
         $data['keywords'] = $this->keywords;
         $data['armor']    = $this->armor;
-        $data['moveType'] = $this->getMoveType();
+
+        $data['moveType']    = $this->getMoveType();
+        $data['moveSteps']   = $this->getMoveSteps();
+        $data['attackRange'] = $this->getAttackRange();
+
 
         if ($this->card->location == Card::CARD_LOCATION_FIELD) {
             $data['currentHealth'] = $this->currentHealth;
@@ -158,7 +162,7 @@ class Unit
         if ($this->card->location != Card::CARD_LOCATION_FIELD) {
             throw new \Exception('Unit is trying to attack, but he is not on the Field!!');
         }
-        
+
         $targets = $this->getTargets();
 
         if (!$targets) {
@@ -181,13 +185,7 @@ class Unit
 
     protected function getTargets()
     {
-        $range = self::DEFAULT_ATTACK_RANGE;
-        if (isset($this->config['attackRange'])) {
-            $range = $this->config['attackRange'];
-        }
-        if (!empty($this->attackRange)) {
-            $range = $this->attackRange;
-        }
+        $range   = $this->getAttackRange();
         $enemies = $this->card->game->getAllPlayerEnemies($this->card->owner);
         return $this->card->game->field->getAllPlayersUnitsInRange($this->x, $this->y, $range, $enemies);
     }
@@ -321,11 +319,8 @@ class Unit
         if (!$isPossibleMove) {
             throw new \Exception('This is not a possible cell to move');
         }
-        if (empty($this->config['moveSteps'])) {
-            $moveSteps = self::DEFAULT_MOVE_DISTANCE;
-        } else {
-            $moveSteps = $this->config['moveSteps'];
-        }
+        $moveSteps = $this->getMoveSteps();
+
         return $moveSteps - $this->stepsMade;
     }
 
@@ -391,6 +386,28 @@ class Unit
         return self::MOVE_TYPE_NORMAL;
     }
 
+    public function getMoveSteps()
+    {
+        if (empty($this->config['moveSteps'])) {
+            $moveSteps = self::DEFAULT_MOVE_DISTANCE;
+        } else {
+            $moveSteps = $this->config['moveSteps'];
+        }
+        return $moveSteps;
+    }
+
+    public function getAttackRange()
+    {
+        $range = self::DEFAULT_ATTACK_RANGE;
+        if (isset($this->config['attackRange'])) {
+            $range = $this->config['attackRange'];
+        }
+        if (!empty($this->attackRange)) {
+            $range = $this->attackRange;
+        }
+        return $range;
+    }
+
     protected function beforeAttack($damage, Card $target) {
 
     }
@@ -408,5 +425,5 @@ class Unit
     protected function attackNoTargets() {
         $this->card->game->log->logUnitSkip($this->card->id);
     }
-    
+
 }

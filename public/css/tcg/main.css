@@ -108,19 +108,6 @@
     text-align: center;
     z-index: 25;
 }
-.field .unit .image {
-    width: 75px;
-    height: 75px;
-    position: absolute;
-    z-index:20;
-}
-.field .unit.enemy .image {
-    -webkit-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    -o-transform: rotate(180deg);
-    transform: rotate(180deg);
-}
 .field .unit.focus {
     font-weight: bold;
 }
@@ -155,10 +142,6 @@
     z-index:23;
 }
 
-.field .unit .keywords {
-
-}
-
 .field .unit .health-panel {
     position: absolute;
     bottom: 3px;
@@ -167,14 +150,6 @@
     color:#FFD416;
     background-color: #483018;
     opacity: 0.6;
-}
-
-.field .unit .info {
-    width: 16px;
-    height: 20px;
-    position:absolute;
-    bottom: 3px;
-    right: 3px;
 }
 
 .field .unit .damage {
@@ -192,6 +167,36 @@
 }
 .field .unit .damage.armor {
     color: blue;
+}
+
+.field .unit .unit-info {
+
+    left:75px;
+    width:75px;
+    height:75px;
+    display: none;
+    position: absolute;
+    color:#FFD416;
+    background-color: #483018;
+    z-index:30;
+}
+
+.field .unit:hover .unit-info {
+    display: block;
+}
+
+.field .unit .image {
+    width: 75px;
+    height: 75px;
+    position: absolute;
+    z-index:20;
+}
+.field .unit.enemy .image {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
 .field .object {
