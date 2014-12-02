@@ -18,10 +18,12 @@ class ChangeUnit extends Event {
     const ACTION_ADD_KEYWORD = 'addKeyword';
     const ACTION_REMOVE_KEYWORD = 'removeKeyword';
 
-    public function execute($target, $data = null)
+    public function execute($target, $triggerData = null)
     {
-        if (isset($data['cardId'])) {
-            $target = $data['cardId'];
+        if (isset($triggerData['cardId'])) {
+            $target = $triggerData['cardId'];
+        } else if (isset($this->data['target'])) {
+            $target = $this->data['target'];
         }
         $card = $this->game->getCard($target);
 

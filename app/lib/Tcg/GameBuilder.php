@@ -75,7 +75,7 @@ class GameBuilder {
         $situation = [
             'cards' => [
                 [
-                    'id'    => 3,
+                    'id'    => 55,
                     'owner' => 1,
                     'x' => 4,
                     'y' => 6,
@@ -88,11 +88,10 @@ class GameBuilder {
                     'isCurrent' => true,
                 ],
                 [
-                    'id'    => 9,
+                    'id'    => 54,
                     'owner' => 1,
                     'x' => 3,
                     'y' => 6,
-                    'attack' => [0,0],
                     'currentHealth' => 5,
                 ],
                 [

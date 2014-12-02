@@ -25,7 +25,7 @@ class Focus extends Spell {
             Game::EVENT_TRIGGER_END_OF_TURN,
             Game::EVENT_TARGET_NONE,
             '\Tcg\Events\ChangeUnit',
-            ['action' => ChangeUnit::ACTION_REMOVE_KEYWORD, 'value' => ['word' => Unit::KEYWORD_FOCUS]]
+            ['action' => ChangeUnit::ACTION_REMOVE_KEYWORD, 'value' => ['word' => Unit::KEYWORD_FOCUS], 'target' => $target->id]
         );
 
         $this->logCast();

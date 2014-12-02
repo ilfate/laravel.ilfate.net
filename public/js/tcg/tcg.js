@@ -184,6 +184,11 @@ TCG.Game = function () {
     }
 
     this.moveUnit = function(cell) {
+        if (cell.hasClass('object')) {
+            var x = cell.data('x');
+            var y = cell.data('y');
+            cell = $('.cell.x_' + x + '.y_' + y);
+        }
         if (!this.handCardInFocus && this.fieldCardInFocus && this.isBattle() && this.isMyTurn() && cell.hasClass('focus')) {
             this.units.removeFocus();
             var x = cell.data('x');

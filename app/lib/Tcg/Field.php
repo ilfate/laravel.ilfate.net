@@ -134,6 +134,13 @@ class Field extends Location {
         $this->objectMap[$object->x][$object->y] = $object->id;
     }
 
+    public function removeObject($objectId)
+    {
+        $object = $this->getObject($objectId);
+        unset($this->objectMap[$object->x][$object->y]);
+        unset($this->objects[$object->id]);
+    }
+
     public function getObject($objectId)
     {
         return $this->objects[$objectId];

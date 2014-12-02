@@ -219,13 +219,13 @@ class Game extends GameContainer {
             throw new \Exception("Player with ID = " . $this->currentPlayerId . " is trying to do deploy not on his turn", 1);
         }
         if ($y < Game::HEIGHT - 2) {
-            throw new \Exception("This field is forbidden for deploy", 1);
+            throw new Exception("This field is forbidden for deploy", 1);
         }
 
         list($x, $y) = $this->convertCoordinats($x, $y, $card->owner);
 
         if (!$this->field->isDeployable($x, $y)) {
-            throw new \Exception("This field is forbidden for deploy", 1);
+            throw new Exception("This field is forbidden for deploy", 1);
         }
 
         $card->unit->x = $x;

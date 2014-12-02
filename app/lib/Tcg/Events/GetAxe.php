@@ -24,14 +24,13 @@ class GetAxe extends Event {
         $target = $data['cardId'];
         $card = $this->game->getCard($target);
 
-        if (empty($card->unit->data['axe']) && (
-                $card->unit instanceof \Tcg\Unit\AxeThrower
-                || $card->unit instanceof \Tcg\Unit\Runner
-            )) {
+        if (empty($card->unit->data['axe']) && ($card->unit instanceof \Tcg\Unit\UnitCanThrowAxe)) {
             $card->unit->setAttack([6, 6]);
             $card->unit->data['axe'] = true;
             $card->unit->attackRange = 2;
             $this->game->removeEvent($this->eventTrigger, $this->eventTarget, $this->eventId);
+
+            $this->game->field->removeObject($this->data['mapObjectId']);
         }
     }
 }

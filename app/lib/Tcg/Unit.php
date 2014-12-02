@@ -9,7 +9,7 @@ namespace Tcg;
 
 use ClassPreloader\Config;
 
-class Unit
+abstract class Unit
 {
     use UnitMove;
 

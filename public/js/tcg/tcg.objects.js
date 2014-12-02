@@ -27,13 +27,15 @@ TCG.Objects = function (game) {
     }
 
     this.createObject = function(object) {
-        info(object);
         var templateCard = $('#template-field-object').html();
         Mustache.parse(templateCard);   // optional, speeds up future uses
         var rendered = Mustache.render(templateCard, {object : object});
         var obj = $(rendered);
         this.setObject(obj);
         $('.field .objects').append(obj);
+        obj.on({
+            click : function(){ TCG.Game.event('cellClick', $(this)) }
+        });
     }
 
     this.getObject = function(cardId) {

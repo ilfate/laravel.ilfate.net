@@ -157,7 +157,7 @@ return array(
             'keywords' => ['bloodthirst'],
         ],
         55 => [
-            'unit' => '\Tcg\Unit\Runner',
+            'unit' => '\Tcg\Unit\UnitCanThrowAxe',
             'name'  => 'Runner',
             'totalHealth' => 10,
             'attack' => [1, 4],
@@ -263,6 +263,11 @@ return array(
             'class' => '\Tcg\FieldObject\Common',
             'image' => 'f_castle.jpg',
             'passable' => false,
+        ],
+        2 => [
+            'class' => '\Tcg\FieldObject\Common',
+            'image' => 'f_castle.jpg',
+            'passable' => true,
         ],
     ],
     'fieldMap' => [
