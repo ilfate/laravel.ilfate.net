@@ -302,6 +302,9 @@ TCG.Game = function () {
                 case 'battleEnd':
                     this.showResultModal();
                     break;
+                case 'fieldObject':
+                    this.objects.event(event.mode, event.object);
+                    break;
             }
         }
         this.postProcessGameUpdate(newTurn);

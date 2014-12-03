@@ -266,7 +266,7 @@ return array(
         ],
         2 => [
             'class' => '\Tcg\FieldObject\Common',
-            'image' => 'f_castle.jpg',
+            'image' => 'axe.png',
             'passable' => true,
         ],
     ],

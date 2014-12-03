@@ -75,6 +75,7 @@ class FieldObject
 
         $data['x'] = $x;
         $data['y'] = $y;
+        $data['id'] = $this->id;
         return $data;
     }
 

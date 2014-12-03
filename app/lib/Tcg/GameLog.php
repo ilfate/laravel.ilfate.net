@@ -24,7 +24,8 @@ class GameLog
     const LOG_TYPE_UNIT_CHANGE       = 'change';
     const LOG_TYPE_UNIT_SKIP         = 'skip';
     const LOG_TYPE_BATTLE_END        = 'battleEnd';
-    
+    const LOG_TYPE_FIELD_OBJECT      = 'fieldObject';
+
 
     const RENDER_MODE_PUBLIC = 'public';
     const RENDER_MODE_ADMIN  = 'admin';
@@ -43,6 +44,7 @@ class GameLog
         self::LOG_TYPE_ATTACK,
         self::LOG_TYPE_UNIT_SKIP,
         self::LOG_TYPE_BATTLE_END,
+        self::LOG_TYPE_FIELD_OBJECT,
     ];
 
     /**
@@ -246,6 +248,16 @@ class GameLog
             []
         );
     }
+    public function logFieldObject($mode, $id)
+    {
+        $this->addLog(
+            self::LOG_TYPE_FIELD_OBJECT,
+            [
+                $mode,
+                $id
+            ]
+        );
+    }
 
     protected function addLog($type, $data)
     {
@@ -354,6 +366,14 @@ class GameLog
                     $event['cardId'] = $log[1][0];
                     break;
                 case self::LOG_TYPE_BATTLE_END:
+                    break;
+                case self::LOG_TYPE_FIELD_OBJECT:
+                    $event['mode'] = $log[1][0];
+                    if ($event['mode'] != 'remove') {
+                        $event['object'] = $this->game->field->objects[$log[1][1]]->render($this->game->currentPlayerId);
+                    } else {
+                        $event['object'] = ['id' => $log[1][1]];
+                    }
                     break;
                 default :
                     throw new \Exception('Not implemented log update render');

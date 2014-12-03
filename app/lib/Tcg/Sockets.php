@@ -136,6 +136,23 @@ trait Sockets {
             case GameLog::LOG_TYPE_BATTLE_END:
                 $toPush[] = ['all', $event];
                 break;
+            case GameLog::LOG_TYPE_FIELD_OBJECT:
+                $id = $data[1];
+
+                foreach ($allTargets as $playerId => $key) {
+                    $event = [
+                        'type'   => $type,
+                        'mode'   => $data[0],
+                    ];
+                    if ($data[0] != 'remove') {
+                        $object = $this->field->objects[$id];
+                        $event['object'] = $object->render($playerId);
+                    } else {
+                        $event['object'] = ['id' => $id];
+                    }
+                    $toPush[] = [$playerId, $event];
+                }
+                break;
             default:
                 return;
         }

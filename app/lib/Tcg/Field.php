@@ -48,7 +48,7 @@ class Field extends Location {
                     $fieldObject = FieldObject::createFromConfig($configWall['id'], $this);
                     $fieldObject->x = $configWall['x'];
                     $fieldObject->y = $configWall['y'];
-                    $this->addObject($fieldObject);
+                    $this->addObject($fieldObject, false);
                 }
 
                 break;
@@ -63,7 +63,7 @@ class Field extends Location {
         $location->cards       = $data['cards'];
         foreach ($data['objects'] as $object) {
             $fieldObject = FieldObject::import($object, $location);
-            $location->addObject($fieldObject);
+            $location->addObject($fieldObject, false);
         }
 
         return $location;
@@ -122,21 +122,26 @@ class Field extends Location {
         return $data;
     }
 
-    public function addObject(FieldObject $object)
+    public function addObject(FieldObject $object, $isAmnimation = true)
     {
         if (!$object->id) {
-            $newId          = count($this->objects);
-            $object->id = $newId;
             $this->objects[] = $object;
+            end($this->objects);
+            $newId = key($this->objects);
+            $object->id = $newId;
         } else {
             $this->objects[$object->id] = $object;
         }
         $this->objectMap[$object->x][$object->y] = $object->id;
+        if ($isAmnimation) {
+            $this->game->log->logFieldObject('create', $object->id);
+        }
     }
 
     public function removeObject($objectId)
     {
         $object = $this->getObject($objectId);
+        $this->game->log->logFieldObject('remove', $object->id);
         unset($this->objectMap[$object->x][$object->y]);
         unset($this->objects[$object->id]);
     }
