@@ -61,8 +61,9 @@ return array(
             'name' => 'The Mashine',
             'totalHealth' => 1,
             'attack' => [5,10],
-            'armor'  => 10,
+            'armor'  => 4,
             'attackRange' => 3,
+            'attackType' => 2,
             'text' => 'Can attack only in front direction. Cant attack after move',
         ],
         4 => [

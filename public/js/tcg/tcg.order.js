@@ -18,12 +18,21 @@ TCG.Order = function (game) {
         var obj = $(rendered);
         $('.order').append(obj);
         obj.on({
-            mouseenter : function(){ TCG.Game.units.mouseenter($(this)) },
-            mouseleave : function(){ TCG.Game.units.mouseleave($(this)) },
+            mouseenter : function(){ TCG.Game.order.mouseenter($(this));TCG.Game.units.mouseenter($(this)) },
+            mouseleave : function(){ TCG.Game.order.mouseleave($(this));TCG.Game.units.mouseleave($(this)) },
             click : function(){ TCG.Game.event('unitClick', $(this)) }
         });
     }
 
+    this.mouseenter = function(unit) {
+        var id = unit.data('id');
+        $('.id_' + id + ' .field-unit-attack-zone').addClass('show');
+    }
+    this.mouseleave = function(unit) {
+        $('.field-unit-attack-zone.show').removeClass('show');
+    }
+
+    //field-unit-attack-zone
     this.setCurrentCard = function(cardId) {
         $('.order .card').removeClass('focus');
         $('.order .card.id_' + cardId).addClass('focus');

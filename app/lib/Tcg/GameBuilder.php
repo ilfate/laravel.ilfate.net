@@ -95,7 +95,7 @@ class GameBuilder {
 //                    'currentHealth' => 5,
 //                ],
                 [
-                    'id'    => 1,
+                    'id'    => 3,
                     'owner' => 2,
                     'x' => 4,
                     'y' => 6,

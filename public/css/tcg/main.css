@@ -70,7 +70,7 @@
     height:75px;
     opacity: 0.7;
 }
-.order .card.focus, .order .card:hover {
+.order .card.focus, .order .card:hover, .order .card.hover {
     font-weight: bold;
     opacity: 1;
 }
@@ -83,22 +83,24 @@
     clear:both;
     border-right: 1px solid #483018;
     border-bottom: 1px solid #483018;
+    overflow: hidden;
 }
 .field .cell {
     /*margin: 1px;*/
     width:75px;
     height:75px;
-    float:left;
+    /*float:left;*/
     /*border: 1px solid #494949;*/
     /*border-radius: 3px;*/
     border-top: 1px solid #483018;
     border-left: 1px solid #483018;
     z-index: 10;
+    position: absolute;
 }
 
 .field .cell.focus {
     cursor: pointer;
-    background-color: #FFD416;
+    background-color: #069E2D;
 }
 
 .field .unit {
@@ -199,6 +201,23 @@
     transform: rotate(180deg);
 }
 
+/*.field .unit:before {*/
+    /*content: '';*/
+/*}*/
+
+.field-unit-attack-zone {
+    position: absolute;
+    display: none;
+    border: solid 2px #FFD416;
+    background-color: #FFD416;
+    opacity: 0.5;
+    overflow: hidden;
+    z-index: 22;
+}
+.field-unit-attack-zone.not-hidden.show {
+    display: block;
+}
+
 .field .object {
     width:75px;
     height:75px;
@@ -213,7 +232,11 @@
 }
 
 .info-zone .info-card {
-    border: 1px solid #483018;
+    /*border: 1px solid #483018;*/
+    /*background-color: #3E6990;*/
+    padding: 3px;
+    background-color: #483018;
+    color: #FFD416;
     display: none;
 }
 
@@ -224,4 +247,48 @@
 }
 #message-container {
     position: relative;
+}
+
+
+
+
+
+.attack-type-1-1 {
+    width:225px;
+    height:225px;
+    left:-75px;
+    top:-75px;
+}
+.attack-type-1-2 {
+    width:375px;
+    height:375px;
+    left:-150px;
+    top:-150px;
+}
+.attack-type-1-3 {
+    width:525px;
+    height:525px;
+    left:-225px;
+    top:-225px;
+}
+.attack-type-2-1 {
+    width:75px;
+    height:75px;
+    left:0px;
+    top:-75px;
+}
+.attack-type-2-2 {
+    width:75px;
+    height:150px;
+    left:0px;
+    top:-150px;
+}
+.attack-type-2-3 {
+    width:75px;
+    height:225px;
+    left:0px;
+    top:-225px;
+}
+.enemy .attack-type-2-1, .enemy .attack-type-2-2, .enemy .attack-type-2-3 {
+    top:75px;
 }

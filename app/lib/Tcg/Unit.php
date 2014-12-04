@@ -35,6 +35,10 @@ abstract class Unit
     const MOVE_TYPE_AROUND   = 3;
     const MOVE_TYPE_JUMP     = 4;
 
+    const ATTACK_TYPE_NORMAL  = 1;
+    const ATTACK_TYPE_AHEAD_1 = 2;
+    const ATTACK_TYPE_DIAGONAL = 3;
+
     protected static $exportValues = array(
         'maxHealth',
         'currentHealth',
@@ -46,7 +50,8 @@ abstract class Unit
         'keywords',
         'attack',
         'data',
-        'attackRange'
+        'attackRange',
+        'attackType'
     );
 
     /**
@@ -63,6 +68,7 @@ abstract class Unit
     public $maxArmor = 0;
     public $armor = 0;
     public $attack = [0, 0];
+    public $attackType = 1;
     public $attackRange = 0;
     public $x;
     public $y;
@@ -84,6 +90,10 @@ abstract class Unit
         $unit->config = $config;
         $unit->card   = $card;
         $unit->name   = $config[self::CONFIG_VALUE_NAME];
+
+        if (isset($config['attackType'])) {
+            $unit->attackType = $config['attackType'];
+        }
 
         return $unit;
     }
@@ -148,6 +158,7 @@ abstract class Unit
         $data['moveType']    = $this->getMoveType();
         $data['moveSteps']   = $this->getMoveSteps();
         $data['attackRange'] = $this->getAttackRange();
+        $data['attackType'] = $this->attackType;
 
 
         if ($this->card->location == Card::CARD_LOCATION_FIELD) {

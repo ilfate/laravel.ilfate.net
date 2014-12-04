@@ -320,6 +320,7 @@ TCG.Units = function (game) {
         $('.info-zone .info-card.id_' + id).show();
         $('.hover').removeClass('hover');
         this.getUnitObj(id).addClass('hover');
+        $('.order .card.id_' + id).addClass('hover');
 
     }
     this.mouseleave = function(unit) {

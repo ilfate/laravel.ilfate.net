@@ -18,7 +18,7 @@ class AxeThrower extends UnitCanThrowAxe {
     {
         parent::deploy();
         $this->setAttack([6, 6]);
-        $this->set('attackRange', 2);
+        $this->set('attackRange', 3);
         $this->data['axe'] = true;
     }
 }
