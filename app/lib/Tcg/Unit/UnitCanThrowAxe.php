@@ -17,7 +17,8 @@ class UnitCanThrowAxe extends Unit {
 
     protected function afterAttack($damage, Card $target) {
         if (!empty($this->data['axe'])) {
-            $this->attackRange = 1;
+
+            $this->set('attackRange', 1);
             $this->setAttack([1, 3]);
             unset($this->data['axe']);
 
@@ -35,7 +36,7 @@ class UnitCanThrowAxe extends Unit {
                 '\Tcg\Events\GetAxe',
                 ['mapObjectId' => $fieldObject->id]
             );
-            
+
         }
     }
 }

@@ -310,6 +310,7 @@ abstract class Unit
         //$this->card->game->triggerEvent(Game::EVENT_UNIT_DEATH, ['target' => $this]);
         $this->card->game->moveCards([$this->card], Game::LOCATION_FIELD, GAME::LOCATION_GRAVE);
         $this->card->game->log->logDeath($this->card->id);
+        $this->onDeath();
         $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_DEATH, $this->card->id);
     }
 
@@ -423,6 +424,9 @@ abstract class Unit
 
     }
     protected function afterAttack($damage, Card $target) {
+
+    }
+    protected function onDeath() {
 
     }
     protected function beforeMove() {

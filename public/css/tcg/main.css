@@ -103,33 +103,33 @@
     background-color: #069E2D;
 }
 
-.field .unit {
+.field-unit {
     width: 75px;
     height: 75px;
     position: absolute;
     text-align: center;
     z-index: 25;
 }
-.field .unit.focus {
+.field-unit.focus {
     font-weight: bold;
 }
-.field .unit.enemy-focus .middle-panel, .field .unit.focus .middle-panel, .field .unit:hover .middle-panel, .field .unit.hover .middle-panel {
+.field-unit.enemy-focus .middle-panel, .field-unit.focus .middle-panel, .field-unit:hover .middle-panel, .field-unit.hover .middle-panel {
     display: block;
 }
-.field .unit.focus .health-panel, .field .unit:hover .health-panel {
+.field-unit.focus .health-panel, .field-unit:hover .health-panel {
     opacity: 0.9;
 }
 
-.field .unit .skip {
+.field-unit .skip {
     display: none;
     z-index:23;
     position: absolute;
 }
-.field .unit.focus .skip {
+.field-unit.focus .skip {
     display: inline;
 }
 
-.field .unit .middle-panel {
+.field-unit .middle-panel {
     width: 90%;
     text-align: center;
     color: #FFD416;
@@ -144,7 +144,7 @@
     z-index:23;
 }
 
-.field .unit .health-panel {
+.field-unit .health-panel {
     position: absolute;
     bottom: 3px;
     left: 3px;
@@ -154,7 +154,7 @@
     opacity: 0.6;
 }
 
-.field .unit .damage {
+.field-unit .damage {
     position: absolute;
     font-size: 40px;
     width: 100%;
@@ -164,15 +164,14 @@
     font-weight: bold;
     z-index: 60;
 }
-.field .unit .damage.heal {
+.field-unit .damage.heal {
     color: green;
 }
-.field .unit .damage.armor {
+.field-unit .damage.armor {
     color: blue;
 }
 
-.field .unit .unit-info {
-
+.field-unit .unit-info {
     left:75px;
     width:75px;
     height:75px;
@@ -183,17 +182,17 @@
     z-index:30;
 }
 
-.field .unit:hover .unit-info {
+.field-unit:hover .unit-info {
     display: block;
 }
 
-.field .unit .image {
+.field-unit .image {
     width: 75px;
     height: 75px;
     position: absolute;
     z-index:20;
 }
-.field .unit.enemy .image {
+.field-unit.enemy .image {
     -webkit-transform: rotate(180deg);
     -moz-transform: rotate(180deg);
     -ms-transform: rotate(180deg);
@@ -201,8 +200,8 @@
     transform: rotate(180deg);
 }
 
-/*.field .unit:before {*/
-    /*content: '';*/
+/*.field-unit:before {*/
+/*content: '';*/
 /*}*/
 
 .field-unit-attack-zone {
@@ -212,7 +211,7 @@
     background-color: #FFD416;
     opacity: 0.5;
     overflow: hidden;
-    z-index: 22;
+    z-index: 18;
 }
 .field-unit-attack-zone.not-hidden.show {
     display: block;
@@ -222,7 +221,7 @@
     width:75px;
     height:75px;
     position: absolute;
-    z-index: 8;
+    z-index: 12;
 }
 
 .info-zone {

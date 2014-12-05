@@ -11,7 +11,7 @@ TCG.Units = function (game) {
     this.units = [];
 
     this.init = function() {
-        $('.field .unit').each(function() {
+        $('.field-unit').each(function() {
             TCG.Game.units.setUnit($(this));
         })
     }
@@ -59,7 +59,7 @@ TCG.Units = function (game) {
         return unit;
     }
     this.removeFocus = function() {
-        $('.field .unit').removeClass('focus');
+        $('.field-unit').removeClass('focus');
         $('.field .cell').removeClass('focus');
     }
 
@@ -157,6 +157,25 @@ TCG.Units = function (game) {
                 if (attackObj.length) {
                     attackObj.html(data.value);
                 }
+                break;
+            case 'attackRange':
+                var unit = this.getUnitObj(cardId);
+                var currentRange = unit.data('attackrange');
+                var currentType = unit.data('attacktype');
+                var attackAreaObj = unit.find('.field-unit-attack-zone');
+                attackAreaObj.removeClass('attack-type-' + currentType + '-' + currentRange);
+                attackAreaObj.addClass('attack-type-' + currentType + '-' + data.value);
+                unit.data('attackrnge', data.value);
+                break;
+
+            case 'attackType':
+                var unit = this.getUnitObj(cardId);
+                var currentRange = unit.data('attackrange');
+                var currentType = unit.data('attacktype');
+                var attackAreaObj = unit.find('.field-unit-attack-zone');
+                attackAreaObj.removeClass('attack-type-' + currentType + '-' + currentRange);
+                attackAreaObj.addClass('attack-type-' + data.value + '-' + currentRange);
+                unit.data('attacktype', data.value);
                 break;
         }
     }
@@ -332,12 +351,15 @@ TCG.Units = function (game) {
         var unit = this.focusUnit(cardId);
         var neibours = this.getNeiboursCells(unit);
 
+        info(neibours);
+
         for (var key in neibours) {
             var dx = neibours[key][0];
             var dy = neibours[key][1];
             if (dx >= 0 && dy >= 0 && dx < this.game.width && dy < this.game.height) {
 
-                var unitInCell = $('.field .unit.x_' + dx + '.y_' + dy);
+                var unitInCell = $('.field-unit.x_' + dx + '.y_' + dy);
+                info(unitInCell);
                 if (!unitInCell.length || unitInCell.hasClass('dead')) {
                     // this cell is free
                     var newCell = $('.field .cell.x_' + dx + '.y_' + dy);
@@ -399,7 +421,7 @@ TCG.Units = function (game) {
 
     this.getUnitObj = function(cardId) {
         if (this.units[cardId] == undefined) {
-            var unit = $('.field .unit.id_' + cardId);
+            var unit = $('.field-unit.id_' + cardId);
             this.units[cardId] = unit;
         } else {
             var unit = this.units[cardId];

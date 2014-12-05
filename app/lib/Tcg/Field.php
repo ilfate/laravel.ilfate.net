@@ -200,7 +200,7 @@ class Field extends Location {
         if (isset($this->objectMap[$x][$y])) {
             $object = $this->getObject($this->objectMap[$x][$y]);
             if (!$object->isPassable()) {
-                throw new \Exception('Cant move to wall object');
+                throw new Exception('Cant move to wall object');
             }
         }
         $oldX = $card->unit->x;

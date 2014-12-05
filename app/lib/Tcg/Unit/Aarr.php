@@ -8,27 +8,27 @@
 namespace Tcg\Unit;
 
 use ClassPreloader\Config;
+use Tcg\FieldObject;
+use Tcg\Game;
 use \Tcg\Unit;
 use \Tcg\Card;
 
 class Aarr extends Unit {
 
-	protected function getTargets()
-    {
-    	$targets = [];
-        $possibleTargets = [
-            $this->card->game->field->getNeibourUnit($this->card, -1, -1),
-            $this->card->game->field->getNeibourUnit($this->card, -1, 1),
-            $this->card->game->field->getNeibourUnit($this->card, 1, 1),
-            $this->card->game->field->getNeibourUnit($this->card, 1, -1),
-        ];
-        $team = $this->card->game->teams[$this->card->owner];
-        foreach ($possibleTargets as $target) {
-            if ($target && !in_array($target->owner, $team)) {
-                $targets[] = $target;
-            } 
-        }
-    	
-    	return $targets;
+    protected function onDeath() {
+        $x = $this->x;
+        $y = $this->y;
+
+        $fieldObject = FieldObject::createFromConfig(2, $this->card->game->field);
+        $fieldObject->x = $x;
+        $fieldObject->y = $y;
+        $this->card->game->field->addObject($fieldObject);
+
+        $this->card->game->addEvent(
+            Game::EVENT_TRIGGER_UNIT_MOVE_TO_CELL,
+            $x . '_' . $y,
+            '\Tcg\Events\GetAxe',
+            ['mapObjectId' => $fieldObject->id]
+        );
     }
 }

@@ -179,8 +179,8 @@ return array(
             'name'  => 'Aarr',
             'totalHealth' => 11,
             'attack' => [3, 8],
-            'moveSteps' => 2,
-            'text' => 'Can attack only diagonal',
+            'moveType' => 2,
+            'text' => 'Can move only diagonal. On death: leave an Axe on the field.',
         ],
 //        58 => [
 //            'unit' => '\Tcg\Unit\Harpoon',

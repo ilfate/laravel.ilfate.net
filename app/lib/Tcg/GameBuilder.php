@@ -87,13 +87,13 @@ class GameBuilder {
                     'keywords' => ['focus'],
                     'isCurrent' => true,
                 ],
-//                [
-//                    'id'    => 54,
-//                    'owner' => 1,
-//                    'x' => 3,
-//                    'y' => 6,
-//                    'currentHealth' => 5,
-//                ],
+                [
+                    'id'    => 57,
+                    'owner' => 1,
+                    'x' => 3,
+                    'y' => 6,
+                    'currentHealth' => 5,
+                ],
                 [
                     'id'    => 3,
                     'owner' => 2,

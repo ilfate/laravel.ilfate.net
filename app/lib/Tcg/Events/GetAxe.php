@@ -27,7 +27,7 @@ class GetAxe extends Event {
         if (empty($card->unit->data['axe']) && ($card->unit instanceof \Tcg\Unit\UnitCanThrowAxe)) {
             $card->unit->setAttack([6, 6]);
             $card->unit->data['axe'] = true;
-            $card->unit->attackRange = 3;
+            $card->unit->set('attackRange', 3);
             $this->game->removeEvent($this->eventTrigger, $this->eventTarget, $this->eventId);
 
             $this->game->field->removeObject($this->data['mapObjectId']);
