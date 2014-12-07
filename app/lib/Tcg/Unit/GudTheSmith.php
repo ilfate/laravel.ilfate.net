@@ -14,6 +14,7 @@ class GudTheSmith extends Unit {
 
 
 	protected function attackNoTargets() {
+        parent::attackNoTargets();
 		$team = $this->card->game->teams[$this->card->owner];
 		$healTargets = $this->card->game->field->getAllPlayersUnitsInRange($this->x, $this->y, 1, $team);
 		if (!$healTargets) {
