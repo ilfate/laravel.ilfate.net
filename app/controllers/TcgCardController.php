@@ -6,7 +6,7 @@ use Tcg\Deck;
 use Tcg\Game;
 use Tcg\GameBuilder;
 
-class TcgPlayerController extends \BaseController
+class TcgCardController extends \BaseController
 {
     /**
      * @var Breadcrumbs
