@@ -2,7 +2,6 @@
 
 use Helper\Breadcrumbs;
 use Illuminate\Support\Facades\Session;
-use Tcg\Deck;
 use Tcg\Game;
 use Tcg\GameBuilder;
 
@@ -33,127 +32,109 @@ class TcgCardController extends \BaseController
      */
     public function index()
     {
-        Session::forget(User::GUEST_USER_SESSION_KEY);
-        $player = User::getUser();
-        $cardsCount = 0;
-        if ($player->id) {
-            $player->touch();
-            $cardsCount = Card::getMyCardsCount();
-        }
-
-        View::share('player', [
-            'id'   => $player->getId(),
-            'name' => $player->getName(),
-            'auth' => !! $player->id,
-            'cardsCount' => $cardsCount,
-        ]);
 
         return View::make('games.tcg.player.index');
     }
 
-    public function registerForm()
+    public function createDeckForm()
     {
-        $player = User::getUser();
-
         $formDefaults = Session::get('formDefaults', null);
         if ($formDefaults) {
-            View::share('formDefaults', $formDefaults);
+            View::share('formDefaults', $formDefaults['name']);
             Session::forget('formDefaults');
+        } else {
+            View::share('deck', false);
         }
-
-        View::share('player', [
-            'id'   => $player->getId(),
-            'name' => $player->getName(),
-            'auth' => $player->id,
-        ]);
-
-        return View::make('games.tcg.player.register');
+        View::share('kings', Card::prepareCardsForRender(Card::getMyKings());
+        return View::make('games.tcg.player.manageDeck');
     }
 
-    public function registerSubmit()
+    public function createDeck()
     {
-        $email = Input::get('email');
-        $password1 = Input::get('password1');
-        $password2 = Input::get('password2');
-        $name = Input::get('name');
+        $name   = Input::get('name');
+        $kingId = Input::get('kingId');
 
         $player = User::getUser();
 
+        $validator = $this->validateDeck($name, $kingId);
+
+        if (!$player->id || $validator !== true) {
+            Session::set('formDefaults' , [
+                'name' => $name,
+                'kingId' => $kingId
+            ]);
+            return Redirect::to('tcg/createDeck')->withErrors($validator);
+        }
+        $deck = new Deck();
+
+        $deck->name = $name;
+        $deck->player_id = $player->id;
+        $deck->king_id = $kingId;
+
+        $deck->save();
+
+        return Redirect::to('tcg/me');
+    }
+
+    public function changeDeckForm()
+    {
+        $deckId = Input::get('deckId');
+        if (!$deckId) {
+            return Redirect::to('tcg/me');
+        }
+        $deck = Deck::find($deckId);
+        View::share('deckId', $deckId);
+        View::share('deck', [
+            'name' => $deck->name,
+            'kingId' => $deck->king_id
+        ]);
+        View::share('kings', Card::prepareCardsForRender(Card::getMyKings()));
+        return View::make('games.tcg.player.manageDeck');    
+    }
+
+    public function changeDeck()
+    {
+        $deckId = Input::get('deckId');
+        $name   = Input::get('name');
+        $kingId = Input::get('kingId');
+
+        $player = User::getUser();
+
+        $validator = $this->validateDeck($name, $kingId);
+
+        if (!$player->id || $validator !== true) {
+            Session::set('formDefaults' , [
+                'name' => $name,
+                'kingId' => $kingId
+            ]);
+            return Redirect::to('tcg/changeDeck')->withErrors($validator);
+        }
+
+        $deck = Deck::find($deckId);
+
+        $deck->name = $name;
+        $deck->kingId = $kingId;
+
+
+    }
+
+    protected function validateDeck($name, $kingId)
+    {
         $validator = Validator::make(
             array(
                 'name' => $name,
-                'password' => $password1,
-                'email' => $email
+                'kingId' => $kingId,
             ),
             array(
-                'name' => 'required|min:4|max:20|unique:users',
-                'password' => 'required|min:6|max:60|in:' . $password2,
-                'email' => 'required|email|unique:users|max:60'
+                'name' => 'required|min:4|max:30',
+                'kingId' => 'required|integer',
             )
         );
-
-        if ($player->id || $validator->fails())
-        {
-            Session::set('formDefaults' , [
-                'name' => $name,
-                'email' => $email
-            ]);
-            return Redirect::to('tcg/register')->withErrors($validator);
+        $kingCardConfig = \Config::get('tcg.cards.' . $kingId);
+        if ($validator->fails() || empty($kingCardConfig['isKing'])) {
+            return $validator;
         }
-
-        $player->email = $email;
-        $player->password = $password1;
-        $player->name = $name;
-
-        $player->save();
-
-        Auth::loginUsingId($player->getId(), true);
-
-        return Redirect::to('tcg/me');
+        return true;
     }
 
-    public function login()
-    {
-        $player = User::getUser();
-        if ($player->id) {
-            return Redirect::to('tcg/me');
-        }
-        $formErros = Session::get('formErrors', null);
-        if ($formErros) {
-            Session::forget('formErrors');
-            View::share('formErrors', $formErros);
-        }
-        return View::make('games.tcg.player.login');
-    }
-
-    public function loginSubmit()
-    {
-        $email = Input::get('email');
-        $password = Input::get('password');
-
-        $player = User::getUser();
-
-        if ($player->id)
-        {
-            // user is already logged in
-            return Redirect::to('tcg/me');
-        }
-
-        if (Auth::attempt(array('email' => $email, 'password' => $password),
-            true))
-        {
-            return Redirect::to('tcg/me');
-        }
-        Session::set('formErrors' , [
-            ['message' => Lang::get('tcg.authFail'), 'type' => 'danger'],
-            ['message' => Lang::get('tcg.tryToRegister', ['url' => '/tcg/register']), 'type' => 'info'],
-        ]);
-        return Redirect::to('tcg/login');
-    }
-
-    public function logout()
-    {
-        Auth::logout();
-        return Redirect::to('tcg/me');
-    }
 }

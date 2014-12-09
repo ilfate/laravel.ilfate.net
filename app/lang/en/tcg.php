@@ -20,4 +20,11 @@ return array(
     'name' => 'Name',
     'sign_up' => 'Sign up',
 
+
+/// Deck edit/create page
+    'edit_deck_title_1' => 'Edit',
+    'edit_deck_title_2' => 'your deck',
+    'create_deck_title_1' => 'Create',
+    'create_deck_title_2' => 'a new deck',
+    'deck_manage_save'    => 'Save',
 );

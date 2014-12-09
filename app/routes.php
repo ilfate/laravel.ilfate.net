@@ -19,7 +19,7 @@
 //Route::get('/', 'UserController@showProfile');
 
 //Route::resource('/', 'IndexController',
- //   array('only' => array('index')));
+//   array('only' => array('index')));
 
 
 Route::get('/', 'PageController@index');
@@ -46,6 +46,11 @@ Route::post('tcg/register/submit', 'TcgPlayerController@registerSubmit');
 Route::get('tcg/login', 'TcgPlayerController@login');
 Route::post('tcg/login/submit', 'TcgPlayerController@loginSubmit');
 Route::get('tcg/logout', 'TcgPlayerController@logout');
+
+Route::get('tcg/createDeck', 'TcgCardController@createDeckForm');
+Route::post('tcg/createDeck/submit', 'TcgCardController@createDeck');
+Route::get('tcg/changeDeck', 'TcgCardController@changeDeckForm');
+Route::post('tcg/changeDeck/submit', 'TcgCardController@changeDeck');
 
 Route::get('tcg/test', 'TcgController@index');
 Route::get('tcg/test/player2', 'TcgController@bot');
