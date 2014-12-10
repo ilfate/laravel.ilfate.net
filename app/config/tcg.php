@@ -17,6 +17,7 @@ return array(
             'minimumCardsInGame' => 1,
         ],
     ],
+    'defaultKingsIds' => [7, 59],
     'kingsIds' => [7, 59],
     'cards' => array(
         1 => ['card' => 1, 'unit' => 1, 'spell' => 1, 'image' => 'pl_m.png'],  //Guudlin

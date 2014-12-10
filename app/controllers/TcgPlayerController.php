@@ -41,6 +41,7 @@ class TcgPlayerController extends \BaseController
             $cardsCount = Card::getMyCardsCount();
         }
 
+
         View::share('player', [
             'id'   => $player->getId(),
             'name' => $player->getName(),
@@ -106,6 +107,8 @@ class TcgPlayerController extends \BaseController
         $player->name = $name;
 
         $player->save();
+
+        Card::createDefaultKings($player->id);
 
         Auth::loginUsingId($player->getId(), true);
 

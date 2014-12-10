@@ -5,7 +5,7 @@
 Your id - {{$player['id']}}<br>
 name - {{$player['name']}}
 
-
+<a class="btn btn-primary" href="/tcg/createDeck">Create new deck</a><br><br>
 
 
 @stop

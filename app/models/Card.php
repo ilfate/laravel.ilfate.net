@@ -68,6 +68,9 @@ class Card extends Eloquent implements RemindableInterface {
      */
     public static function prepareCardsForRender($cards)
     {
+        if (!$cards) {
+            return [];
+        }
         $cardsResult = [];
         foreach ($cards as $card) {
             $config = \Config::get('tcg.cards.' . $card->card_id);
@@ -81,5 +84,21 @@ class Card extends Eloquent implements RemindableInterface {
         return $cardsResult;
     }
 
+    public static function addCard($playerId, $cardId)
+    {
+        $card = new Card();
+        $card->card_id = $cardId;
+        $card->player_id = $playerId;
+
+        $card->save();
+    }
+
+    public static function createDefaultKings($playerId)
+    {
+        $cardIds = \Config::get('tcg.defaultKingsIds');
+        foreach ($cardIds as $cardId) {
+            self::addCard($playerId, $cardId);
+        }
+    }
 
 }

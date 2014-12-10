@@ -4,18 +4,18 @@
 
 <div class="hero-unit">
     <h1>
-    @if ($deck)
+        @if ($deck)
         @lang('tcg.edit_deck_title_1') <small>@lang('tcg.edit_deck_title_2')</small>
-    @else
+        @else
         @lang('tcg.create_deck_title_1') <small>@lang('tcg.create_deck_title_2')</small>
-    @endif
+        @endif
     </h1>
 </div>
 
 <form class="form-horizontal" role="form" method="post" action="/tcg/{{$deck ? 'changeDeck' : 'createDeck'}}/submit">
     @if ($errors->count())
     <?php
-        $errorMessages = $errors->all();
+    $errorMessages = $errors->all();
     ?>
     <div class="">
         @foreach ($errorMessages as $error)
@@ -26,7 +26,7 @@
     <div class="form-group">
         <label for="inputName" class="col-sm-2 control-label">@lang('tcg.name')</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" name="name" value="{{isset($formDefaults['name'])?$formDefaults['name']:$player['name']}}" id="inputName">
+            <input type="text" class="form-control" name="name" value="{{isset($formDefaults['name'])?$formDefaults['name']:''}}" id="inputName">
         </div>
     </div>
     <div class="form-group">
@@ -35,10 +35,15 @@
         </div>
     </div>
     @foreach ($kings as $kingCard)
-        @include('games.tcg.cards.nonGameCard', array('card' => $kingCard, 'mode' => 'king'))
+        @include('games.tcg.cards.nonGameCard', array('card' => $kingCard, 'mode' => 'form'))
     @endforeach
 </form>
 
+<script>
+    $(document).ready(function() {
+        initFormCard();
+    });
+</script>
 
 @stop
 

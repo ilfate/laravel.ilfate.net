@@ -45,14 +45,14 @@ class TcgCardController extends \BaseController
         } else {
             View::share('deck', false);
         }
-        View::share('kings', Card::prepareCardsForRender(Card::getMyKings());
+        View::share('kings', Card::prepareCardsForRender(Card::getMyKings()));
         return View::make('games.tcg.player.manageDeck');
     }
 
     public function createDeck()
     {
         $name   = Input::get('name');
-        $kingId = Input::get('kingId');
+        $kingId = Input::get('cardId');
 
         $player = User::getUser();
 
@@ -89,7 +89,7 @@ class TcgCardController extends \BaseController
             'kingId' => $deck->king_id
         ]);
         View::share('kings', Card::prepareCardsForRender(Card::getMyKings()));
-        return View::make('games.tcg.player.manageDeck');    
+        return View::make('games.tcg.player.manageDeck');
     }
 
     public function changeDeck()

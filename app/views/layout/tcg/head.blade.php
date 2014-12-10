@@ -38,6 +38,7 @@
 <script type="text/javascript" src="/js/tcg/tcg.hand.js"></script>
 <script type="text/javascript" src="/js/tcg/tcg.spell.js"></script>
 <script type="text/javascript" src="/js/tcg/tcg.helpers.js"></script>
+<script type="text/javascript" src="/js/tcg/pages.js"></script>
 
 
 
