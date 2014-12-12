@@ -20,15 +20,15 @@ return array(
     'defaultKingsIds' => [7, 59],
     'kingsIds' => [7, 59],
     'cards' => array(
-        1 => ['card' => 1, 'unit' => 1, 'spell' => 1, 'image' => 'pl_m.png'],  //Guudlin
-        2 => ['card' => 2, 'unit' => 2, 'spell' => 1, 'image' => 'pl_m.png'],  // Dvallin
+        1 => ['card' => 1, 'unit' => 1, 'spell' => 1, 'image' => 15],  //Guudlin
+        2 => ['card' => 2, 'unit' => 2, 'spell' => 1, 'image' => 16],  // Dvallin
         3 => ['card' => 3, 'unit' => 3, 'spell' => 5, 'image' => 'pl_m.png'],  // The Mashine
         4 => ['card' => 4, 'unit' => 4, 'spell' => 6, 'image' => 2],  // Gud the Smith
-        5 => ['card' => 5, 'unit' => 5, 'spell' => 5, 'image' => 3],   // The Defender
+        5 => ['card' => 5, 'unit' => 5, 'spell' => 5, 'image' => 17],   // The Defender
         6 => ['card' => 6, 'unit' => 6, 'spell' => 1, 'image' => 4],   // Swordsdwarf
         7 => ['card' => 7, 'unit' => 7, 'spell' => 1, 'image' => 1, 'isKing' => true],
-        8 => ['card' => 8, 'unit' => 8, 'spell' => 7, 'image' => 'pl_m.png'],
-        9 => ['card' => 9, 'unit' => 9, 'spell' => 7, 'image' => 'pl_m.png'],
+        8 => ['card' => 8, 'unit' => 8, 'spell' => 7, 'image' => 'pl_m.png'],  // Rockthrower
+        9 => ['card' => 9, 'unit' => 9, 'spell' => 7, 'image' => 14],  // Deep miner
         50 => ['card' => 50, 'unit' => 50, 'spell' => 1, 'image' => 7], // furyless
         51 => ['card' => 51, 'unit' => 51, 'spell' => 1, 'image' => 11],  // Blind Valkiry
         52 => ['card' => 52, 'unit' => 52, 'spell' => 1, 'image' => 10],   //Flying Rage

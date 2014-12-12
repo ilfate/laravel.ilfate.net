@@ -1,6 +1,6 @@
 <script id="template-hand-card" type="x-tmpl-mustache">
 
-<div class="card my-card id_{{card.id}}" data-id="{{{card.id}}}" data-spelltype="{{{card.spell.config.type}}}">
+<div class="hand-card my-card id_{{card.id}}" data-id="{{{card.id}}}" data-spelltype="{{{card.spell.config.type}}}">
     {{#isDeploy}}
 	<div class="unit">
 		<div class="name" >{{{card.unit.config.name}}}({{{card.id}}})</div>

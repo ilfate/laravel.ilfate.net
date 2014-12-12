@@ -96,7 +96,7 @@ TCG.Game = function () {
     this.event = function(name, obj) {
         switch(name) {
             case 'cardClick':
-                if(obj.hasClass('card')) {
+                if(obj.hasClass('hand-card')) {
                     this.cardClick(obj);
                     switch(this.phase) {
                         case this.phase_deploy: // Deploy phase

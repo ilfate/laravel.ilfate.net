@@ -1,6 +1,6 @@
-<script id="template-info-card" type="x-tmpl-mustache">
+<script id="template-card" type="x-tmpl-mustache">
 
-<div class="info-card id_{{card.id}}">
+<div class="{{cardType}} card id_{{card.id}}" data-id="{{{card.id}}}" data-spelltype="{{{card.spell.config.type}}}">
 	<div class="image" style="background-image:url('/images/game/tcg/125/{{card.image}}')"></div>
 	<div class="health-total">
 		<i class="fa fa-heart"></i>

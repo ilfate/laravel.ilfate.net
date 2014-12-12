@@ -3,5 +3,5 @@
     <div class="skipTurn">
         Skip turn
     </div>
-    <div class="clear"></div>
+    <div class="clear before-injector"></div>
 </div>

@@ -15,6 +15,11 @@ return [
 		11 => ['url' => 'vik_4.png', 'author' => 7],
 		12 => ['url' => 'vik_5.png', 'author' => 8],
 		13 => ['url' => 'vik_6.png', 'author' => 9],
+		14 => ['url' => 'dwa_4.png', 'author' => 10],
+		15 => ['url' => 'dwa_5.png', 'author' => 10],
+		16 => ['url' => 'dwa_5_1.png', 'author' => 10],
+		17 => ['url' => 'dwa_6.png', 'author' => 11],
+		18 => ['url' => 'dwa_6_1.png', 'author' => 11],
 	],
 	'authors' => [
 		1 => ['text' => '<a href="http://fantasyartdesign.com/free-wallpapers/digital-art.php?i_i=800&u_i=541"> 2D Digital Art, Fantasy Art, THE DWARF - free computer desktop wallpaper. </a>'],
@@ -26,6 +31,8 @@ return [
 		7 => ['text' => '<a href="http://fantasyartdesign.com/free-wallpapers/digital-art.php?i_i=1619&u_i=1830"> Mixed Media, Fantasy Art, The avenger - free computer desktop wallpaper. </a>'],
 		8 => ['text' => '<a href="http://fantasyartdesign.com/free-wallpapers/digital-art.php?i_i=367&u_i=99"> 2D Digital Art, Fantasy Art, Vlads judgment - free computer desktop wallpaper. </a>'],
 		9 => ['text' => '<a href="http://mihawq.deviantart.com/art/Viking-warrior-189099534">Viking by Mihawq</a>'],
+		10 => ['text' => '<a href="http://username-bomberman.deviantart.com/">Dwarf by Evgeniy Alyapin</a>'],
+		11 => ['text' => '<a href="http://mischeviouslittleelf.deviantart.com/">Dwarf by Mischeviouslittleelf</a>'],
 	],
 ];
     

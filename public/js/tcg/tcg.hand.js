@@ -16,18 +16,18 @@ TCG.Hand = function (game) {
     this.drawCard = function(playerId, card) {
         info(card);
         // remove card from hand
-        $('.hand .card.id_' + card.id).remove();
+        $('.hand. card.id_' + card.id).remove();
 
         this.createUnit(card);
     }
 
     this.createCard = function(card) {
-        var template = $('#template-hand-card').html();
+        var template = $('#template-card').html();
         Mustache.parse(template);   // optional, speeds up future uses
-        var rendered = Mustache.render(template, {card : card, isDeploy : this.game.isDeploy()});
+        var rendered = Mustache.render(template, {card : card, isDeploy : this.game.isDeploy(), cardType : 'hand-card my-card'});
         var obj = $(rendered);
         this.game.units.checkArmor(obj);
-        $('.hand.my-hand .clear').before(obj);
+        $('.hand .before-injector').before(obj);
         obj.on('click', function(){ TCG.Game.event('cardClick', $(this)) });
 
         if (card.imageAuthor) {
@@ -36,7 +36,7 @@ TCG.Hand = function (game) {
     }
 
     this.removeCard = function(cardId) {
-        var card = $('.hand .card.id_' + cardId);
+        var card = $('.hand-card.id_' + cardId);
         card.animate({
             'margin-top' : '-200px',
             'opacity' : 0

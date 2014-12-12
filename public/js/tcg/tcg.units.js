@@ -70,9 +70,9 @@ TCG.Units = function (game) {
         var rendered = Mustache.render(templateCard, {card : card, x : card.unit.x, y : card.unit.y, isEnemy : isEnemy});
         var obj = $(rendered);
         this.setUnit(obj);
-        var templateInfo = $('#template-info-card').html();
+        var templateInfo = $('#template-card').html();
         Mustache.parse(templateInfo);   // optional, speeds up future uses
-        var renderedInfo = Mustache.render(templateInfo, {card : card});
+        var renderedInfo = Mustache.render(templateInfo, {card : card, cardType : 'info-card'});
         $('.info-zone').append(renderedInfo);
         $('.field .units').append(obj);
         obj.find('.skip').on('click', function(){ TCG.Game.event('skip', $(this)) });
@@ -97,6 +97,7 @@ TCG.Units = function (game) {
         unit.data('y', y);
         //this.setUnit(unit);
         this.addAnimation(cardId, {'type' : 'move', 'x' : x, 'y' : y});
+        this.addAnimation(cardId, {'type' : 'wait', 'time' : 100});
     }
 
     this.attack = function(cardId, targetId) {
@@ -194,7 +195,18 @@ TCG.Units = function (game) {
         }
         this.runSingleCardAnimations();
     }
-    this.runSingleCardAnimations = function() {
+    this.startUnitAnimation = function(unit) {
+        unit.addClass('action');
+    }
+    this.stopUnitAnimation = function(unit) {
+        unit.removeClass('action');
+    }
+    this.runSingleCardAnimations = function(cardId) {
+        if (cardId !== undefined) {
+            info(cardId);
+            var unit = this.getUnitObj(cardId);
+            this.stopUnitAnimation(unit);
+        }
         if (this.animationsInQueue.length) {
             var animation = this.animationsInQueue[0];
             var cardId = animation.cardId;
@@ -217,7 +229,9 @@ TCG.Units = function (game) {
                 case 'bounce':
                     this.bounceAnimation(cardId);
                     break;
-
+                case 'wait':
+                    this.waitAnimation(cardId, animation.time);
+                    break;
             }
             this.animationsInQueue = this.animationsInQueue.slice(1);
         }
@@ -252,6 +266,7 @@ TCG.Units = function (game) {
         var xy = this.getCellPixels(x, y);
         x = xy[0];
         y = xy[1];
+        this.startUnitAnimation(unit);
         unit.animate({
             left : x,
             top : y
@@ -274,6 +289,7 @@ TCG.Units = function (game) {
         y2 = xy[1];
         var dx = Math.round((x2 - x)/2);
         var dy = Math.round((y2 - y)/2);
+        this.startUnitAnimation(unit);
         unit.animate({
             'left' : x + dx,
             'top' : y + dy
@@ -331,6 +347,12 @@ TCG.Units = function (game) {
     {
         var dmgObj = this.damageAnimation(cardId, -dArmor);
         dmgObj.addClass('armor');
+    }
+    this.waitAnimation = function(cardId, time)
+    {
+        setTimeout(function() {
+            TCG.Game.units.runSingleCardAnimations(cardId);
+        }, time);
     }
 
     this.mouseenter = function(unit) {

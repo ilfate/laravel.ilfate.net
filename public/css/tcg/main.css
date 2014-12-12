@@ -7,6 +7,14 @@
 .clear {
     clear: both;
 }
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
 * {
     -webkit-box-sizing: border-box;
@@ -17,36 +25,49 @@
     /*display: block;*/
     /*clear:both;*/
 }
+.hand, .field {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
-.hand .card {
+.card {
+    width: 185px;
+    height: 250px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+    overflow: hidden;
+}
+
+.card .image {
+    width:125px;
+    height:125px;
+    float:left;
+}
+
+.hand-card {
     float:left;
     margin: 5px;
-    width:150px;
-    height: 200px;
-
-    border: 1px solid #483018;
     cursor: pointer;
 }
-.hand .card-back {
-    float:left;
-    margin: 5px;
-    width:100px;
-    height: 30px;
 
-    border: 1px solid #483018;
+.hand-card:hover {
+    box-shadow: 0 6px 9px rgba(0,0,0,0.26);
+}
+.hand-card.focus {
+    box-shadow: 0 8px 11px rgba(0,0,0,0.26);  
+    background-color: #EBEBA1; 
 }
 
-.hand .card.focus {
-    border: 3px solid #483018;
-}
-
-.hand .card .name{
+.hand-card .name{
     text-align: center;
 }
 
-.hand .card .unit, .hand .card .spell {
+.hand-card .unit, .hand-card .spell {
     text-align: center;
-    border: 1px solid #483018;
+    border-bottom: 1px solid rgba(0,0,0,0.26);
     margin:2.5%;
     width:95%;
 }
@@ -81,8 +102,8 @@
     position: relative;
     display: block;
     clear:both;
-    border-right: 1px solid #483018;
-    border-bottom: 1px solid #483018;
+    border-right: 1px solid rgba(0,0,0,0.26);
+    border-bottom: 1px solid rgba(0,0,0,0.26);
     overflow: hidden;
 }
 .field .cell {
@@ -92,8 +113,8 @@
     /*float:left;*/
     /*border: 1px solid #494949;*/
     /*border-radius: 3px;*/
-    border-top: 1px solid #483018;
-    border-left: 1px solid #483018;
+    border-top: 1px solid rgba(0,0,0,0.26);
+    border-left: 1px solid rgba(0,0,0,0.26);
     z-index: 10;
     position: absolute;
 }
@@ -110,14 +131,18 @@
     text-align: center;
     z-index: 25;
 }
-.field-unit.focus {
-    font-weight: bold;
+.field-unit.focus, .field-unit:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.26);
 }
 .field-unit.enemy-focus .middle-panel, .field-unit.focus .middle-panel, .field-unit:hover .middle-panel, .field-unit.hover .middle-panel {
     display: block;
 }
 .field-unit.focus .health-panel, .field-unit:hover .health-panel {
     opacity: 0.9;
+}
+
+.field-unit.action {
+    box-shadow: 0 8px 11px rgba(0,0,0,0.26);
 }
 
 .field-unit .skip {
@@ -226,18 +251,22 @@
 
 .info-zone {
 
-    width: 150px;
-    height: 200px;
+    width: 185px;
+    height: 280px;
 }
 
 .info-zone .info-card {
     /*border: 1px solid #483018;*/
     /*background-color: #3E6990;*/
+
     padding: 3px;
-    background-color: #483018;
-    color: #FFD416;
+    /*background-color: #483018;*/
+    /*color: #FFD416;*/
     display: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.26);
 }
+
+
 
 .tcg-message {
     position: absolute;
@@ -290,4 +319,25 @@
 }
 .enemy .attack-type-2-1, .enemy .attack-type-2-2, .enemy .attack-type-2-3 {
     top:75px;
+}
+
+
+
+ /* ---------------------- PAGES ------------------------------ */
+
+.non-game-card {
+    float:left;
+    margin: 5px;
+    width: 150px;
+    height: 200px;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+ }
+
+.non-game-card:hover {
+    box-shadow: 0 6px 9px rgba(0,0,0,0.26);
+}
+.non-game-card.focus {
+    box-shadow: 0 8px 11px rgba(0,0,0,0.26);  
+    background-color: #EBEBA1; 
 }
