@@ -24,7 +24,11 @@ TCG.Hand = function (game) {
     this.createCard = function(card) {
         var template = $('#template-card').html();
         Mustache.parse(template);   // optional, speeds up future uses
-        var rendered = Mustache.render(template, {card : card, isDeploy : this.game.isDeploy(), cardType : 'hand-card my-card'});
+        var cardType = 'hand-card my-card';
+        if (!this.game.isDeploy()) {
+            cardType += ' spell-only';
+        }
+        var rendered = Mustache.render(template, {card : card, isDeploy : this.game.isDeploy(), cardType : cardType});
         var obj = $(rendered);
         this.game.units.checkArmor(obj);
         $('.hand .before-injector').before(obj);

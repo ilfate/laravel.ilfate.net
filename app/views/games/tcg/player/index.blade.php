@@ -7,6 +7,14 @@ name - {{$player['name']}}
 
 <a class="btn btn-primary" href="/tcg/createDeck">Create new deck</a><br><br>
 
+@if ($decks)
+    <h2>My decks</h2>
+    @foreach ($decks as $deck)
+        <p>{{{$deck->name}}}</p>
+    @endforeach
+@else
+    You have to crete a new deck
+@endif
 
 @stop
 

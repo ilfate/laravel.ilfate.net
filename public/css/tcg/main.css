@@ -55,37 +55,45 @@
 
 .hand-card:hover {
     box-shadow: 0 6px 9px rgba(0,0,0,0.26);
+    margin-top: 1px;
 }
 .hand-card.focus {
-    box-shadow: 0 8px 11px rgba(0,0,0,0.26);  
-    background-color: #EBEBA1; 
+    box-shadow: 0 8px 11px rgba(0,0,0,0.26);
+    margin-top: 0px;
+    background-color: #EBEBA1;
 }
-
 .hand-card .name{
     text-align: center;
 }
-
 .hand-card .unit, .hand-card .spell {
     text-align: center;
     border-bottom: 1px solid rgba(0,0,0,0.26);
     margin:2.5%;
     width:95%;
 }
+.hand-card.spell-only .info-unit {
+    display: none;
+}
+
 .hand .skipTurn {
     float:left;
     margin: 5px;
-    width:150px;
-    height: 200px;
-
-    border: 1px solid #483018;
+    padding:10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.26);
+    background-color: #069E2D;
+    opacity: 0.6;
     cursor: pointer;
+    color: #FFFFFF;
 }
+.hand .skipTurn:hover {
+    box-shadow: 0 6px 9px rgba(0,0,0,0.26);
+}
+
 .order {
     position: relative;
     width:75px;
     clear: both;
 }
-
 .order .card {
     width:75px;
     height:75px;
@@ -122,6 +130,7 @@
 .field .cell.focus {
     cursor: pointer;
     background-color: #069E2D;
+    opacity: 0.6;
 }
 
 .field-unit {
@@ -336,8 +345,10 @@
 
 .non-game-card:hover {
     box-shadow: 0 6px 9px rgba(0,0,0,0.26);
+    margin-top: 1px;
 }
 .non-game-card.focus {
-    box-shadow: 0 8px 11px rgba(0,0,0,0.26);  
+    box-shadow: 0 8px 11px rgba(0,0,0,0.26);
+    margin-top: 0px;
     background-color: #EBEBA1; 
 }

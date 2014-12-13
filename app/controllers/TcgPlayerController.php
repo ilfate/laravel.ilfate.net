@@ -2,7 +2,6 @@
 
 use Helper\Breadcrumbs;
 use Illuminate\Support\Facades\Session;
-use Tcg\Deck;
 use Tcg\Game;
 use Tcg\GameBuilder;
 
@@ -36,12 +35,14 @@ class TcgPlayerController extends \BaseController
         Session::forget(User::GUEST_USER_SESSION_KEY);
         $player = User::getUser();
         $cardsCount = 0;
+        $decks = [];
         if ($player->id) {
             $player->touch();
             $cardsCount = Card::getMyCardsCount();
+            $decks = Deck::getMyDecks();
         }
 
-
+        View::share('decks', $decks);
         View::share('player', [
             'id'   => $player->getId(),
             'name' => $player->getName(),
