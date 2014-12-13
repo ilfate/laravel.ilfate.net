@@ -33,6 +33,8 @@ class MathEffectController extends \BaseController
         $MEcheckKey = md5(rand(0,99999) . time());
         Session::put('MEcheckKey', $MEcheckKey);
 
+        View::share('page_title', 'Math Effect - logic game.');
+
         return View::make('games.mathEffect', array('userName' => $name, 'checkKey' => $MEcheckKey));
     }
 

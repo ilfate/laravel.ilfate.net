@@ -25,6 +25,8 @@ class GamesController extends \BaseController
      */
     public function index()
     {
+        View::share('page_title', 'Games made by Ilya Rubinchik.');
+
         $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Games');
         return View::make('games.index');
     }
