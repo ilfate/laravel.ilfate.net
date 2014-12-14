@@ -10,7 +10,9 @@ name - {{$player['name']}}
 @if ($decks)
     <h2>My decks</h2>
     @foreach ($decks as $deck)
-        <p>{{{$deck->name}}}</p>
+        <p>
+            <a href="/tcg/deck/{{{$deck->id}}}" >{{{$deck->name}}}</a>
+        </p>
     @endforeach
 @else
     You have to crete a new deck

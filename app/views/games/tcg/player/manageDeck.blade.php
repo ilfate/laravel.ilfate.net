@@ -26,7 +26,7 @@
     <div class="form-group">
         <label for="inputName" class="col-sm-2 control-label">@lang('tcg.name')</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" name="name" value="{{isset($formDefaults['name'])?$formDefaults['name']:''}}" id="inputName">
+            <input type="text" class="form-control" name="name" value="{{isset($deck['name'])?$deck['name']:''}}" id="inputName">
         </div>
     </div>
     <div class="form-group">

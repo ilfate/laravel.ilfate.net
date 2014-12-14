@@ -137,4 +137,11 @@ class TcgCardController extends \BaseController
         return true;
     }
 
+    public function deck($deckId)
+    {
+        $deck = Deck::find($deckId);
+        View::share('deck', $deck);
+        return View::make('games.tcg.player.deck');
+    }
+
 }

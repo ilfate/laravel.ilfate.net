@@ -51,6 +51,7 @@ Route::get('tcg/createDeck', 'TcgCardController@createDeckForm');
 Route::post('tcg/createDeck/submit', 'TcgCardController@createDeck');
 Route::get('tcg/changeDeck', 'TcgCardController@changeDeckForm');
 Route::post('tcg/changeDeck/submit', 'TcgCardController@changeDeck');
+Route::get('tcg/deck/{deckId}', 'TcgCardController@deck');
 
 Route::get('tcg/test', 'TcgController@index');
 Route::get('tcg/test/player2', 'TcgController@bot');
