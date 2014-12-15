@@ -34,21 +34,27 @@
     user-select: none;
 }
 
+.card-container{
+    width: 195px;
+    height: 260px;
+    position: relative;
+}
 .card {
     width: 185px;
     height: 250px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.26);
     overflow: hidden;
+    padding:2px;
 }
-
 .card .image {
     width:125px;
     height:125px;
     float:left;
 }
-
-.hand-card {
+.hand .card-container {
     float:left;
+}
+.hand-card {
     margin: 5px;
     cursor: pointer;
 }
@@ -263,15 +269,15 @@
     width: 185px;
     height: 280px;
 }
-
+.info-zone .card-container {
+    display: none;
+}
 .info-zone .info-card {
     /*border: 1px solid #483018;*/
     /*background-color: #3E6990;*/
 
-    padding: 3px;
     /*background-color: #483018;*/
     /*color: #FFD416;*/
-    display: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.26);
 }
 

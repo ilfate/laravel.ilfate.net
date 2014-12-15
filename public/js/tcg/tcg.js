@@ -96,23 +96,22 @@ TCG.Game = function () {
     this.event = function(name, obj) {
         switch(name) {
             case 'cardClick':
-                if(obj.hasClass('hand-card')) {
-                    this.cardClick(obj);
-                    switch(this.phase) {
-                        case this.phase_deploy: // Deploy phase
-                            // light them up!
-                            if (this.handCardInFocus) {
-                                this.lightUpDeployArea();
-                            } else {
-                                this.unFocusDeployArea();
-                            }
-                            break;
-                        case this.phase_battle: // battle
-                            this.toggleCastButton(obj);
-                            // we need to hide current focused cells for unit
-                            break;
-                    }
+                this.cardClick(obj);
+                switch(this.phase) {
+                    case this.phase_deploy: // Deploy phase
+                        // light them up!
+                        if (this.handCardInFocus) {
+                            this.lightUpDeployArea();
+                        } else {
+                            this.unFocusDeployArea();
+                        }
+                        break;
+                    case this.phase_battle: // battle
+                        this.toggleCastButton(obj);
+                        // we need to hide current focused cells for unit
+                        break;
                 }
+                
                 break;
             case 'cellClick':
                 if (this.isDeploy()) {

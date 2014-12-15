@@ -70,10 +70,11 @@ TCG.Units = function (game) {
         var rendered = Mustache.render(templateCard, {card : card, x : card.unit.x, y : card.unit.y, isEnemy : isEnemy});
         var obj = $(rendered);
         this.setUnit(obj);
-        var templateInfo = $('#template-card').html();
-        Mustache.parse(templateInfo);   // optional, speeds up future uses
-        var renderedInfo = Mustache.render(templateInfo, {card : card, cardType : 'info-card'});
-        $('.info-zone').append(renderedInfo);
+        // var templateInfo = $('#template-card').html();
+        // Mustache.parse(templateInfo);   // optional, speeds up future uses
+        // var renderedInfo = Mustache.render(templateInfo, {card : card, cardType : 'info-card'});
+        // $('.info-zone').append(renderedInfo);
+        this.game.helpers.renderInfoCard(card);
         $('.field .units').append(obj);
         obj.find('.skip').on('click', function(){ TCG.Game.event('skip', $(this)) });
         obj.on({
@@ -356,9 +357,10 @@ TCG.Units = function (game) {
     }
 
     this.mouseenter = function(unit) {
+        var cardId = unit.data('cardid');
         var id = unit.data('id');
-        $('.info-zone .info-card').hide();
-        $('.info-zone .info-card.id_' + id).show();
+        $('.info-zone .card-container').hide();
+        $('.info-zone .info-card.card-id-' + cardId).parent().show();
         $('.hover').removeClass('hover');
         this.getUnitObj(id).addClass('hover');
         $('.order .card.id_' + id).addClass('hover');

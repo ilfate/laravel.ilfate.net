@@ -61,4 +61,14 @@ TCG.Helpers = function (game) {
         }
     }
 
+    this.renderInfoCard = function(card) {
+        if ($('.info-zone .card.card-id-' + card.cardId).length > 0) {
+            return;
+        }
+        var templateInfo = $('#template-card').html();
+        Mustache.parse(templateInfo);   // optional, speeds up future uses
+        var renderedInfo = Mustache.render(templateInfo, {card : card, cardType : 'info-card'});
+        $('.info-zone').append(renderedInfo);
+    }
+
 }

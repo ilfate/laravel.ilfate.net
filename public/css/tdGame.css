@@ -257,7 +257,10 @@ min-height: 800px;
 
 #modalHowUnitMove .modal-dialog {
     width: 600px;
+}
 
+.modal-leaferboard-button{
+    left:0px;
 }
 
 #MENameFormContainer {

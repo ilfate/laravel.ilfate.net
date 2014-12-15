@@ -56,7 +56,10 @@
             </div>
 
             <!-- dialog buttons -->
-            <div class="modal-footer"><a href="{{ action('MathEffectController@index') }}" type="button" class="btn btn-primary">Restart</a></div>
+            <div class="modal-footer">
+                <a href="{{ action('MathEffectController@statistic') }}" class="btn btn-primary modal-leaferboard-button" >Leaderboard</a> 
+                <a href="{{ action('MathEffectController@index') }}" type="button" class="btn btn-success">Play again</a>
+            </div>
         </div>
     </div>
 </div>
@@ -105,4 +108,6 @@ Click on <strong>arrows</strong> to give unit command to move<br>
 <h3>Game Leaderboard</h3>
 <a href="{{ action('MathEffectController@statistic') }}" class="btn btn-primary" >Statistics</a>
 
+<h3>Share with the world</h3>
+If you like my game, you can help just by sharing the link with someone who may also like it! Thanks!
 @stop

@@ -138,6 +138,7 @@ class Card {
         $data = [
             'id' => $this->id,
             'owner' => $this->owner,
+            'cardId' => $this->card,
         ];
 
         $data['unit'] = $this->unit->render($playerId);

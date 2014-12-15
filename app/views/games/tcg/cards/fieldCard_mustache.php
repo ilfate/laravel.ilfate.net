@@ -10,7 +10,15 @@
  */ ?>
 
 <script id="template-field-unit" type="x-tmpl-mustache">
-    <div class="card field-unit id_{{card.id}} x_{{x}} y_{{y}} {{isEnemy}}" data-move="{{card.unit.moveType}}" data-id="{{card.id}}" data-x="{{x}}" data-y="{{y}}" data-attackrange="{{card.unit.attackRange}}" data-attacktype="{{card.unit.attackType}}" data-active="false">
+    <div class="card field-unit id_{{card.id}} x_{{x}} y_{{y}} {{isEnemy}}" 
+            data-move="{{card.unit.moveType}}" 
+            data-cardid="{{card.cardId}}" 
+            data-id="{{card.id}}" 
+            data-x="{{x}}" 
+            data-y="{{y}}" 
+            data-attackrange="{{card.unit.attackRange}}" 
+            data-attacktype="{{card.unit.attackType}}" 
+            data-active="false">
         <div class="image" style="background-image:url('/images/game/tcg/{{card.image}}')"></div>
         <div class="field-unit-attack-zone not-hidden attack-type-{{card.unit.attackType}}-{{card.unit.attackRange}}" ></div>
         <div class="unit-info">

@@ -1,4 +1,4 @@
-/**
+ /**
  * Created by Ilya Rubinchik (ilfate) on 12/09/14.
  */
 
@@ -29,14 +29,20 @@ TCG.Hand = function (game) {
             cardType += ' spell-only';
         }
         var rendered = Mustache.render(template, {card : card, isDeploy : this.game.isDeploy(), cardType : cardType});
-        var obj = $(rendered);
+        rendered = $(rendered); 
+        var obj = rendered.find('.card');
         this.game.units.checkArmor(obj);
-        $('.hand .before-injector').before(obj);
-        obj.on('click', function(){ TCG.Game.event('cardClick', $(this)) });
+        $('.hand .before-injector').before(rendered);
+        obj.on({
+            mouseenter : function(){ TCG.Game.units.mouseenter($(this)) },
+            mouseleave : function(){ TCG.Game.units.mouseleave($(this)) },
+            click : function(){ TCG.Game.event('cardClick', $(this)) }
+        });
 
         if (card.imageAuthor) {
             this.game.helpers.createAuthor(card.imageAuthor);
         }
+        this.game.helpers.renderInfoCard(card);
     }
 
     this.removeCard = function(cardId) {
