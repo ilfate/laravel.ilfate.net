@@ -34,8 +34,16 @@
             <button type="submit" class="btn btn-default">@lang('tcg.deck_manage_save')</button>
         </div>
     </div>
+    @if (!empty($deckId))
+        <input type="hidden" name="deckId" value="{{$deckId}}" />
+    @endif
     @foreach ($kings as $kingCard)
-        @include('games.tcg.cards.nonGameCard', array('card' => $kingCard, 'mode' => 'form'))
+        @if ($kingCard['id'] == $deck['kingId'])
+            @include('games.tcg.cards.nonGameCard', array('card' => $kingCard, 'mode' => 'form', 'selected' => true))
+        @else
+            @include('games.tcg.cards.nonGameCard', array('card' => $kingCard, 'mode' => 'form'))
+        @endif
+
     @endforeach
 </form>
 

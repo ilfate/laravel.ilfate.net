@@ -73,7 +73,7 @@ class TcgCardController extends \BaseController
 
         $deck->save();
 
-        return Redirect::to('tcg/me');
+        return Redirect::to('tcg/deck/' . $deck->id);
     }
 
     public function changeDeckForm()
@@ -83,6 +83,9 @@ class TcgCardController extends \BaseController
             return Redirect::to('tcg/me');
         }
         $deck = Deck::find($deckId);
+        if ($deck->player_id != Auth::user()->id) {
+            return Redirect::to('tcg/me');
+        }
         View::share('deckId', $deckId);
         View::share('deck', [
             'name' => $deck->name,
@@ -96,7 +99,7 @@ class TcgCardController extends \BaseController
     {
         $deckId = Input::get('deckId');
         $name   = Input::get('name');
-        $kingId = Input::get('kingId');
+        $kingId = Input::get('cardId');
 
         $player = User::getUser();
 
@@ -112,10 +115,15 @@ class TcgCardController extends \BaseController
 
         $deck = Deck::find($deckId);
 
+        if ($deck->player_id != Auth::user()->id) {
+            return Redirect::to('tcg/me');
+        }
+
         $deck->name = $name;
-        $deck->kingId = $kingId;
+        $deck->king_id = $kingId;
 
-
+        $deck->save();
+        return Redirect::to('tcg/deck/' . $deck->id);
     }
 
     protected function validateDeck($name, $kingId)
