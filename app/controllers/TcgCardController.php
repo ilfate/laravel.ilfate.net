@@ -148,6 +148,15 @@ class TcgCardController extends \BaseController
     public function deck($deckId)
     {
         $deck = Deck::find($deckId);
+
+        if ($deck->player_id != Auth::user()->id) {
+            return Redirect::to('tcg/me');
+        }
+
+        $inDeck = Card::getCardsInDeck($deck->id);
+
+        $myCardsForKing = Card::getMyCardsForKing($deck->king_id);
+
         View::share('deck', $deck);
         return View::make('games.tcg.player.deck');
     }

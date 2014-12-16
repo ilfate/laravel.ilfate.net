@@ -27,4 +27,8 @@ return array(
     'create_deck_title_1' => 'Create',
     'create_deck_title_2' => 'a new deck',
     'deck_manage_save'    => 'Save',
+
+
+    
+    'back'    => 'Back',
 );

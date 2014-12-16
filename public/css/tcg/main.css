@@ -1,5 +1,28 @@
 
 
+/* Bootstrap */
+.btn {
+    border: none;
+    border-radius: 2px;
+}
+.btn:hover{
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.23), 0 10px 30px rgba(0, 0, 0, 0.19);
+}
+
+.btn-success {
+    background-color: #69c581;
+    border: none;
+}
+.btn-success:hover {
+}
+.btn-primary {
+    background-color: #483018;
+}
+.btn-primary:hover {
+    background-color: #3C240E;
+}
+
+
 .main-content-well, .main-content-well-side {
     min-height: 900px;
 }

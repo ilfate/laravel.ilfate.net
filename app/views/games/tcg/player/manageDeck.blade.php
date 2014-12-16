@@ -31,7 +31,7 @@
     </div>
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default">@lang('tcg.deck_manage_save')</button>
+            <button type="submit" class="btn btn-success">@lang('tcg.deck_manage_save')</button>
         </div>
     </div>
     @if (!empty($deckId))
@@ -58,5 +58,7 @@
 @section('sidebar')
 
 <h3>Info</h3>
+
+<a href="/tcg/deck/{{$deckId}}" class="btn btn-primary">@lang('tcg.back')</a>
 
 @stop
