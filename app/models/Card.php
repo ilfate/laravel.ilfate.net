@@ -67,7 +67,7 @@ class Card extends Eloquent implements RemindableInterface {
     {
         $kingConfig = \Config::get('tcg.cards.' . $kingId);
         $fraction = $kingConfig['fraction'];
-        $cards = self::where('player_id', '=', $player->id)
+        $cards = self::where('player_id', '=', Auth::user()->id)
             ->where('fraction', '=', $fraction)
             ->get();
         return $cards;

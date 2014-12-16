@@ -53,6 +53,8 @@ Route::get('tcg/changeDeck', 'TcgCardController@changeDeckForm');
 Route::post('tcg/changeDeck/submit', 'TcgCardController@changeDeck');
 Route::get('tcg/deck/{deckId}', 'TcgCardController@deck');
 
+Route::get('tcg/addBooster', 'TcgCardController@openBooster');
+
 Route::get('tcg/test', 'TcgController@index');
 Route::get('tcg/test/player2', 'TcgController@bot');
 Route::get('tcg/test/clear', 'TcgController@dropGame');

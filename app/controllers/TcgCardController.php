@@ -161,4 +161,29 @@ class TcgCardController extends \BaseController
         return View::make('games.tcg.player.deck');
     }
 
+    public function openBooster()
+    {
+        $allCards = \Config::get('tcg.cards');
+
+        foreach ($allCards as $key => $card) {
+            if (!empty($card['isKing'])) {
+                unset($allCards[$key]);
+            }
+        }
+        $playerId = Auth::user()->id;
+
+        for($i =0; $i < 5; $i++) {
+            $cardId = array_rand($allCards);
+            $card = new Card();
+            $card->card_id = $cardId;
+            $card->player_id = $playerId;
+            $card->fraction = $allCards[$cardId]['fraction'];
+
+            $card->save();
+        }
+        return Redirect::to('tcg/me');
+
+
+    }
+
 }
