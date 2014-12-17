@@ -382,9 +382,17 @@
     background-color: #EBEBA1; 
 }
 
+.list-card-container {
+    width:80px;
+    height:80px;
+}
 .non-game-card-in-list {
+    margin:5px;
     width: 75px;
     height: 75px;
+}
+.non-game-card-in-list:hover {
+    margin-top:2px;
 }
 .non-game-card-in-list .image {
     width: 75px;
