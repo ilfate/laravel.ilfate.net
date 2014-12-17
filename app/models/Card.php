@@ -84,11 +84,23 @@ class Card extends Eloquent implements RemindableInterface {
         $cardsResult = [];
         foreach ($cards as $card) {
             $config = \Config::get('tcg.cards.' . $card->card_id);
+            if ($config['image'] === (int) $config['image']) {
+                // this is an image Id. We have to load image and author
+                $imageConfig = \Config::get('tcgImages.images.' . $config['image']);
+                $image = $imageConfig['url'];
+                $author = \Config::get('tcgImages.authors.' . $imageConfig['author']);
+                $imageAuthor = ['text' => $author['text'], 'id' => $imageConfig['author']];
+            } else {
+                $image = $this->config['image'];
+                $imageAuthor = false;
+            }
             $cardsResult[] = [
-                'id' => $card->card_id,
+                'id'     => $card->card_id,
                 'config' => $config,
-                'unit' => \Config::get('tcg.units.' . $config['unit']),
-                'spell' => \Config::get('tcg.spells.' . $config['spell']),
+                'unit'   => \Config::get('tcg.units.' . $config['unit']),
+                'spell'  => \Config::get('tcg.spells.' . $config['spell']),
+                'image'  => $image,
+                'author' => $imageAuthor,
             ];
         }
         return $cardsResult;
