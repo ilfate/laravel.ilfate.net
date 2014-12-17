@@ -156,11 +156,16 @@ class TcgCardController extends \BaseController
         $inDeck = Card::getCardsInDeck($deck->id);
 
         $myCardsForKing = Card::getMyCardsForKing($deck->king_id);
+        $cardsForRender = Card::prepareCardsForRender($myCardsForKing);
+        View::share('myCards', $cardsForRender);
 
         View::share('deck', $deck);
         return View::make('games.tcg.player.deck');
     }
 
+
+
+    /* TEMP STUFF */
     public function openBooster()
     {
         $allCards = \Config::get('tcg.cards');

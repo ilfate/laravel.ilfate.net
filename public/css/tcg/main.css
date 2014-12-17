@@ -381,3 +381,12 @@
     margin-top: 0px;
     background-color: #EBEBA1; 
 }
+
+.non-game-card-in-list {
+    width: 75px;
+    height: 75px;
+}
+.non-game-card-in-list .image {
+    width: 75px;
+    height: 75px;   
+}
