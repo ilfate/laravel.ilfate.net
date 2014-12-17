@@ -76,7 +76,7 @@ class Card extends Eloquent implements RemindableInterface {
     /**
      *
      */
-    public static function prepareCardsForRender($cards)
+    public static function prepareCardsForRender($cards, $options)
     {
         if (!$cards) {
             return [];
@@ -84,6 +84,15 @@ class Card extends Eloquent implements RemindableInterface {
         $cardsResult = [];
         foreach ($cards as $card) {
             $config = \Config::get('tcg.cards.' . $card->card_id);
+            if (!empty($cardsResult[$card->card_id])) {
+                // we will not render same cards
+                $cardsResult[$card->card_id]['count'] ++;
+                continue;
+            }
+            if (!empty($config['isKing']) && !empty($options['playable'])) {
+                // king is not a playable card
+                continue; 
+            }
             if ($config['image'] === (int) $config['image']) {
                 // this is an image Id. We have to load image and author
                 $imageConfig = \Config::get('tcgImages.images.' . $config['image']);
@@ -94,13 +103,14 @@ class Card extends Eloquent implements RemindableInterface {
                 $image = $this->config['image'];
                 $imageAuthor = false;
             }
-            $cardsResult[] = [
+            $cardsResult[$card->card_id] = [
                 'id'     => $card->card_id,
                 'config' => $config,
                 'unit'   => \Config::get('tcg.units.' . $config['unit']),
                 'spell'  => \Config::get('tcg.spells.' . $config['spell']),
                 'image'  => $image,
                 'author' => $imageAuthor,
+                'count'  => 1
             ];
         }
         return $cardsResult;

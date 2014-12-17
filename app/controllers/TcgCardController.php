@@ -156,7 +156,7 @@ class TcgCardController extends \BaseController
         $inDeck = Card::getCardsInDeck($deck->id);
 
         $myCardsForKing = Card::getMyCardsForKing($deck->king_id);
-        $cardsForRender = Card::prepareCardsForRender($myCardsForKing);
+        $cardsForRender = Card::prepareCardsForRender($myCardsForKing, ['playable' => true]);
         View::share('myCards', $cardsForRender);
 
         View::share('deck', $deck);

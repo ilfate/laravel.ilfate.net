@@ -365,11 +365,6 @@
 
 .non-game-card {
     float:left;
-    margin: 5px;
-    width: 150px;
-    height: 200px;
-    position: relative;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.26);
  }
 
 .non-game-card:hover {
@@ -383,18 +378,23 @@
 }
 
 .list-card-container {
-    width:80px;
-    height:80px;
+    width:77px;
+    height:77px;
+    float:left;
 }
 .non-game-card-in-list {
-    margin:5px;
+    margin:1px;
     width: 75px;
     height: 75px;
 }
 .non-game-card-in-list:hover {
-    margin-top:2px;
+    margin-top:-3px;
+    box-shadow: 0 6px 9px rgba(0,0,0,0.26);
 }
 .non-game-card-in-list .image {
     width: 75px;
     height: 75px;   
+}
+.available-cards {
+    width:240px;
 }

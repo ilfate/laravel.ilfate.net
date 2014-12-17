@@ -1,9 +1,10 @@
 
-
-<div class="non-game-card id_{{$card['id']}} {{!empty($selected)?'focus':''}}" data-id="{{$card['id']}}">
+<div class="card-container">
+<div class="non-game-card card id-{{$card['id']}} {{$mode == 'info'?'info-card':''}} {{!empty($selected)?'focus':''}}" data-id="{{$card['id']}}">
     @if ($mode == 'form')
     <input type="radio" value="{{$card['id']}}" name="cardId" class="hidden" {{!empty($selected)?'checked="checked"':''}} />
     @endif
+    <div class="image" style="background-image:url('/images/game/tcg/125/{{$card['image']}}')"></div>
 	<div class="unit">
 		<div class="name" >{{{$card['unit']['name']}}}</div>
 		<div class="health-total">
@@ -39,4 +40,5 @@
 			{{{$card['spell']['text']}}}
 		</p>
 	</div>
+</div>
 </div>
