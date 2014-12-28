@@ -2,6 +2,13 @@
 
 return array(
     'game' => [
+        'battle' => [
+            'handDraw'           => 5,
+            'spellsDraw'         => 4,
+            'actionUrl'          => '/tcg/battle/action',
+            'mapType'            => 'fixed',
+            'minimumCardsInGame' => 3,
+        ],
         'test' => [
             'handDraw'           => 5,
             'spellsDraw'         => 2,

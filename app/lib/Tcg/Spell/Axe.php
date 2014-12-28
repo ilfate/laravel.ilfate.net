@@ -18,7 +18,7 @@ class Axe extends Spell {
     public function castUnit(Card $target)
     {
 
-        $target->unit->applyDamage(6, $this->card);
+        $target->unit->applyDamage(6, $this);
 
         $x = $target->unit->x;
         $y = $target->unit->y;

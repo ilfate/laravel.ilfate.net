@@ -177,7 +177,7 @@ TCG.Game = function () {
             this.unFocusDeployArea();
         } else {
             if (this.handCardInFocus && !this.isMyTurn()) {
-                this.helpers.addMessage('This is not your turn to play card.')
+                Messages.addMessage('This is not your turn to play card.')
             }
         }
     }
@@ -244,15 +244,13 @@ TCG.Game = function () {
     this.processLog = function(data)
     {
         if (!data.log) {
-            info('Empty data');
             if (data.error) {
-                info(data.message);
-                TCG.Game.helpers.createMessage(data.message);
+                Messages.createMessage(data.message);
                 this.tryToShowNextUnitMove();
             }
             return;
         }
-        info(data);
+
         var log = data.log;
         var newTurn = this.processGameUpdate(data.game);
         for(var i in log) {

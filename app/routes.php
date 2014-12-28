@@ -52,6 +52,15 @@ Route::post('tcg/createDeck/submit', 'TcgCardController@createDeck');
 Route::get('tcg/changeDeck', 'TcgCardController@changeDeckForm');
 Route::post('tcg/changeDeck/submit', 'TcgCardController@changeDeck');
 Route::get('tcg/deck/{deckId}', 'TcgCardController@deck');
+Route::post('tcg/saveDeck/{deckId}', 'TcgCardController@deckSaveCards');
+
+Route::get('tcg/findBattle', 'TcgBattleController@findBattlePage');
+Route::get('tcg/joinQueue/{deckId}', 'TcgBattleController@joinQueue');
+Route::get('tcg/leaveQueue', 'TcgBattleController@leaveQueue');
+Route::post('tcg/checkQueue', 'TcgBattleController@checkQueue');
+
+Route::get('tcg/battle', 'TcgBattleController@battle');
+Route::post('tcg/battle/action', 'TcgBattleController@battleAction');
 
 Route::get('tcg/addBooster', 'TcgCardController@openBooster');
 

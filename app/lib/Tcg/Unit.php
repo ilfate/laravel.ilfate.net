@@ -51,7 +51,9 @@ abstract class Unit
         'attack',
         'data',
         'attackRange',
-        'attackType'
+        'attackType',
+        'kills',
+        'death'
     );
 
     /**
@@ -83,6 +85,8 @@ abstract class Unit
 
     public $keywords  = [];
     public $stepsMade = 0;
+    public $kills = 0;
+    public $death = false;
 
     public static function createFromConfig($config, Card $card)
     {
@@ -188,7 +192,7 @@ abstract class Unit
 
         $this->card->game->log->logAttack($this->card->id, $target->id);
 
-        $damage = $target->unit->applyDamage($damage, $this->card);
+        $damage = $target->unit->applyDamage($damage, $this);
 
         $this->afterAttack($damage, $target);
 
@@ -256,7 +260,7 @@ abstract class Unit
         return $damage;
     }
 
-    public function applyDamage($damage, Card $sourceCard)
+    public function applyDamage($damage, $source = null)
     {
         if ($shield = $this->getShield()) {
             $damage -= $shield;
@@ -274,7 +278,7 @@ abstract class Unit
         $this->card->game->log->logUnitGetDamage($this->card->id, $this->currentHealth, $damage);
 
         if ($this->currentHealth <= 0) {
-            $this->death();
+            $this->death($source);
         }
         return $damage;
     }
@@ -305,13 +309,19 @@ abstract class Unit
         return $dArmor;
     }
 
-    public function death()
+    public function death($source = null)
     {
-        //$this->card->game->triggerEvent(Game::EVENT_UNIT_DEATH, ['target' => $this]);
+        $this->death = true;
         $this->card->game->moveCards([$this->card], Game::LOCATION_FIELD, GAME::LOCATION_GRAVE);
         $this->card->game->log->logDeath($this->card->id);
         $this->onDeath();
         $this->card->game->triggerEvent(Game::EVENT_TRIGGER_UNIT_DEATH, $this->card->id);
+
+        if ($source) {
+            if ($source instanceof Unit) {
+                $source->kills ++;
+            }
+        }
     }
 
     public function move($x, $y)

@@ -4,8 +4,6 @@
 
 @include('games.tcg.field', array('field' => $game['field']))
 
-<div id="message-container"></div>
-
 @include('games.tcg.hand', array('hand' => $game['hand'], 'mode' => 'battle', 'playerId' => $game['js']['currentPlayerId']))
 
 <div class="tcg-footer">

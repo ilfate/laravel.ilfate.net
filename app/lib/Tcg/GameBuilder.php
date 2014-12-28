@@ -9,6 +9,45 @@ namespace Tcg;
 
 class GameBuilder {
 
+    public static function buildGameForBattle($battle)
+    {
+        $users = $battle->getPlayerWithDecks();
+        $players = [];
+        $playerNum = 1;
+
+        $game      = new Game();
+        $game->log = new GameLog($game);
+        $game->gameType = Game::GAME_TYPE_BATTLE;
+        $game->setUpGameObject();
+        $game->sessionType = Game::IMPORT_TYPE_NORMAL;
+
+        foreach ($users as $user) {
+            $currentTeam = ($playerNum > (count($users) / 2)) ? 2 : 1;
+            $player = new Player($user->player_id, ($user->team ? $user->team : $currentTeam));
+            $players[] = $player;
+            $game->addPlayer($player);
+            $playerNum++;
+        }
+        $game->createLocations();
+        $configs = \Config::get('tcg.cards');
+        foreach ($users as $user) {
+            foreach ($user->deck->cards as $card) {
+                $game->setUpCard(
+                    Card::createFromConfig($configs[$card->card_id], $game, $card->id),
+                    $user->player_id
+                );
+            }
+            $game->setUpCard(
+                Card::createFromConfig($configs[$user->deck->king->card_id], $game, $user->deck->king->id),
+                $user->player_id
+            );
+        }
+        $game->init();
+        $game->start();
+        $game->gameAutoActions();
+        return $game;
+    }
+
     public static function buildTest($currentPlayerId, $config)
     {
 

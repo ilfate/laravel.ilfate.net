@@ -7,7 +7,8 @@
 
 namespace Tcg;
 
-class Card {
+class Card
+{
 
     const CARD_LOCATION_DECK  = 1;
     const CARD_LOCATION_HAND  = 2;
@@ -68,7 +69,8 @@ class Card {
      */
     public $card;
 
-    public $isKing = false;
+    public $isKing     = false;
+    public $databaseId = 0;
 
     public $config;
 
@@ -77,11 +79,12 @@ class Card {
         $this->game = $game;
     }
 
-    public static function createFromConfig($config, Game $game, $isImport = false)
+    public static function createFromConfig($config, Game $game, $databaseId = false)
     {
         $card         = new Card($game);
         $card->card   = $config['card'];
         $card->config = $config;
+        $card->databaseId = $databaseId;
         if (isset($config['isKing'])) {
             $card->isKing = true;
         }
@@ -91,13 +94,14 @@ class Card {
 
     public static function import($data, $game)
     {
-        $config = \Config::get('tcg.cards.' .  $data['card']);
-        $card         = Card::createFromConfig($config, $game, true);
+        $config = \Config::get('tcg.cards.' . $data['card']);
+        $card   = Card::createFromConfig($config, $game, true);
 
-        $card->id       = $data['id'];
-        $card->owner    = $data['owner'];
-        $card->location = $data['location'];
-        $card->isKing   = $data['isKing'];
+        $card->id         = $data['id'];
+        $card->owner      = $data['owner'];
+        $card->location   = $data['location'];
+        $card->isKing     = $data['isKing'];
+        $card->databaseId = $data['databaseId'];
 
         if (!empty($data['unit'])) {
             $card->unit  = Unit::import($data['unit'], $config['unit'], $card);
@@ -112,7 +116,7 @@ class Card {
         if ($this->unit || $this->spell) {
             return;
         }
-        $config = \Config::get('tcg.cards.' .  $this->card);
+        $config      = \Config::get('tcg.cards.' . $this->card);
         $this->unit  = Unit::createFromConfig(\Config::get('tcg.units.' . $config['unit']), $this);
         $this->spell = Spell::createFromConfig(\Config::get('tcg.spells.' . $config['spell']), $this);
     }
@@ -120,14 +124,15 @@ class Card {
     public function export()
     {
         $data = [
-            'id'       => $this->id,
-            'owner'    => $this->owner,
-            'location' => $this->location,
-            'card'     => $this->card,
-            'isKing'   => $this->isKing,
+            'id'         => $this->id,
+            'owner'      => $this->owner,
+            'location'   => $this->location,
+            'card'       => $this->card,
+            'isKing'     => $this->isKing,
+            'databaseId' => $this->databaseId,
         ];
         if ($this->unit && $this->spell) {
-            $data['unit'] = $this->unit->export();
+            $data['unit']  = $this->unit->export();
             $data['spell'] = $this->spell->export();
         }
         return $data;
@@ -136,24 +141,23 @@ class Card {
     public function render($playerId)
     {
         $data = [
-            'id' => $this->id,
-            'owner' => $this->owner,
+            'id'     => $this->id,
+            'owner'  => $this->owner,
             'cardId' => $this->card,
         ];
 
-        $data['unit'] = $this->unit->render($playerId);
+        $data['unit']  = $this->unit->render($playerId);
         $data['spell'] = $this->spell->render();
         if ($this->config['image'] === (int) $this->config['image']) {
             // this is an image Id. We have to load image and author
-            $imageConfig = \Config::get('tcgImages.images.' . $this->config['image']);
-            $data['image'] = $imageConfig['url'];
-            $author = \Config::get('tcgImages.authors.' . $imageConfig['author']);
+            $imageConfig         = \Config::get('tcgImages.images.' . $this->config['image']);
+            $data['image']       = $imageConfig['url'];
+            $author              = \Config::get('tcgImages.authors.' . $imageConfig['author']);
             $data['imageAuthor'] = ['text' => $author['text'], 'id' => $imageConfig['author']];
         } else {
-            $data['image'] = $this->config['image'];
+            $data['image']       = $this->config['image'];
             $data['imageAuthor'] = false;
         }
-
 
         return $data;
     }
@@ -161,9 +165,9 @@ class Card {
     public function __clone()
     {
         if ($this->unit && $this->spell) {
-            $this->unit = clone $this->unit;
-            $this->unit->card = $this;
-            $this->spell= clone $this->spell;
+            $this->unit        = clone $this->unit;
+            $this->unit->card  = $this;
+            $this->spell       = clone $this->spell;
             $this->spell->card = $this;
         }
     }

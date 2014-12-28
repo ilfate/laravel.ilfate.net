@@ -153,7 +153,12 @@ class TcgCardController extends \BaseController
             return Redirect::to('tcg/me');
         }
 
-        $inDeck = Card::getCardsInDeck($deck->id);
+        $inDeckIds = [];
+        $deckCards = DeckCard::getByDeck($deckId);
+        foreach ($deckCards as $deckCard) {
+            $inDeckIds[] = $deckCard['card_id'];
+        }
+        View::share('inDeck', $inDeckIds);
 
         $myCardsForKing = Card::getMyCardsForKing($deck->king_id);
         $cardsForRender = Card::prepareCardsForRender($myCardsForKing, ['playable' => true]);
@@ -161,6 +166,48 @@ class TcgCardController extends \BaseController
 
         View::share('deck', $deck);
         return View::make('games.tcg.player.deck');
+    }
+
+    /**
+     * AJAX
+     * @param $deckId
+     *
+     * @return string
+     */
+    public function deckSaveCards($deckId)
+    {
+        $deck = Deck::find($deckId);
+        if (!$deck || $deck->player_id != Auth::user()->id) {
+            return '[]';
+        }
+        $cardsIds  = explode(',', Input::get('cards'));
+        $deckCards = DeckCard::getByDeck($deckId);
+
+        $alreadyInDeckIds = [];
+        foreach ($deckCards as $deckCard) {
+            $alreadyInDeckIds[] = $deckCard['card_id'];
+            if (!in_array($deckCard['card_id'], $cardsIds)) {
+                $deckCard->delete();
+            }
+        }
+
+        $addCards = [];
+        foreach ($cardsIds as $cardId) {
+            if (!in_array($cardId, $alreadyInDeckIds)) {
+                $addCards[] = $cardId;
+            }
+        }
+
+        foreach ($addCards as $addCardId) {
+            $deckCard = new DeckCard();
+            $deckCard->card_id = $addCardId;
+            $deckCard->deck_id = $deckId;
+            $deckCard->save();
+        }
+
+        //echo 'awdawd';
+
+        return '[]';
     }
 
 

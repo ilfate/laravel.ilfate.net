@@ -126,7 +126,7 @@ class GameContainer {
      */
     public $cards = array();
 
-    public function __construct($currentPlayerId)
+    public function __construct($currentPlayerId = false)
     {
         $this->currentPlayerId = $currentPlayerId;
     }

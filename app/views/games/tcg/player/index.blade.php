@@ -5,17 +5,19 @@
 Your id - {{$player['id']}}<br>
 name - {{$player['name']}}
 
-<a class="btn btn-primary" href="/tcg/createDeck">Create new deck</a><br><br>
+@if ($player['auth'])
+    <a class="btn btn-primary" href="/tcg/createDeck">Create new deck</a><br><br>
 
-@if ($decks)
-    <h2>My decks</h2>
-    @foreach ($decks as $deck)
-        <p>
-            <a href="/tcg/deck/{{{$deck->id}}}" >{{{$deck->name}}}</a>
-        </p>
-    @endforeach
-@else
-    You have to crete a new deck
+    @if ($decks)
+        <h2>My decks</h2>
+        @foreach ($decks as $deck)
+            <p>
+                <a href="/tcg/deck/{{{$deck->id}}}" >{{{$deck->name}}}</a>
+            </p>
+        @endforeach
+    @else
+        You have to crete a new deck
+    @endif
 @endif
 
 @stop
@@ -28,6 +30,7 @@ name - {{$player['name']}}
 <a class="btn btn-primary" href="/tcg/login">Log In</a><br><br>
 @else
 <a class="btn btn-primary" href="/tcg/logout">Log out</a><br><br>
+<a class="btn btn-primary" href="/tcg/findBattle">Find Battle</a><br><br>
 @endif
 
 @stop

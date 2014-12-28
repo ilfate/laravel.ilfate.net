@@ -310,6 +310,7 @@
     position: absolute;
     background-color: #FFD416;
     padding: 8px;
+    z-index: 100;
 }
 #message-container {
     position: relative;
@@ -376,19 +377,36 @@
     margin-top: 0px;
     background-color: #EBEBA1; 
 }
+.deck_builder-card-container {
 
-.list-card-container {
-    width:77px;
-    height:77px;
+    position: relative;
     float:left;
 }
 .non-game-card-in-list {
-    margin:1px;
+    cursor: pointer;
+    margin:3px;
     width: 75px;
     height: 75px;
 }
+.non-game-card-in-list + .non-game-card-in-list {
+    /*margin-top: 4px;*/
+    /*margin-left: 4px;*/
+    top: 5px;
+    left:5px;
+    position: absolute;
+}
+.non-game-card-in-list + .non-game-card-in-list + .non-game-card-in-list {
+    top: 10px;
+    left:10px;
+}
+
+.non-game-card-in-list + .non-game-card-in-list:hover {
+    margin-top:0px;
+    margin-bottom: 6px;
+}
 .non-game-card-in-list:hover {
-    margin-top:-3px;
+    margin-top:0px;
+    margin-bottom: 6px;
     box-shadow: 0 6px 9px rgba(0,0,0,0.26);
 }
 .non-game-card-in-list .image {
@@ -396,5 +414,6 @@
     height: 75px;   
 }
 .available-cards {
-    width:240px;
+    width:280px;
 }
+

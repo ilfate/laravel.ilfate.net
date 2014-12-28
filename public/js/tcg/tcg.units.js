@@ -362,7 +362,10 @@ TCG.Units = function (game) {
         $('.info-zone .card-container').hide();
         $('.info-zone .info-card.card-id-' + cardId).parent().show();
         $('.hover').removeClass('hover');
-        this.getUnitObj(id).addClass('hover');
+        var fieldObj = this.getUnitObj(id);
+        if (fieldObj) {
+            fieldObj.addClass('hover');
+        }
         $('.order .card.id_' + id).addClass('hover');
 
     }
@@ -454,7 +457,6 @@ TCG.Units = function (game) {
         if (unit.length != 0) {
             return unit;
         }
-        info('There is no unit with Id ' + cardId);
         return false;
     }
 }

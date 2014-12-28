@@ -38,7 +38,7 @@
         <input type="hidden" name="deckId" value="{{$deckId}}" />
     @endif
     @foreach ($kings as $kingCard)
-        @if ($kingCard['id'] == $deck['kingId'])
+        @if ($deck && $kingCard['cardId'] == $deck['kingId'])
             @include('games.tcg.cards.nonGameCard', array('card' => $kingCard, 'mode' => 'form', 'selected' => true))
         @else
             @include('games.tcg.cards.nonGameCard', array('card' => $kingCard, 'mode' => 'form'))
@@ -59,6 +59,8 @@
 
 <h3>Info</h3>
 
-<a href="/tcg/deck/{{$deckId}}" class="btn btn-primary">@lang('tcg.back')</a>
+@if ($deck)
+    <a href="/tcg/deck/{{$deckId}}" class="btn btn-primary">@lang('tcg.back')</a>
+@endif
 
 @stop
