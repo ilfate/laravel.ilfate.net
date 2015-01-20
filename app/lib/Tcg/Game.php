@@ -131,10 +131,10 @@ class Game extends GameContainer {
             if (!empty($this->gameResult['draw'])) {
                 $data['result'] = self::GAME_RESULT_DRAW;
             } else {
-                if ($this->currentPlayerId == $this->gameResult['winner']) {
+                if (in_array($this->currentPlayerId, $this->gameResult['winners'])) {
                     $data['result'] = self::GAME_RESULT_WIN;
                 } else {
-                    $data['result'] = self::GAME_RESULT_LOOSE;
+                    $data['result'] = self::GAME_RESULT_LOSER;
                 }
             }
         }
@@ -388,29 +388,46 @@ class Game extends GameContainer {
 
     public function checkGameEnd()
     {
-        $playersLost = [];
+        $playersLosers = [];
         foreach ($this->kings as $playerId => $kingId) {
             $king = $this->getCard($kingId);
             if ($king->location == Card::CARD_LOCATION_GRAVE) {
-                $playersLost[] = $playerId;
+                $playersLosers[] = $this->players[$playerId];
+                $this->players[$playerId]->isLoser = true;
             }
         }
-        if ($playersLost) {
-            $this->log->logBattleEnd();
-            $result = [];
-            if (count($playersLost) == 1) {
-                $result['loser'] = $playersLost[0];
-                foreach ($this->players as $id => $player) {
-                    if ($id != $result['loser']) {
-                        $result['winner'] = $id;
-                        break;
+        $teamsLosers = [];
+        if ($playersLosers) {
+            foreach ($playersLosers as $loserPlayer) {
+                $team = $this->teams[$loserPlayer->team];
+                foreach ($team as $playerIdInTeam) {
+                    $playerInTeam = $this->players[$playerIdInTeam];
+                    if (!$playerInTeam->isLoser) {
+                        continue 2;
+                        // this team still have player
                     }
                 }
-            } else {
-                $result['draw'] = true;
+                // well this team do not have any alive player
+                $teamsLosers[] = $loserPlayer->team;
             }
-            $this->gameResult = $result;
-            $this->phase = self::PHASE_GAME_END;
+            if ($teamsLosers) {
+                $this->log->logBattleEnd();
+                $result = [];
+                if (count($teamsLosers) == count($this->teams)) {
+                    $result['draw'] = true;
+                    // all teams are losers
+                } else {
+                    foreach ($this->players as $player) {
+                        if (!$player->isLoser) {
+                            $result['winners'][] = $player->id;
+                        }
+                    }
+                }
+                $this->gameResult = $result;
+                $this->phase = self::PHASE_GAME_END;
+                
+            }
+            
         }
     }
 

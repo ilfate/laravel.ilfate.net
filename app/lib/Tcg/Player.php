@@ -25,6 +25,8 @@ class Player
 
     public $isTopPlayer = false;
 
+    public $isLoser = false;
+
     /**
      * player || bot
      * @var string

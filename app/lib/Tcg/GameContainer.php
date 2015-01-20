@@ -31,7 +31,7 @@ class GameContainer {
 
     const GAME_RESULT_DRAW   = 'draw';
     const GAME_RESULT_WIN    = 'win';
-    const GAME_RESULT_LOOSE  = 'loose';
+    const GAME_RESULT_LOSER  = 'loser';
 
     const EVENT_UNIT_GET_DAMAGE  = 'unit_get_damage';
     const EVENT_UNIT_DEAL_DAMAGE = 'unit_deal_damage';

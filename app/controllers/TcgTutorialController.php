@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Session;
 use Tcg\Game;
 use Tcg\GameBuilder;
 
-class TcgBattleController extends \BaseController
+class TcgTutorialController extends \BaseController
 {
     /**
      * @var Breadcrumbs
@@ -36,70 +36,7 @@ class TcgBattleController extends \BaseController
         return View::make('games.tcg.player.index');
     }
 
-    public function findBattlePage()
-    {
-        $player = User::getUser();
-        if ($player->id) {
-            $decks = Deck::getMyDecks();
-        } else {
-            return Redirect::to('tcg/me');
-        }
-
-        $battle = Battle::findMyBattle();
-        if ($battle) {
-            return Redirect::to('tcg/battle');
-        }
-
-        $queue = TcgQueue::getMyQueue();
-        if ($queue) {
-            View::share('queue', $queue);
-        } else {
-            View::share('queue', false);
-        }
-
-        View::share('decks', $decks);
-        return View::make('games.tcg.battle.find');
-    }
-
-
-    public function joinQueue($deckId)
-    {
-        $deck = Deck::find($deckId);
-        if ($deck->player_id != Auth::user()->id) {
-            return Redirect::to('tcg/me');
-        }
-        if (TcgQueue::getMyQueue()) {
-            return Redirect::to('tcg/findBattle');
-        }
-
-        TcgQueue::add($deckId);
-        return Redirect::to('tcg/findBattle');
-    }
-
-    public function leaveQueue()
-    {
-        $queue = TcgQueue::getMyQueue();
-        if (!$queue) {
-            return Redirect::to('tcg/findBattle');
-        }
-
-        $queue->delete();
-        return Redirect::to('tcg/findBattle');
-    }
-
-    public function checkQueue()
-    {
-        $queue = TcgQueue::getMyQueue();
-        if (!$queue) {
-            return json_encode(['error' => 'not_in_queue']);
-        }
-
-        if ($this->shouldProcess($queue)) {
-            $this->matchBattles($queue);
-        }
-
-        return json_encode(['message' => 'In queue']);
-    }
+   
 
     public function battle()
     {
@@ -231,62 +168,6 @@ class TcgBattleController extends \BaseController
         } catch (\Tcg\Exception $e) {
             return $e->getMessage();
         }
-    }
-
-    protected function matchBattles($myQueue)
-    {
-        $peopleInQueue = TcgQueue::where('game_type_id', '=', $myQueue->game_type_id)->orderBy('created_at')->get();
-        $playersInBattle = 2;
-        $battles = [];
-        $currentBattle = 0;
-        $processedPlayers = 0;
-        $countPlayersInQueue = count($peopleInQueue);
-        foreach ($peopleInQueue as $queueObject) {
-
-            if (!isset($battles[$currentBattle])) {
-                $battles[$currentBattle] = [];
-            }
-            if (count($battles[$currentBattle]) < $playersInBattle) {
-                $battles[$currentBattle][] = $queueObject;
-            }
-            if (count($battles[$currentBattle]) == $playersInBattle) {
-                if ($processedPlayers > ceil($countPlayersInQueue * 0.6)) {
-                    break;
-                }
-                $currentBattle ++;
-            }
-        }
-
-        if ($battles) {
-            foreach ($battles as $battle) {
-                if (count($battle) == $playersInBattle) {
-                    $battleObject = new Battle();
-                    $battleObject->type_id = $myQueue->game_type_id;
-
-                    $battleObject->save();
-
-                    foreach ($battle as $playerQueue) {
-
-                        $battlePlayer = new BattlePlayer();
-                        $battlePlayer->battle_id = $battleObject->id;
-                        $battlePlayer->player_id = $playerQueue->player_id;
-                        $battlePlayer->deck_id = $playerQueue->deck_id;
-                        $battlePlayer->save();
-
-                        $playerQueue->delete();
-                    }
-                }
-            }
-        }
-    }
-
-    protected function shouldProcess($myQueue)
-    {
-        $peopleInQueue = TcgQueue::where('game_type_id', '=', $myQueue->game_type_id)->count();
-        if (mt_rand(1, $peopleInQueue) === 1) {
-            return true;
-        }
-        return false;
     }
 
 }
