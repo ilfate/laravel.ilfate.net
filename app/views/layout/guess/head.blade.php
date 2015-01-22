@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" >
 
-    <link href="/css/tcg/main.css" rel="stylesheet">
+    <link href="/css/guess.css" rel="stylesheet">
     <link href="/font-awesome-4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>

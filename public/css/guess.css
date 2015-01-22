@@ -1,0 +1,22 @@
+
+
+.image.single-picture {
+    width:540px;
+    height: 302px;
+}
+
+div.answer {
+    height:100px;
+    text-align: center;
+    line-height: 100px;
+}
+
+.timer {
+    height:20px;
+    background-color: #245269;
+}
+.timer .seconds {
+    height:20px;
+    width:100%;
+    background-color: #3C240E;
+}

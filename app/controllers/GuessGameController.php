@@ -6,17 +6,19 @@ use Illuminate\Support\Facades\Session;
 class GuessGameController extends \BaseController
 {
     const SESSION_DATA = 'guess.game';
-    /**
-     * @var Breadcrumbs
-     */
-    protected $breadcrumbs;
+
+    const GAME_TURN = 'turn';
+    const GAME_STARTED = 'started';
+    const GAME_START_TIME = 'start_time';
+    const GAME_TURN_START_TIME = 'turn_start_time';
+    const GAME_CURRENT_QUESTION = 'current_question';
 
     /**
-     * @param Breadcrumbs $breadcrumbs
+     *
      */
-    public function __construct(Breadcrumbs $breadcrumbs)
+    public function __construct()
     {
-        $this->breadcrumbs = $breadcrumbs;
+
     }
 
     /**
@@ -26,25 +28,23 @@ class GuessGameController extends \BaseController
      */
     public function index()
     {
-        // $currentPlayerId = 1;
-        // $this->play($currentPlayerId);
-        // $game = $this->render($currentPlayerId);
-        // $this->save();
-        // View::share('game', $game);
         $game = $this->getGame();
-        if (!$game['currentQuestion']) {
-            $game['currentQuestion'] = $this->getNewQuestion($game['turn']);
+        if (!empty($game[self::GAME_STARTED])) {
+            $game = $this->createGame();
+        }
+        if (!$game[self::GAME_CURRENT_QUESTION]) {
+            $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game['turn']);
             $this->saveGame($game);
         }
+
         if ($game['turn'] == 1) {
-            $firstQuestion = $this->exportQuestion($game['currentQuestion']);
+            $firstQuestion = json_encode($this->exportQuestion($game[self::GAME_CURRENT_QUESTION]));
         } else {
             $firstQuestion = '{}';
         }
         View::share('firstQuestion', $firstQuestion);
 
         View::share('page_title', 'Guess series game');
-
 
         return View::make('games.guess.index');//, array('game' => $game)
     }
@@ -54,6 +54,36 @@ class GuessGameController extends \BaseController
         $game = $this->getGame();
         if ($game['turn'] == 1) {
             return [];
+        }
+    }
+
+    public function gameStarted()
+    {
+        $game = $this->getGame();
+        if (!empty($game[self::GAME_STARTED])) {
+            return [];
+        }
+        $game[self::GAME_STARTED] = true;
+        $game[self::GAME_START_TIME] = time();
+        $game[self::GAME_TURN_START_TIME] = time();
+        $this->saveGame($game);
+        return [];
+    }
+
+    public function answer()
+    {
+        $game = $this->getGame();
+        $id = (int) Input::get('id');
+
+        if ($game[self::GAME_CURRENT_QUESTION]['correct'] === $id) {
+            $game[self::GAME_TURN]++;
+            $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game[self::GAME_TURN]);
+            $this->saveGame($game);
+            return json_encode(['question' => $this->exportQuestion($game[self::GAME_CURRENT_QUESTION])]);
+        } else {
+            $game = $this->createGame();
+            $this->saveGame($game);
+            return json_encode(['finish' => true]);
         }
     }
 
@@ -90,18 +120,33 @@ class GuessGameController extends \BaseController
                     $wrong2['name'],
                     $wrong3['name'],
                 ];
-                $question['options'] = [];
-                for ($i = 0; $i < 4; $i++) {
-                    $randKey = array_rand($question['all']);
-                    $question['options'][] = $question['all'][$randKey];
-                    unset($question['all'][$randKey]);
-                    if ($randKey === 0) {
-                        $question['correct'] = $i;
-                    }
-                }
-                unset($question['all']);
+                break;
+            case 2:
+                $question['name'] = $answerSeries['name'];
+                $wrong1 = $this->getRandomSeries([$answerSeries['id']]);
+                $wrong2 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id']]);
+                $wrong3 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
+                $question['all'] = [
+                    $this->getPicture($levelConfig[2], $answerSeries['id']),
+                    $this->getPicture($levelConfig[2], $wrong1['id']),
+                    $this->getPicture($levelConfig[2], $wrong2['id']),
+                    $this->getPicture($levelConfig[2], $wrong3['id']),
+                ];
+                break;
+            default:
+                throw new \Exception('this question type is not implemented');
                 break;
         }
+        $question['options'] = [];
+        for ($i = 0; $i < 4; $i++) {
+            $randKey = array_rand($question['all']);
+            $question['options'][] = $question['all'][$randKey];
+            unset($question['all'][$randKey]);
+            if ($randKey === 0) {
+                $question['correct'] = $i;
+            }
+        }
+        unset($question['all']);
         //shuffle($question['all']);
         return $question;
     }
@@ -118,21 +163,30 @@ class GuessGameController extends \BaseController
             case 1:
                 $toExport['picture'] = $question['picture'];
                 break;
+            case 2:
+                $toExport['name'] = $question['name'];
+                break;
         }
-        return json_encode($toExport);
+        return $toExport;
     }
 
     protected function getGame() 
     {
         $game = Session::get(self::SESSION_DATA, null);
         if (!$game) {
-            $game = [
-                'turn' => 1,
-                'bonuses' => [],
-                'currentQuestion' => false,
-            ];
+            $game = $this->createGame();
         }
         return $game;
+    }
+
+    protected function createGame()
+    {
+        return [
+            self::GAME_TURN => 1,
+            self::GAME_STARTED => 0,
+            'bonuses' => [],
+            self::GAME_CURRENT_QUESTION => false,
+        ];
     }
 
     protected function saveGame($game)

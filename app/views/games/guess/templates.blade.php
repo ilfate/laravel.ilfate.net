@@ -1,4 +1,5 @@
 @include('games.guess.templates.single-picture_mustache')
+@include('games.guess.templates.four-pictures_mustache')
 
 <div id="myModal" class="modal fade">
     <div class="modal-dialog">
