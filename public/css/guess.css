@@ -1,14 +1,26 @@
 
+.turn-area {
+    margin-top: 30px;
+}
 
 .image.single-picture {
     width:540px;
-    height: 302px;
+    height: 303px;
 }
 
 div.answer {
     height:100px;
     text-align: center;
     line-height: 100px;
+}
+div.answer.image {
+    height:303px;
+}
+
+.question .name {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
 }
 
 .timer {

@@ -2,12 +2,13 @@
 
 <script id="template-four-pictures" type="x-tmpl-mustache">
     <div class="question" >
-        <div class="options">
-            <div class="row">
-                <div class="col-md-12 name">
-                    {{question.name}}
-                </div>
+
+        <div class="row">
+            <div class="col-md-12 name">
+                {{question.name}}
             </div>
+        </div>
+        <div class="options">
             <div class="row">
                 <div class="col-md-6 answer image" data-id="0" style="background-image: url('{{question.options.0}}')">
                     {{question.options.0}}
