@@ -24,11 +24,28 @@ div.answer.image {
 }
 
 .timer {
-    height:20px;
-    background-color: #245269;
 }
-.timer .seconds {
-    height:20px;
+.timer .progress {
     width:100%;
-    background-color: #3C240E;
+    background-color: #483018;
+    
+    overflow: visible;
+}
+
+.timer .progress-bar {
+    position: relative;
+}
+
+.timer .seconds {
+    position:absolute;
+    right:-20px;
+    top:-10px;
+    width:40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    z-index: 30;
+    color:#000000;
+    background-color: #FFD416;
+    border-radius: 5px;
 }

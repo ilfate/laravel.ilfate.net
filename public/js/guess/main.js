@@ -38,10 +38,13 @@ Guess.Game = function () {
 	this.questionNumber = 1;
 
     this.currentQuestion = {};
+    this.currentTurn = 1;
+    this.pointsAmount = 0;
     this.timerInterval = 0;
 
     this.isTimeLimited = true;
     this.turnStartTime = {};
+    this.secondsLeft = 0;
 
 	this.init = function(firstQuestion) {
 		this.nextQuestion = firstQuestion;
@@ -98,12 +101,13 @@ Guess.Game = function () {
 	}
 
     this.sendAnswer = function(el) {
+        window.clearInterval(this.timerInterval);
         var id = el.data('id');
         info('id to send = ' + id);
 
         url = '/GuessGame/answer';
         Ajax.json(url, {
-            data: 'id=' + id,
+            data: 'id=' + id + '&seconds=' + this.secondsLeft,
             callBack : function(data){Guess.Game.result(data)}
         });
     }
@@ -113,22 +117,36 @@ Guess.Game = function () {
         if (data.finish !== undefined) {
             window.location = "/GuessSeries";
         } else {
+            this.currentTurn++;
+            this.showQuestionResult(data.result.k, data.result.seconds);
             this.startTurn(data.question)
         }
 	}
 
 	this.startTurn = function(question) {
-        $('.timer .seconds').css({'width' : '100%'});
+        $('.timer .progress-bar').css({'width' : '100%'});
+        this.secondsLeft = question.sec;
+        $('.timer .seconds .text').html(this.secondsLeft);
+
         this.currentQuestion = question;
-        this.turnStartTime = new Date();
+        this.turnStartTime   = new Date();
 		this.drawQuestion(question);
 	}
 
+    this.showQuestionResult = function(k, sec) {
+        var points = k * sec;
+        this.pointsAmount += points;
+        $('.points-amount').html(this.pointsAmount);
+    }
+
     this.timerTick = function() {
+        this.secondsLeft--;
         var currentTime = new Date();
         var dSec = (currentTime.getTime() - this.turnStartTime.getTime()) / 1000;
         var percent = 100 - dSec / (this.currentQuestion.sec / 100);
-        $('.timer .seconds').css({'width' : percent + '%'});
+        $('.timer .progress-bar').css({'width' : percent + '%'});
+        $('.timer .seconds .text').html(this.secondsLeft);
+
         if (dSec > this.currentQuestion.sec) {
             info('time is ower');
             window.clearInterval(this.timerInterval);

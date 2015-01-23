@@ -12,6 +12,7 @@ class GuessGameController extends \BaseController
     const GAME_START_TIME = 'start_time';
     const GAME_TURN_START_TIME = 'turn_start_time';
     const GAME_CURRENT_QUESTION = 'current_question';
+    const GAME_POINTS = 'points';
 
     /**
      *
@@ -28,14 +29,19 @@ class GuessGameController extends \BaseController
      */
     public function index()
     {
-        $game = $this->getGame();
-        if (!empty($game[self::GAME_STARTED])) {
-            $game = $this->createGame();
-        }
-        if (!$game[self::GAME_CURRENT_QUESTION]) {
-            $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game['turn']);
-            $this->saveGame($game);
-        }
+        // $game = ['asdasd', 'awdawdwddddd'];
+        // $this->saveGame($game);
+        // $game = $this->getGame();
+        // return json_encode($game);
+
+        // $game = $this->getGame();
+        // if (!empty($game[self::GAME_STARTED])) {
+        $game = $this->createGame();
+        // } 
+        //if (!$game[self::GAME_CURRENT_QUESTION]) {
+        $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game['turn']);
+        $this->saveGame($game);
+        //}
 
         if ($game['turn'] == 1) {
             $firstQuestion = json_encode($this->exportQuestion($game[self::GAME_CURRENT_QUESTION]));
@@ -49,14 +55,6 @@ class GuessGameController extends \BaseController
         return View::make('games.guess.index');//, array('game' => $game)
     }
 
-    public function getQuestion()
-    {
-        $game = $this->getGame();
-        if ($game['turn'] == 1) {
-            return [];
-        }
-    }
-
     public function gameStarted()
     {
         $game = $this->getGame();
@@ -67,19 +65,29 @@ class GuessGameController extends \BaseController
         $game[self::GAME_START_TIME] = time();
         $game[self::GAME_TURN_START_TIME] = time();
         $this->saveGame($game);
-        return [];
+        $game = $this->getGame();
+        return json_encode($game);
+        // return [];
     }
 
     public function answer()
     {
         $game = $this->getGame();
+        //return json_encode($game);
         $id = (int) Input::get('id');
+        $seconds = (int) Input::get('seconds');
 
         if ($game[self::GAME_CURRENT_QUESTION]['correct'] === $id) {
+            $result = $this->addPointsToGame($game, $seconds);
             $game[self::GAME_TURN]++;
             $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game[self::GAME_TURN]);
+            $game[self::GAME_TURN_START_TIME] = time();
+
             $this->saveGame($game);
-            return json_encode(['question' => $this->exportQuestion($game[self::GAME_CURRENT_QUESTION])]);
+            return json_encode([
+                'question' => $this->exportQuestion($game[self::GAME_CURRENT_QUESTION]), 
+                'result' => $result
+                ]);
         } else {
             $game = $this->createGame();
             $this->saveGame($game);
@@ -186,12 +194,31 @@ class GuessGameController extends \BaseController
             self::GAME_STARTED => 0,
             'bonuses' => [],
             self::GAME_CURRENT_QUESTION => false,
+            self::GAME_POINTS => 0,
         ];
     }
 
     protected function saveGame($game)
     {
+        Session::forget(self::SESSION_DATA);
         Session::put(self::SESSION_DATA, $game);
+    }
+
+    protected function addPointsToGame($game, $seconds)
+    {
+        $question = $game[self::GAME_CURRENT_QUESTION];
+        if ($seconds > $question['sec']) {
+            // user tried to fake the data
+            $seconds = (int) ($question['sec'] * 0.5);
+        }
+        $phpSeconds = $question['sec'] - (time() - $game[self::GAME_TURN_START_TIME]); 
+        if ($phpSeconds + 3 < $seconds) {
+            $seconds = $phpSeconds + 1;
+        }
+        $k = \Config::get('guess.game.levels.' . $question['level'])[1];
+        $points = $k * $seconds;
+        $game[self::GAME_POINTS] += $points;
+        return ['k' => $k, 'seconds' => $seconds];
     }
 
     protected function getRandomSeries($excludeIds = array()) {
