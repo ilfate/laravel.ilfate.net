@@ -162,7 +162,7 @@ class GuessGameController extends \BaseController
         $difficulty = \Config::get('guess.game.difficulty');
         $currentLevel = 0;
         foreach ($difficulty as $turns => $level) {
-            if ($turn < $turns) {
+            if ($turn <= $turns) {
                 $currentLevel = $level - 1;
                 break;
             }
@@ -180,7 +180,8 @@ class GuessGameController extends \BaseController
         $answerSeries = $this->getRandomSeries();
         switch ($typeId) {
             case 1:
-                $question['picture'] = $this->getPicture($levelConfig[2], $answerSeries['id']);
+                $imageDifficulty = $levelConfig[2][array_rand($levelConfig[2])];
+                $question['picture'] = $this->getPicture($imageDifficulty, $answerSeries['id']);
                 $wrong1 = $this->getRandomSeries([$answerSeries['id']]);
                 $wrong2 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id']]); 
                 $wrong3 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
@@ -197,10 +198,10 @@ class GuessGameController extends \BaseController
                 $wrong2 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id']]);
                 $wrong3 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
                 $question['all'] = [
-                    $this->getPicture($levelConfig[2], $answerSeries['id']),
-                    $this->getPicture($levelConfig[2], $wrong1['id']),
-                    $this->getPicture($levelConfig[2], $wrong2['id']),
-                    $this->getPicture($levelConfig[2], $wrong3['id']),
+                    $this->getPicture($levelConfig[2][array_rand($levelConfig[2])], $answerSeries['id']),
+                    $this->getPicture($levelConfig[2][array_rand($levelConfig[2])], $wrong1['id']),
+                    $this->getPicture($levelConfig[2][array_rand($levelConfig[2])], $wrong2['id']),
+                    $this->getPicture($levelConfig[2][array_rand($levelConfig[2])], $wrong3['id']),
                 ];
                 break;
             default:
@@ -284,72 +285,14 @@ class GuessGameController extends \BaseController
         return ['k' => $k, 'seconds' => $seconds];
     }
 
-    protected function getRandomSeries($excludeIds = array()) {
+    protected function getRandomSeries($excludeIds = array())
+    {
         return Series::getRandomSeries(1, $excludeIds);
-        $series =  [
-            1 => [
-                'id' => 1,
-                'name' => 'House',
-            ],
-            2 => [
-                'id' => 2,
-                'name' => 'Game of Thrones',
-            ],
-            3 => [
-                'id' => 3,
-                'name' => 'Lost',
-            ],
-            4 => [
-                'id' => 4,
-                'name' => 'Heroes',
-            ],
-            5 => [
-                'id' => 5,
-                'name' => 'Dexter',
-            ],
-        ];
-        if ($excludeIds) {
-            foreach ($excludeIds as $excludeId) {
-                unset($series[$excludeId]);
-            }
-            
-        }
-        $result = $series[array_rand($series)];
-        
-        return $result;
     }
 
     protected function getPicture($difficulty, $seriesId = null)
     {
         return SeriesImage::getPicture($difficulty, $seriesId);
-        $pictures = [
-            1 => [
-                '/House1.jpg',
-                '/House2.jpg', 
-            ],
-            2 => [
-                '/Game_of_Thrones1.jpg',
-                '/Game_of_Thrones2.jpg',
-            ],
-            3 => [
-                '/Lost1.jpg',
-                '/Lost2.jpg',
-            ],
-            4 => [
-                '/Heroes1.jpg',
-                '/Heroes2.jpg',
-            ],
-            5 => [
-                '/Dexter1.jpg',
-                '/Dexter2.jpg',
-            ],
-        ];
-        if ($seriesId) {
-            $series = $pictures[$seriesId];
-        } else {
-            $series = $pictures[array_rand($pictures)];
-        }
-        return $series[array_rand($series)];
     }
 
     public function admin()

@@ -267,7 +267,7 @@ Guess.Game = function () {
     this.showQuestionResult = function() {
         var k = this.resultK;
         var sec = this.resultSec;
-        $('.question').animate({opacity:0}, {duration:300, complete:function(){Guess.Game.startTurn(false)}});
+        $('.question').animate({opacity:0}, {duration:1100, complete:function(){Guess.Game.startTurn(false)}});
         var points = k * sec;
         if (points != parseInt(points)) {
             points = Math.round(points*10)/10
@@ -291,21 +291,23 @@ Guess.Game = function () {
         var duration = 1200;
         if (this.currentAnswer != 'none') {
             var currentAnswerEl = $('.answer.id-' + this.currentAnswer);
+            currentAnswerEl.animate({'opacity':0.4}, duration);
             if (currentAnswerEl.hasClass('name')) {
                 currentAnswerEl.find('.block').animate({'background-color':'#F21616'}, duration);
             } else {
-                currentAnswerEl.animate({'opacity':0.4}, duration);
+
             }
         } else {
             this.hideOtherAnswers(this.correctAnswer);
         }
         var correctAnswerEl = $('.answer.id-' + this.correctAnswer);
 
-        correctAnswerEl.animate({opacity:1}, {'duration':duration, complete:function(){Guess.Game.showEndModal()}});
+        correctAnswerEl.animate({opacity:1}, {'duration':duration});
         if (correctAnswerEl.hasClass('name')) {
             correctAnswerEl.find('.block').animate({'background-color':'#069E2D'}, duration);
             $('.answer .block').off();
         }
+        setTimeout(function(){Guess.Game.showEndModal()}, 2500);
     }
 
     this.showEndModal = function() {
@@ -400,14 +402,14 @@ Guess.Game = function () {
     }
 
     this.answerImageMouseOver = function(el) {
-        el.animate({'background-size': '80%'}, {
+        el.animate({'background-size': '101%'}, {
             queue:false,
             duration:400
         });
     }
     this.answerImageMouseOut = function(el) {
         el.stop();
-        el.css({'background-size': '100%'});
+        el.css({'background-size': '130%'});
     }
 
 
