@@ -5,9 +5,13 @@
 <div class="game-container" style="display:none">
 
 	<div class="turn-area"></div>
-	<div class="row">
-		<div class="col-md-2">
-			<div>Points - <span class="points-amount">0</span>
+	<div class="row info-row">
+		<div class="col-md-2 points-container">
+			<div class="points">
+                <div class="add-points"></div>
+                <span class="points-amount">0</span>
+                <a class="btn btn-primary restart-button" href="/GuessSeries">Restart</a>
+
 			</div>
 		</div>
 	    <div class="col-md-10 timer">

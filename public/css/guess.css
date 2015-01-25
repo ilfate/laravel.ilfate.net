@@ -1,3 +1,7 @@
+.clear{
+    clear: both;
+}
+
 .btn {
     border: none;
     border-radius: 2px;
@@ -9,11 +13,19 @@
     background-color:#069E2D;
 }
 
+.sidebar-col {
+    background-color: #abcdef;
+    border-radius: 30px;
+    margin-top: 20px;
+    min-height: 542px;
+}
+
 .turn-area {
     margin-top: 30px;
 }
 .game-area {
     position: relative;
+    min-height: 602px;
 }
 
 #start-game {
@@ -28,12 +40,15 @@
     font-size: 40px;
     font-weight: bold;
 }
-
+.question {
+    min-height:542px;
+}
 .question .image.single-picture {
-    width:440px;
-    height: 247px;
+    width:600px;
+    height: 337px;
     background-repeat: no-repeat;
     margin: 5px auto;
+    background-color: #a6a6a6;
 }
 
 div.answer {
@@ -53,9 +68,11 @@ div.answer {
 div.answer.image{
     height:247px;
     background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center;
 }
 .options.names {
-    height:200px;
+    min-height:200px;
     position: relative;
 }
 
@@ -65,13 +82,34 @@ div.answer.image{
     font-weight: bold;
 }
 
-.timer {
+.info-row {
+    margin-bottom: 50px;
 }
+.points {
+    margin-top:5px;
+    height: 55px;
+    background-color: #abcdef;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 55px;
+    position: relative;
+}
+.points .points-amount {
+    font-weight: bold;
+    font-size: 20px;
+}
+.points .add-points{
+    position: absolute;
+    font-weight: bold;
+    font-size: 20px;
+    color:#069E2D;
+}
+
 .timer .progress {
     width:100%;
     /*background-color: #483018;*/
     background-color: #F21616;
-
+    margin-top:20px;
     overflow: visible;
 }
 
@@ -90,7 +128,7 @@ div.answer.image{
     z-index: 30;
     color:#000000;
     /*background-color: #FFD416;*/
-    background-color: #069E2D;;
+    background-color: #069E2D;
     border-radius: 5px;
 }
 .timer .seconds .text{
@@ -100,6 +138,33 @@ div.answer.image{
     color:#ffffff;
 }
 
+.points.points-modal {
+    padding-top:100px;
+    position: relative;
+}
+.points .btn {
+    background-color: #ffffff;
+    color:#428bca;
+}
+.restart-button {
+    line-height: 80px;
+    font-weight: bold;
+    font-size: 30px;
+    display: none;
+}
+div.points-modal-text{
+    font:inherit;
+}
+.modal-hidden{
+    display: none;
+    position: absolute;
+}
+.modal-hidden.left{
+    left:-40px;
+}
+.modal-hidden.right{
+    right:10px;
+}
 
 /*  ADMIN */
 

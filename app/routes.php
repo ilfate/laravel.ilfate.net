@@ -43,6 +43,8 @@ Route::get('MathEffect/stats', 'MathEffectController@statistic');
 Route::get('GuessSeries', 'GuessGameController@index');
 Route::post('GuessGame/gameStarted', 'GuessGameController@gameStarted');
 Route::post('GuessGame/answer', 'GuessGameController@answer');
+Route::post('GuessSeries/timeIsOut', 'GuessGameController@timeIsOut');
+Route::post('GuessSeries/saveName', 'GuessGameController@saveName');
 
 Route::get('GuessSeries/admin', 'GuessGameAdminController@index');
 Route::any('GuessSeries/admin/addSeries', 'GuessGameAdminController@addSeries');

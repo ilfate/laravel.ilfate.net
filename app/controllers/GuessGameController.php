@@ -13,6 +13,7 @@ class GuessGameController extends \BaseController
     const GAME_TURN_START_TIME = 'turn_start_time';
     const GAME_CURRENT_QUESTION = 'current_question';
     const GAME_POINTS = 'points';
+    const GAME_FINISHED = 'finished';
 
     /**
      *
@@ -73,7 +74,9 @@ class GuessGameController extends \BaseController
     public function answer()
     {
         $game = $this->getGame();
-        //return json_encode($game);
+        if ($game[self::GAME_FINISHED]) {
+            return '[]';
+        }
         $id = (int) Input::get('id');
         $seconds = (int) Input::get('seconds');
 
@@ -89,10 +92,69 @@ class GuessGameController extends \BaseController
                 'result' => $result
                 ]);
         } else {
-            $game = $this->createGame();
+            $name = Session::get('userName', false);
+            $return = [
+                'finish' => true,
+                'correctAnswer' => $game[self::GAME_CURRENT_QUESTION]['correct'],
+                'correctAnswersNumber' => $game[self::GAME_TURN] - 1,
+                'points' => $game[self::GAME_POINTS],
+                'name' => $name
+            ];
+            $game[self::GAME_FINISHED] = true;
             $this->saveGame($game);
-            return json_encode(['finish' => true]);
+            $this->saveResults();
+            return json_encode($return);
         }
+    }
+
+    public function timeIsOut()
+    {
+        $name = Session::get('userName', false);
+        $game = $this->getGame();
+        if ($game[self::GAME_FINISHED]) {
+            return '[]';
+        }
+        $return = [
+            'correctAnswer' => $game[self::GAME_CURRENT_QUESTION]['correct'],
+            'points' => $game[self::GAME_POINTS],
+            'correctAnswersNumber' => $game[self::GAME_TURN] - 1,
+            'name' => $name
+        ];
+        $game[self::GAME_FINISHED] = true;
+        $this->saveGame($game);
+        $this->saveResults();
+        return json_encode($return);
+    }
+
+    public function saveName()
+    {
+        $name            = Input::get('name');
+        $laravel_session = md5(Cookie::get('laravel_session'));
+
+        Session::put('userName', $name);
+
+        $stats = GuessStats::where('laravel_session', '=', $laravel_session)->orderBy('created_at', 'desc')->firstOrFail();
+        if (!$stats) {
+            Log::warning('No user found to update name. (name=' . $name . ')');
+            App::abort(404);
+        }
+        $stats->name = $name;
+        $stats->save();
+        return '{"actions": ["Guess.Game.hideNameForm"]}';
+    }
+
+    protected function saveResults()
+    {
+        $name     = Session::get('userName', null);
+        $game = $this->getGame();
+
+        $stats = new GuessStats();
+        $stats->points = $game[self::GAME_POINTS];
+        $stats->answers = $game[self::GAME_TURN] - 1;
+        $stats->ip      = $_SERVER['REMOTE_ADDR'];
+        $stats->laravel_session = md5(Cookie::get('laravel_session'));
+        $stats->name = $name;
+        $stats->save();
     }
 
     protected function getNewQuestion($turn) 
@@ -195,6 +257,7 @@ class GuessGameController extends \BaseController
             'bonuses' => [],
             self::GAME_CURRENT_QUESTION => false,
             self::GAME_POINTS => 0,
+            self::GAME_FINISHED => false,
         ];
     }
 
@@ -204,19 +267,19 @@ class GuessGameController extends \BaseController
         Session::put(self::SESSION_DATA, $game);
     }
 
-    protected function addPointsToGame($game, $seconds)
+    protected function addPointsToGame(&$game, $seconds)
     {
         $question = $game[self::GAME_CURRENT_QUESTION];
         if ($seconds > $question['sec']) {
             // user tried to fake the data
             $seconds = (int) ($question['sec'] * 0.5);
         }
-        $phpSeconds = $question['sec'] - (time() - $game[self::GAME_TURN_START_TIME]); 
+        $phpSeconds = $question['sec'] - (time() - $game[self::GAME_TURN_START_TIME]);
         if ($phpSeconds + 3 < $seconds) {
-            $seconds = $phpSeconds + 1;
+            $seconds = $seconds * 0.75;
         }
         $k = \Config::get('guess.game.levels.' . $question['level'])[1];
-        $points = $k * $seconds;
+        $points = round($k * $seconds, 1);
         $game[self::GAME_POINTS] += $points;
         return ['k' => $k, 'seconds' => $seconds];
     }
