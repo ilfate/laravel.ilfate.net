@@ -1,0 +1,32 @@
+@extends('layout.guess.main-admin')
+
+@section('content')
+
+@if (!empty($series))
+    @foreach ($series as $serie)
+        <form method="post" class="series-block dropzone" action="/GuessSeries/admin/addImage">
+            <input type="hidden" name="id" value="{{$serie->id}}" />
+            <input type="hidden" class="difficulty-input" name="difficulty" value="1" />
+            <h4>{{$serie->name}}</h4>
+            <a onclick="Guess.Game.seriesImagesGenerate({{$serie->id}})">generate</a>
+        </form>
+    @endforeach
+@endif
+
+
+@stop
+
+@section('sidebar')
+
+
+<h3>Image difficulty</h3>
+<input type="text" class="form-control" value="1" onkeyup="Guess.Game.adminDuffeculty(this)" />
+
+<a class="btn btn-primary" href="/GuessSeries/admin/addSeries">Add a Series</a><br><br>
+<a class="btn btn-primary" href="/tcg/test/clear?bot=true">Clear And create Game with Bot</a><br><br>
+<a class="btn btn-primary" href="/tcg/test/clear?debug=true&bot=true">Clear And create Debug Game with Bot</a><br><br>
+<a class="btn btn-primary" href="/tcg/test/clear?situation=true">Create Situation</a><br><br>
+<a class="btn btn-primary" href="/tcg/test/clear?situation=true&bot=true">Create Situation with Bot</a><br><br>
+
+
+@stop

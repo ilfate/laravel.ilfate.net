@@ -1,4 +1,4 @@
-@extends('layout.guess.head')
+@extends('layout.guess.head-admin')
 
 @section('layout')
 
@@ -6,7 +6,7 @@
 
 <div class="container main">
     <div class="row">
-        <div class="col-md-9 game-area">
+        <div class="col-md-9">
             @yield('content')
         </div>
         <div class="col-md-3">

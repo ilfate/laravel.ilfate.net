@@ -1,20 +1,62 @@
+.btn {
+    border: none;
+    border-radius: 2px;
+}
+.btn:hover{
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.23), 0 10px 30px rgba(0, 0, 0, 0.19);
+}
+.progress-bar-success {
+    background-color:#069E2D;
+}
 
 .turn-area {
     margin-top: 30px;
 }
+.game-area {
+    position: relative;
+}
 
-.image.single-picture {
-    width:540px;
-    height: 303px;
+#start-game {
+    position: absolute;
+    top: 100px;
+    left:0;
+    right:0;
+    width:250px;
+    height: 80px;
+    margin:auto;
+    line-height: 50px;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.question .image.single-picture {
+    width:440px;
+    height: 247px;
+    background-repeat: no-repeat;
+    margin: 5px auto;
 }
 
 div.answer {
     height:100px;
     text-align: center;
-    line-height: 100px;
+    cursor: pointer;
 }
-div.answer.image {
-    height:303px;
+.answer .block {
+    background-color: #abcdef;
+    margin: 10px 0;
+    height:80px;
+    line-height: 80px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 2px;
+}
+div.answer.image{
+    height:247px;
+    background-repeat: no-repeat;
+}
+.options.names {
+    height:200px;
+    position: relative;
 }
 
 .question .name {
@@ -27,8 +69,9 @@ div.answer.image {
 }
 .timer .progress {
     width:100%;
-    background-color: #483018;
-    
+    /*background-color: #483018;*/
+    background-color: #F21616;
+
     overflow: visible;
 }
 
@@ -46,6 +89,32 @@ div.answer.image {
     line-height: 40px;
     z-index: 30;
     color:#000000;
-    background-color: #FFD416;
+    /*background-color: #FFD416;*/
+    background-color: #069E2D;;
     border-radius: 5px;
+}
+.timer .seconds .text{
+    font-weight: bold;
+    font-size: 20px;
+    /*color:#069E2D;*/
+    color:#ffffff;
+}
+
+
+/*  ADMIN */
+
+.series-block {
+    margin:5px;
+    padding:10px;
+    float:left;
+    background-color: #245269;
+    border-radius: 5px;
+    color:#ffffff;
+}
+.series-block h4{
+    font-weight: bold;
+    font-size: 36px;
+}
+.series-block .dz-default{
+    display: none;
 }

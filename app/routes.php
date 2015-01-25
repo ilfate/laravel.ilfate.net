@@ -44,6 +44,11 @@ Route::get('GuessSeries', 'GuessGameController@index');
 Route::post('GuessGame/gameStarted', 'GuessGameController@gameStarted');
 Route::post('GuessGame/answer', 'GuessGameController@answer');
 
+Route::get('GuessSeries/admin', 'GuessGameAdminController@index');
+Route::any('GuessSeries/admin/addSeries', 'GuessGameAdminController@addSeries');
+Route::any('GuessSeries/admin/addImage', 'GuessGameAdminController@addImage');
+Route::any('GuessSeries/admin/generateImages', 'GuessGameAdminController@generateImages');
+
 Route::get('tcg/me', 'TcgPlayerController@index');
 Route::get('tcg/register', 'TcgPlayerController@registerForm');
 Route::post('tcg/register/submit', 'TcgPlayerController@registerSubmit');
