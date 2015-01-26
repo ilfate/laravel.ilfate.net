@@ -95,10 +95,11 @@ Guess.Game = function () {
         this.nextAnimationsEnded = false;
         var question = this.currentQuestion;
 
+        $('.timer .seconds').css({'background-color': '#069E2D'})
         $('.timer .progress-bar').css({'width' : '100%'});
         this.secondsLeft = question.sec;
         $('.timer .seconds .text').html(this.secondsLeft);
-        $('.timer .seconds').css({'background-color': '#069E2D'}).delay(50).animate({'background-color':'#F21616'}, question.sec * 1000);
+        $('.timer .seconds').animate({'background-color':'#F21616'}, question.sec * 1000);
 
         this.turnStartTime   = new Date();
         if (!isFirstTurn) {
@@ -151,6 +152,7 @@ Guess.Game = function () {
         if (this.secondsLeft > this.currentQuestion.sec - dSec + 2) {
             this.secondsLeft = this.currentQuestion.sec - dSec;
         }
+        $('.answer').off('click');
         if (!dSec) {
             return ;
         }
@@ -329,22 +331,22 @@ Guess.Game = function () {
     }
 
     this.fillEndModal = function() {
-        var answersText = 'You gave ' + this.correctAnswersNumber + ' answers';
-        $('.points-amount').html('<span class="left"></span><span class="number">' + this.pointsAmount + '</span><span class="right"></span>');
+        var answersText = 'You gave ' + this.correctAnswersNumber + ' correct answers';
+        $('.points-amount').html('<span class="left"></span><span class="number"> ' + this.pointsAmount + '</span><span class="right"></span>');
         $('.points-amount').after('<br><span class="modal-user-name"></span><br>');
         $('.points-amount').after('<br><span class="rest-stats-text"></span>');
         $('.restart-button').show();
         $('.points-amount .number').animate({'font-size':'40px'}, 800);
         $('.points-amount').animate({'font-size':'30px'}, 800);
         var queue = [
-            {text:' points', el:$('.points-amount .right'), options:{'duration':400}},
+            {text:' points', el:$('.points-amount .right'), options:{'duration':800}},
             {text:answersText, el:$('.rest-stats-text'), options:{'duration':800}}
         ];
         if (this.userName) {
-            queue.push({text:'Saved for name: ' + this.userName, el:$('.modal-user-name'), options:{'duration':500}})
+            queue.push({text:'Saved for name: ' + this.userName, el:$('.modal-user-name'), options:{'duration':800}})
         }
-        $('.rest-stats-text').delay(900).animate({'font-size':'30px'}, 800);
-        pasteText('You earned ', $('.points-amount .left'), {'duration':500, 'queue':queue});
+        $('.rest-stats-text').delay(1600).animate({'font-size':'30px'}, 800);
+        pasteText('You earned', $('.points-amount .left'), {'duration':800, 'queue':queue});
         if (!this.userName) {
             var template = $('#template-end-modal').html();
             Mustache.parse(template);
