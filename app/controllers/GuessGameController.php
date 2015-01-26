@@ -130,6 +130,9 @@ class GuessGameController extends \BaseController
     {
         $name            = Input::get('name');
         $laravel_session = md5(Cookie::get('laravel_session'));
+        if (!$name) {
+            return '[]';
+        }
 
         Session::put('userName', $name);
 

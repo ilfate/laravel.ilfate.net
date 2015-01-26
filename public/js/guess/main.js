@@ -339,14 +339,14 @@ Guess.Game = function () {
         $('.points-amount .number').animate({'font-size':'40px'}, 800);
         $('.points-amount').animate({'font-size':'30px'}, 800);
         var queue = [
-            {text:' points', el:$('.points-amount .right'), options:{'duration':800}},
+            {text:' points', el:$('.points-amount .right'), options:{'duration':500}},
             {text:answersText, el:$('.rest-stats-text'), options:{'duration':800}}
         ];
         if (this.userName) {
             queue.push({text:'Saved for name: ' + this.userName, el:$('.modal-user-name'), options:{'duration':800}})
         }
-        $('.rest-stats-text').delay(1600).animate({'font-size':'30px'}, 800);
-        pasteText('You earned', $('.points-amount .left'), {'duration':800, 'queue':queue});
+        $('.rest-stats-text').delay(1000).animate({'font-size':'30px'}, 800);
+        pasteText('You earned', $('.points-amount .left'), {'duration':500, 'queue':queue});
         if (!this.userName) {
             var template = $('#template-end-modal').html();
             Mustache.parse(template);
