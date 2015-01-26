@@ -53,6 +53,8 @@ Guess.Game = function () {
     this.gameFinished = false;
     this.userName = false;
 
+    this.skipAbilityWasUsed = false;
+
     this.isTimeLimited = true;
     this.turnStartTime = {};
     this.secondsLeft = 0;
@@ -66,8 +68,12 @@ Guess.Game = function () {
 	}
 
 	this.startGame = function() {
-        url = '/GuessGame/gameStarted';
+        url = '/GuessSeries/gameStarted';
         Ajax.json(url, {});
+        $('.ability').show();
+        $('.ability').on({
+            'click':function(){Guess.Game.ability($(this))}
+        })
 		// animation will be here
 		//$('.game-container').show();
 		$('#start-game').animate({
@@ -95,19 +101,12 @@ Guess.Game = function () {
         this.nextAnimationsEnded = false;
         var question = this.currentQuestion;
 
-        $('.timer .seconds').css({'background-color': '#069E2D'})
-        $('.timer .progress-bar').css({'width' : '100%'});
-        this.secondsLeft = question.sec;
-        $('.timer .seconds .text').html(this.secondsLeft);
-        $('.timer .seconds').animate({'background-color':'#F21616'}, question.sec * 1000);
+        this.restartTimer();
 
-        this.turnStartTime   = new Date();
         if (!isFirstTurn) {
             this.drawQuestion(question);
             $('.to-delete').remove();
         }
-
-        this.timerInterval = setInterval(function() { Guess.Game.timerTick() }, 1000);
     }
 
 	this.drawQuestion = function(question) {
@@ -143,11 +142,23 @@ Guess.Game = function () {
                 });
                 break;
         }
-
 	}
 
+    this.ability = function(el) {
+        el.off();
+        var id = el.data('id');
+        this.stopTimer();
+        this.abilityButtonAnimation(el);
+
+        url = '/GuessSeries/ability';
+        Ajax.json(url, {
+            data: 'id=' + id,
+            callBack : function(data){Guess.Game.abilityResult(data)}
+        });
+    }
+
     this.sendAnswer = function(el) {
-        window.clearInterval(this.timerInterval);
+        this.stopTimer();
         var dSec =  this.checkTime();
         if (this.secondsLeft > this.currentQuestion.sec - dSec + 2) {
             this.secondsLeft = this.currentQuestion.sec - dSec;
@@ -159,7 +170,7 @@ Guess.Game = function () {
         var id = el.data('id');
         this.currentAnswer = id;
 
-        url = '/GuessGame/answer';
+        url = '/GuessSeries/answer';
         Ajax.json(url, {
             data: 'id=' + id + '&seconds=' + this.secondsLeft,
             callBack : function(data){Guess.Game.result(data)}
@@ -169,7 +180,7 @@ Guess.Game = function () {
 
 	this.result = function(data) {
         if (data.finish !== undefined) {
-            this.gameFinished = true;
+            this.stopGame();
             this.pointsAmount = data.points;
             this.correctAnswersNumber = data.correctAnswersNumber;
             this.correctAnswer = data.correctAnswer;
@@ -189,12 +200,37 @@ Guess.Game = function () {
 
         }
 	}
+    this.abilityResult = function(data) {
+        info(data);
+        switch(data.id) {
+            case 1:
+                this.restartTimer();
+                var wrong1 = data.wrong[0];
+                var wrong2 = data.wrong[1];
+                $('.answer.id-' + wrong1 + ', .answer.id-' + wrong2).animate({'opacity':0}, 300);
+                break;
+            case 2:
+                this.currentQuestion = data.question;
+                this.nextAnimationsEnded = true;
+                this.skipAbilityWasUsed = true;
+                this.prepareToStartTurn(data.question);
+                break;
+        }
+
+    }
     this.timeIsOut = function(data) {
+        this.stopGame();
         this.pointsAmount = data.points;
         this.correctAnswer = data.correctAnswer;
         this.correctAnswersNumber = data.correctAnswersNumber;
         this.userName = data.name;
         this.showFalseAnswerAnimation();
+    }
+    this.stopGame = function() {
+        this.gameFinished = true;
+        $('.ability').each(function(){
+            Guess.Game.abilityButtonAnimation($(this));
+        });
     }
 
     this.prepareToStartTurn = function(question) {
@@ -266,26 +302,35 @@ Guess.Game = function () {
     }
 
     this.showQuestionResult = function() {
-        var k = this.resultK;
-        var sec = this.resultSec;
         $('.question').animate({opacity:0}, {duration:1100, complete:function(){Guess.Game.startTurn(false)}});
-        var points = k * sec;
-        if (points != parseInt(points)) {
-            points = Math.round(points*10)/10
+        if (!this.skipAbilityWasUsed) {
+            var k = this.resultK;
+            var sec = this.resultSec;
+            var points = k * sec;
+            if (points != parseInt(points)) {
+                points = Math.round(points*10)/10
+            }
+            this.pointsAmount += points;
+            if (this.pointsAmount != parseInt(this.pointsAmount)) {
+                this.pointsAmount = Math.round(this.pointsAmount*10)/10;
+            }
+            $('.add-points').delay(150)
+                .html(points)
+                .show()
+                .css({right:'-30px', opacity:1})
+                .animate({right:'40%', opacity:0.7},
+                {duration:500, complete:function(){
+                    $('.points-amount').html(Guess.Game.pointsAmount).css({'font-size':'36px', color:'#FFD416'}).animate({'font-size':'20px', color:'#000000'}, 500);
+                    $(this).hide();
+                }});
+        } else {
+            this.skipAbilityWasUsed = false;
         }
-        this.pointsAmount += points;
-        if (this.pointsAmount != parseInt(this.pointsAmount)) {
-            this.pointsAmount = Math.round(this.pointsAmount*10)/10;
-        }
-        $('.add-points').delay(150)
-            .html(points)
-            .show()
-            .css({right:'-30px', opacity:1})
-            .animate({right:'40%', opacity:0.7},
-            {duration:500, complete:function(){
-                $('.points-amount').html(Guess.Game.pointsAmount).css({'font-size':'36px', color:'#FFD416'}).animate({'font-size':'20px', color:'#000000'}, 500);
-                $(this).hide();
-            }});
+    }
+
+    this.abilityButtonAnimation = function(el) {
+        el.animate({'border-radius': '80px', 'background-color':'#FFD416'}, {'duration':1200, complete:function(){$(this).hide(100)}});
+        el.delay(250).animate({'opacity': 0}, {'duration':1000, 'queue':false});
     }
 
     this.showFalseAnswerAnimation = function() {
@@ -362,6 +407,17 @@ Guess.Game = function () {
         pasteText('Results saved :)', $('.modal-user-name'), {'duration':500});
     }
 
+    this.restartTimer = function()
+    {
+        $('.timer .progress-bar').css({'width' : '100%'});
+        this.secondsLeft = this.currentQuestion.sec;
+        $('.timer .seconds .text').html(this.secondsLeft);
+        $('.timer .seconds')
+            .css({'background-color': '#069E2D'})
+            .animate({'background-color':'#FF8360'}, this.currentQuestion.sec * 1000);
+        this.turnStartTime   = new Date();
+        this.timerInterval = setInterval(function() { Guess.Game.timerTick() }, 1000);
+    }
     this.timerTick = function() {
         this.secondsLeft--;
         var dSec = this.checkTime();
@@ -369,6 +425,10 @@ Guess.Game = function () {
         var percent = 100 - dSec / (this.currentQuestion.sec / 100);
         $('.timer .progress-bar').css({'width' : percent + '%'});
         $('.timer .seconds .text').html(this.secondsLeft);
+    }
+    this.stopTimer = function() {
+        $('.timer .seconds').stop();
+        window.clearInterval(this.timerInterval);
     }
 
     this.checkTime = function() {

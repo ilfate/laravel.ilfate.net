@@ -15,7 +15,7 @@
 
 .sidebar-col {
     background-color: #abcdef;
-    border-radius: 30px;
+    border-radius: 10px;
     margin-top: 20px;
     min-height: 542px;
 }
@@ -108,7 +108,8 @@ div.answer.image{
 .timer .progress {
     width:100%;
     /*background-color: #483018;*/
-    background-color: #F21616;
+    /*background-color: #F21616;*/
+    background-color: #FF8360;
     margin-top:20px;
     overflow: visible;
 }
@@ -138,19 +139,131 @@ div.answer.image{
     color:#ffffff;
 }
 
+
+
+.ability-container {
+    width:100px;
+    position:absolute;
+    margin: 0 auto;
+    left:0;
+    right:0;
+}
+.ability {
+    /*display: none;*/
+    background-color: #069E2D;
+    width: 100px;
+    height: 100px;
+    margin-top: 50px;
+    float: left;
+    position: relative;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+}
+.ability:hover{
+    background-color: #069E2D;
+}
+
+.first-50, .second-50 {
+    position: absolute;
+
+}
+.second-50 {
+    top: 47px;
+    left:47px;
+}
+.ability:hover .second-50 {
+    opacity: 0.3;
+}
+.diagonal-line-50 {
+    left:6px;
+    top:45px;
+    width:90px;
+    height: 6px;
+    position: absolute;
+    background-color: #ffffff;
+    border-radius: 3px;
+    -moz-transform:    rotate(-35deg);
+    -o-transform:      rotate(-35deg);
+    -webkit-transform: rotate(-35deg);
+    -ms-transform:     rotate(-35deg);
+    transform:         rotate(-35deg);
+}
+.ability:hover .diagonal-line-50{
+    -moz-transform:    rotate(-55deg);
+    -o-transform:      rotate(-55deg);
+    -webkit-transform: rotate(-55deg);
+    -ms-transform:     rotate(-55deg);
+    transform:         rotate(-55deg);
+}
+.ability-2 {
+    line-height: 88px;
+}
+.ability-2:hover{
+    text-decoration: line-through;
+}
+
+/*@keyframes ilfate-ani {*/
+    /*0% { transform: rotate(360deg); }*/
+    /*100% { transform: rotate(0deg); }*/
+/*}*/
+/*@-o-keyframes ilfate-ani {*/
+    /*0% { transform: rotate(360deg); }*/
+    /*100% { transform: rotate(0deg); }*/
+/*}*/
+/*@-ms-keyframes ilfate-ani {*/
+    /*0% { transform: rotate(360deg); }*/
+    /*100% { transform: rotate(0deg); }*/
+/*}*/
+/*@-moz-keyframes ilfate-ani {*/
+    /*0% { transform: rotate(360deg); }*/
+    /*100% { transform: rotate(0deg); }*/
+/*}*/
+/*@-webkit-keyframes ilfate-ani {*/
+    /*0% { transform: rotate(360deg); }*/
+    /*100% { transform: rotate(0deg); }*/
+/*}*/
+.ability-3 {
+    font-size:60px;
+
+    /*animation: spin 2s 0s infinite linear reverse;*/
+    /*-o-animation: spin 2s linear 0s infinite reverse;*/
+    /*-ms-animation: spin 2s linear 0s infinite reverse;*/
+    /*-moz-animation: 2s linear 0s reverse none infinite spin;*/
+    /*-webkit-animation: spin 2s linear 0s infinite reverse;*/
+
+    /*animation:         ilfate-ani 2s 1s infinite alternate;*/
+    /*-o-animation:      ilfate-ani 2s 1s infinite alternate;*/
+    /*-ms-animation:     ilfate-ani 2s 1s infinite alternate;*/
+    /*-moz-animation:    ilfate-ani 2s 1s infinite alternate;*/
+    /*-webkit-animation: ilfate-ani 2s 1s infinite alternate;*/
+
+    /*animation-play-state: paused;*/
+    /*-o-animation-play-state: paused;*/
+    /*-ms-animation-play-state: paused;*/
+    /*-moz-animation-play-state: paused;*/
+    /*-webkit-animation-play-state: paused;*/
+}
+.ability-3:hover {
+    /*animation-play-state: running;*/
+    /*-o-animation-play-state: running;*/
+    /*-moz-animation-play-state: running;*/
+    /*-webkit-animation-play-state: running;*/
+}
+
+/*.ability-3:hover{*/
+
+    /*-moz-transform:    rotate(15deg);*/
+    /*-o-transform:      rotate(15deg);*/
+    /*-webkit-transform: rotate(15deg);*/
+    /*-ms-transform:     rotate(15deg);*/
+    /*transform:         rotate(15deg);*/
+/*}*/
+
+/* MODAL */
 .points.points-modal {
     padding-top:100px;
     position: relative;
-}
-.points .btn {
-    background-color: #ffffff;
-    color:#428bca;
-}
-.restart-button {
-    line-height: 80px;
-    font-weight: bold;
-    font-size: 30px;
-    display: none;
 }
 div.points-modal-text{
     font:inherit;
@@ -164,6 +277,16 @@ div.points-modal-text{
 }
 .modal-hidden.right{
     right:10px;
+}
+.points .btn {
+    background-color: #ffffff;
+    color:#428bca;
+}
+.restart-button {
+    line-height: 80px;
+    font-weight: bold;
+    font-size: 30px;
+    display: none;
 }
 
 /*  ADMIN */
@@ -182,4 +305,11 @@ div.points-modal-text{
 }
 .series-block .dz-default{
     display: none;
+}
+
+.color-pallete {
+    color:#069E2D;
+    color:#FF8360;
+    color:#ABCDEF;
+
 }

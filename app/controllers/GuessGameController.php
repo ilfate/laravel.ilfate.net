@@ -13,6 +13,7 @@ class GuessGameController extends \BaseController
     const GAME_TURN_START_TIME = 'turn_start_time';
     const GAME_CURRENT_QUESTION = 'current_question';
     const GAME_POINTS = 'points';
+    const GAME_ABILITIES = 'abilities';
     const GAME_FINISHED = 'finished';
 
     /**
@@ -126,6 +127,45 @@ class GuessGameController extends \BaseController
         return json_encode($return);
     }
 
+    public function ability()
+    {
+        $id = (int) Input::get('id');
+        $game = $this->getGame();
+        if (in_array($id, $game[self::GAME_ABILITIES])) {
+            return '[]';
+        }
+        $game[self::GAME_ABILITIES][] = $id;
+        $game[self::GAME_TURN_START_TIME] = time();
+        $result = [
+            'id' => $id
+        ];
+        switch ($id) {
+            case 1: // 50/50
+                $keysToRemove = [];
+                $options = $game[self::GAME_CURRENT_QUESTION]['options'];
+                for($i = 0; $i < 3; $i++) {
+                    $randKey = array_rand($options);
+                    unset($options[$randKey]);
+                    if ($randKey == $game[self::GAME_CURRENT_QUESTION]['correct']) {
+                        continue;
+                    }
+                    $keysToRemove[] = $randKey;
+                    if (count($keysToRemove) == 2) {
+                        break;
+                    }
+                }
+                $result['wrong'] = $keysToRemove;
+                break;
+            case 2:
+                $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game[self::GAME_TURN]);
+                $result['question'] = $this->exportQuestion($game[self::GAME_CURRENT_QUESTION]);
+                break;
+        }
+
+        $this->saveGame($game);
+        return json_encode($result);
+    }
+
     public function saveName()
     {
         $name            = Input::get('name');
@@ -172,7 +212,8 @@ class GuessGameController extends \BaseController
         }
         $levelConfig = \Config::get('guess.game.levels.' . $currentLevel);
             
-        $typeId = $levelConfig[3][array_rand($levelConfig[3])];
+        $typeId           = $this->getArrayRandomValue($levelConfig[4]);
+        $seriesDifficulty = $this->getArrayRandomValue($levelConfig[2]);
 
         $question = [
             'sec' => $levelConfig[0],
@@ -180,14 +221,14 @@ class GuessGameController extends \BaseController
             'type' => $typeId,
         ];
 
-        $answerSeries = $this->getRandomSeries();
+        $answerSeries = $this->getRandomSeries($seriesDifficulty);
         switch ($typeId) {
             case 1:
-                $imageDifficulty = $levelConfig[2][array_rand($levelConfig[2])];
+                $imageDifficulty = $levelConfig[3][array_rand($levelConfig[3])];
                 $question['picture'] = $this->getPicture($imageDifficulty, $answerSeries['id']);
-                $wrong1 = $this->getRandomSeries([$answerSeries['id']]);
-                $wrong2 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id']]); 
-                $wrong3 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
+                $wrong1 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id']]);
+                $wrong2 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id'], $wrong1['id']]);
+                $wrong3 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
                 $question['all'] = [
                     $answerSeries['name'], 
                     $wrong1['name'],
@@ -197,14 +238,14 @@ class GuessGameController extends \BaseController
                 break;
             case 2:
                 $question['name'] = $answerSeries['name'];
-                $wrong1 = $this->getRandomSeries([$answerSeries['id']]);
-                $wrong2 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id']]);
-                $wrong3 = $this->getRandomSeries([$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
+                $wrong1 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id']]);
+                $wrong2 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id'], $wrong1['id']]);
+                $wrong3 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
                 $question['all'] = [
-                    $this->getPicture($levelConfig[2][array_rand($levelConfig[2])], $answerSeries['id']),
-                    $this->getPicture($levelConfig[2][array_rand($levelConfig[2])], $wrong1['id']),
-                    $this->getPicture($levelConfig[2][array_rand($levelConfig[2])], $wrong2['id']),
-                    $this->getPicture($levelConfig[2][array_rand($levelConfig[2])], $wrong3['id']),
+                    $this->getPicture($this->getArrayRandomValue($levelConfig[3]), $answerSeries['id']),
+                    $this->getPicture($this->getArrayRandomValue($levelConfig[3]), $wrong1['id']),
+                    $this->getPicture($this->getArrayRandomValue($levelConfig[3]), $wrong2['id']),
+                    $this->getPicture($this->getArrayRandomValue($levelConfig[3]), $wrong3['id']),
                 ];
                 break;
             default:
@@ -262,6 +303,7 @@ class GuessGameController extends \BaseController
             self::GAME_CURRENT_QUESTION => false,
             self::GAME_POINTS => 0,
             self::GAME_FINISHED => false,
+            self::GAME_ABILITIES => [],
         ];
     }
 
@@ -276,11 +318,11 @@ class GuessGameController extends \BaseController
         $question = $game[self::GAME_CURRENT_QUESTION];
         if ($seconds > $question['sec']) {
             // user tried to fake the data
-            $seconds = (int) ($question['sec'] * 0.5);
+            $seconds = (int) ($question['sec'] * 0.25);
         }
         $phpSeconds = $question['sec'] - (time() - $game[self::GAME_TURN_START_TIME]);
         if ($phpSeconds + 3 < $seconds) {
-            $seconds = $seconds * 0.75;
+            $seconds = $seconds * 0.25;
         }
         $k = \Config::get('guess.game.levels.' . $question['level'])[1];
         $points = round($k * $seconds, 1);
@@ -288,14 +330,19 @@ class GuessGameController extends \BaseController
         return ['k' => $k, 'seconds' => $seconds];
     }
 
-    protected function getRandomSeries($excludeIds = array())
+    protected function getRandomSeries($difficulty = 1, $excludeIds = array())
     {
-        return Series::getRandomSeries(1, $excludeIds);
+        return Series::getRandomSeries($difficulty, $excludeIds);
     }
 
     protected function getPicture($difficulty, $seriesId = null)
     {
         return SeriesImage::getPicture($difficulty, $seriesId);
+    }
+
+    protected function getArrayRandomValue($array)
+    {
+        return $array[array_rand($array)];
     }
 
     public function admin()
