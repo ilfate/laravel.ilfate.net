@@ -98,7 +98,7 @@ Guess.Game = function () {
         $('.timer .progress-bar').css({'width' : '100%'});
         this.secondsLeft = question.sec;
         $('.timer .seconds .text').html(this.secondsLeft);
-        $('.timer .seconds').css({'background-color': '#069E2D'}).animate({'background-color':'#F21616'}, question.sec * 1000);
+        $('.timer .seconds').css({'background-color': '#069E2D'}).delay(50).animate({'background-color':'#F21616'}, question.sec * 1000);
 
         this.turnStartTime   = new Date();
         if (!isFirstTurn) {
