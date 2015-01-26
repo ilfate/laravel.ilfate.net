@@ -98,8 +98,7 @@ Guess.Game = function () {
         $('.timer .progress-bar').css({'width' : '100%'});
         this.secondsLeft = question.sec;
         $('.timer .seconds .text').html(this.secondsLeft);
-        //.animate({color:'#F21616'}, question.sec * 1000);
-        $('.timer .seconds').animate({'background-color':'#F21616'}, question.sec * 1000);
+        $('.timer .seconds').css({'background-color': '#069E2D'}).animate({'background-color':'#F21616'}, question.sec * 1000);
 
         this.turnStartTime   = new Date();
         if (!isFirstTurn) {
@@ -368,9 +367,8 @@ Guess.Game = function () {
         var percent = 100 - dSec / (this.currentQuestion.sec / 100);
         $('.timer .progress-bar').css({'width' : percent + '%'});
         $('.timer .seconds .text').html(this.secondsLeft);
-
-
     }
+
     this.checkTime = function() {
         var currentTime = new Date();
         var dSec = (currentTime.getTime() - this.turnStartTime.getTime()) / 1000;
