@@ -28,14 +28,17 @@ class SeriesImage extends Eloquent implements RemindableInterface {
 
     protected $guarded = array();
 
-    public static function getPicture($difficulty, $seriesId = null)
+    public static function getPicture($difficulty, $seriesId = null, $excludeIds = array())
     {
         $query = self::where('difficulty', '=', $difficulty);
         if ($seriesId) {
             $query = $query->where('series_id', '=', $seriesId);
         }
+        if ($excludeIds) {
+            $query = $query->whereNotIn('id', $excludeIds);
+        }
         $image = $query->orderByRaw("RAND()")->first();
-        return $image->url;
+        return $image->toArray();
     }
 
 }

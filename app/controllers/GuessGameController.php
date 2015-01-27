@@ -160,6 +160,28 @@ class GuessGameController extends \BaseController
                 $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game[self::GAME_TURN]);
                 $result['question'] = $this->exportQuestion($game[self::GAME_CURRENT_QUESTION]);
                 break;
+            case 3:
+                $levelConfig = $this->getCurrentLevelConfig($game[self::GAME_TURN]);
+                $question = $game[self::GAME_CURRENT_QUESTION];   
+                switch($game[self::GAME_CURRENT_QUESTION]['type']) {
+                    // find new image for every type of question
+                    case 1:// here we need to change image for question
+                        $currentImageId = $question['picture']['id'];
+                        $seriesId = $question['picture']['series_id'];
+                        $imageDifficulty = $levelConfig[3][array_rand($levelConfig[3])];
+
+                        $question['picture'] = $this->getPicture($imageDifficulty, $answerSeries['id'], $currentImageId);
+                        break;
+                    case 2:
+                        foreach ($question['options'] as $key => &$image) {
+                            $imageDifficulty = $levelConfig[3][array_rand($levelConfig[3])];
+                            $image = $this->getPicture($imageDifficulty, $image['series_id'], $image['id']);
+                        }
+                        break;
+                }
+                $game[self::GAME_CURRENT_QUESTION] = $question;
+                $result['question'] = $this->exportQuestion($game[self::GAME_CURRENT_QUESTION]);
+                break;
         }
 
         $this->saveGame($game);
@@ -200,7 +222,7 @@ class GuessGameController extends \BaseController
         $stats->save();
     }
 
-    protected function getNewQuestion($turn) 
+    protected function getCurrentLevelConfig($turn)
     {
         $difficulty = \Config::get('guess.game.difficulty');
         $currentLevel = 0;
@@ -210,7 +232,12 @@ class GuessGameController extends \BaseController
                 break;
             }
         }
-        $levelConfig = \Config::get('guess.game.levels.' . $currentLevel);
+        return \Config::get('guess.game.levels.' . $currentLevel);
+    }
+
+    protected function getNewQuestion($turn) 
+    {
+        $currentLevel = $this->getCurrentLevelConfig($turn);
             
         $typeId           = $this->getArrayRandomValue($levelConfig[4]);
         $seriesDifficulty = $this->getArrayRandomValue($levelConfig[2]);
@@ -276,10 +303,13 @@ class GuessGameController extends \BaseController
         ];
         switch($question['type']) {
             case 1:
-                $toExport['picture'] = $question['picture'];
+                $toExport['picture'] = $question['picture']['url'];
                 break;
             case 2:
                 $toExport['name'] = $question['name'];
+                foreach ($toExport['options'] as $key => &$value) {
+                    $value = $value['url'];
+                }
                 break;
         }
         return $toExport;
@@ -335,9 +365,9 @@ class GuessGameController extends \BaseController
         return Series::getRandomSeries($difficulty, $excludeIds);
     }
 
-    protected function getPicture($difficulty, $seriesId = null)
+    protected function getPicture($difficulty, $seriesId = null, $excludeIds = array())
     {
-        return SeriesImage::getPicture($difficulty, $seriesId);
+        return SeriesImage::getPicture($difficulty, $seriesId, $excludeIds);
     }
 
     protected function getArrayRandomValue($array)

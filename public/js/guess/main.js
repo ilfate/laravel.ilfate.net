@@ -207,7 +207,7 @@ Guess.Game = function () {
                 this.restartTimer();
                 var wrong1 = data.wrong[0];
                 var wrong2 = data.wrong[1];
-                $('.answer.id-' + wrong1 + ', .answer.id-' + wrong2).animate({'opacity':0}, 300);
+                $('.answer.id-' + wrong1 + ', .answer.id-' + wrong2).off().animate({'opacity':0}, 300);
                 break;
             case 2:
                 this.currentQuestion = data.question;
