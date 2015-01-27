@@ -17,33 +17,15 @@ class GuessGameController extends \BaseController
     const GAME_FINISHED = 'finished';
 
     /**
-     *
-     */
-    public function __construct()
-    {
-
-    }
-
-    /**
      * Display a listing of the games.
      *
      * @return Response
      */
     public function index()
     {
-        // $game = ['asdasd', 'awdawdwddddd'];
-        // $this->saveGame($game);
-        // $game = $this->getGame();
-        // return json_encode($game);
-
-        // $game = $this->getGame();
-        // if (!empty($game[self::GAME_STARTED])) {
         $game = $this->createGame();
-        // } 
-        //if (!$game[self::GAME_CURRENT_QUESTION]) {
         $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game['turn']);
         $this->saveGame($game);
-        //}
 
         if ($game['turn'] == 1) {
             $firstQuestion = json_encode($this->exportQuestion($game[self::GAME_CURRENT_QUESTION]));
@@ -67,9 +49,7 @@ class GuessGameController extends \BaseController
         $game[self::GAME_START_TIME] = time();
         $game[self::GAME_TURN_START_TIME] = time();
         $this->saveGame($game);
-        $game = $this->getGame();
-        return json_encode($game);
-        // return [];
+        return [];
     }
 
     public function answer()
@@ -161,8 +141,9 @@ class GuessGameController extends \BaseController
                 $result['question'] = $this->exportQuestion($game[self::GAME_CURRENT_QUESTION]);
                 break;
             case 3:
-                $levelConfig = $this->getCurrentLevelConfig($game[self::GAME_TURN]);
-                $question = $game[self::GAME_CURRENT_QUESTION];   
+                $currentLevel = $this->getCurrentLevelConfig($game[self::GAME_TURN]);
+                $levelConfig  = \Config::get('guess.game.levels.' . $currentLevel);
+                $question     = $game[self::GAME_CURRENT_QUESTION];
                 switch($game[self::GAME_CURRENT_QUESTION]['type']) {
                     // find new image for every type of question
                     case 1:// here we need to change image for question
@@ -170,12 +151,12 @@ class GuessGameController extends \BaseController
                         $seriesId = $question['picture']['series_id'];
                         $imageDifficulty = $levelConfig[3][array_rand($levelConfig[3])];
 
-                        $question['picture'] = $this->getPicture($imageDifficulty, $answerSeries['id'], $currentImageId);
+                        $question['picture'] = $this->getPicture($imageDifficulty, $seriesId, [$currentImageId]);
                         break;
                     case 2:
-                        foreach ($question['options'] as $key => &$image) {
+                        foreach ($question['options'] as &$image) {
                             $imageDifficulty = $levelConfig[3][array_rand($levelConfig[3])];
-                            $image = $this->getPicture($imageDifficulty, $image['series_id'], $image['id']);
+                            $image = $this->getPicture($imageDifficulty, $image['series_id'], [$image['id']]);
                         }
                         break;
                 }
@@ -232,14 +213,15 @@ class GuessGameController extends \BaseController
                 break;
             }
         }
-        return \Config::get('guess.game.levels.' . $currentLevel);
+        return $currentLevel;
     }
 
     protected function getNewQuestion($turn) 
     {
         $currentLevel = $this->getCurrentLevelConfig($turn);
-            
-        $typeId           = $this->getArrayRandomValue($levelConfig[4]);
+        $levelConfig = \Config::get('guess.game.levels.' . $currentLevel);
+
+            $typeId           = $this->getArrayRandomValue($levelConfig[4]);
         $seriesDifficulty = $this->getArrayRandomValue($levelConfig[2]);
 
         $question = [
@@ -289,7 +271,6 @@ class GuessGameController extends \BaseController
             }
         }
         unset($question['all']);
-        //shuffle($question['all']);
         return $question;
     }
 

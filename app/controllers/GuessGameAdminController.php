@@ -95,6 +95,14 @@ class GuessGameAdminController extends \BaseController
         }
     }
 
+    public function seriesInfo($id)
+    {
+        $id = (int) $id;
+        $images = SeriesImage::where('series_id', '=', $id)->get();
+        View::share('images', $images->toArray());
+        return View::make('games.guess.admin.series');
+    }
+
     public function generateImages()
     {
         $seriesId = Input::get('seriesId', null);

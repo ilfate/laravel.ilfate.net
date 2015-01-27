@@ -51,6 +51,7 @@ Route::get('GuessSeries/admin', 'GuessGameAdminController@index');
 Route::any('GuessSeries/admin/addSeries', 'GuessGameAdminController@addSeries');
 Route::any('GuessSeries/admin/addImage', 'GuessGameAdminController@addImage');
 Route::any('GuessSeries/admin/generateImages', 'GuessGameAdminController@generateImages');
+Route::any('GuessSeries/admin/series/{id}', 'GuessGameAdminController@seriesInfo');
 
 Route::get('tcg/me', 'TcgPlayerController@index');
 Route::get('tcg/register', 'TcgPlayerController@registerForm');

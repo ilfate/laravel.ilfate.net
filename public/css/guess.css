@@ -50,6 +50,13 @@
     margin: 5px auto;
     background-color: #a6a6a6;
 }
+.single-picture-overlay {
+    width:600px;
+    height: 337px;
+    background-repeat: no-repeat;
+    position: absolute;
+    z-index: 25;
+}
 
 div.answer {
     height:100px;
@@ -71,6 +78,16 @@ div.answer.image{
     background-size: 130%;
     background-position: center;
 }
+.four-images-overlay {
+    height:247px;
+    width:100%;
+    position: absolute;
+    background-repeat: no-repeat;
+    background-size: 130%;
+    background-position: center;
+    left:0;
+}
+
 .options.names {
     min-height:200px;
     position: relative;

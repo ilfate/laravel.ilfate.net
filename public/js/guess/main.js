@@ -53,7 +53,8 @@ Guess.Game = function () {
     this.gameFinished = false;
     this.userName = false;
 
-    this.skipAbilityWasUsed = false;
+    this.pointsAnimationEnabled = true;
+    this.isSwitchImages = false;
 
     this.isTimeLimited = true;
     this.turnStartTime = {};
@@ -107,6 +108,41 @@ Guess.Game = function () {
             this.drawQuestion(question);
             $('.to-delete').remove();
         }
+    }
+    this.switchImagesAction = function() {
+        this.nextImagesLoaded = false;
+        this.nextAnimationsEnded = false;
+        this.isSwitchImages = false;
+
+        switch(this.currentQuestion.type) {
+            case 1:
+                $('.single-picture-overlay').css('background-image', $('.single-picture').css('background-image'));
+                $('.single-picture').css({'background-image': 'url("/images/game/guess/' + this.currentQuestion.picture + '")'});
+                $('.single-picture-overlay').animate({opacity:0}, {'duration':1000, complete:function(){
+                    $(this).css({
+                        'background-image': '',
+                        opacity: 1
+                    });
+                }});
+                break;
+            case 2:
+                for(var i = 0; i < 4; i++) {
+                    var key = '.answer.id-' + i + ' .four-images-overlay';
+                    $(key).css('background-image', $('.answer.id-' + i).css('background-image'));
+                    $('.answer.id-' + i).css({'background-image': 'url("/images/game/guess/' + this.currentQuestion.options[i] + '")'});
+                    $(key).animate({opacity:0}, {'duration':1000, complete:function(){
+                        $(this).css({
+                            'background-image': '',
+                            opacity: 1
+                        });
+                    }});
+                }
+                break;
+        }
+        setTimeout(function(){
+            Guess.Game.restartTimer();
+        },500);
+        $('.to-delete').remove();
     }
 
 	this.drawQuestion = function(question) {
@@ -212,7 +248,12 @@ Guess.Game = function () {
             case 2:
                 this.currentQuestion = data.question;
                 this.nextAnimationsEnded = true;
-                this.skipAbilityWasUsed = true;
+                this.pointsAnimationEnabled = false;
+                this.prepareToStartTurn(data.question);
+                break;
+            case 3:
+                this.currentQuestion = data.question;
+                this.isSwitchImages = true;
                 this.prepareToStartTurn(data.question);
                 break;
         }
@@ -262,7 +303,9 @@ Guess.Game = function () {
         if (Guess.Game.countImagesToLoad == 0) {
             Guess.Game.nextImagesLoaded = true;
         }
-        if (Guess.Game.nextImagesLoaded && Guess.Game.nextAnimationsEnded) {
+        if (Guess.Game.nextImagesLoaded && Guess.Game.isSwitchImages) {
+            Guess.Game.switchImagesAction();
+        } else if (Guess.Game.nextImagesLoaded && Guess.Game.nextAnimationsEnded) {
             Guess.Game.showQuestionResult();
         }
     }
@@ -303,7 +346,7 @@ Guess.Game = function () {
 
     this.showQuestionResult = function() {
         $('.question').animate({opacity:0}, {duration:1100, complete:function(){Guess.Game.startTurn(false)}});
-        if (!this.skipAbilityWasUsed) {
+        if (this.pointsAnimationEnabled) {
             var k = this.resultK;
             var sec = this.resultSec;
             var points = k * sec;
@@ -324,7 +367,7 @@ Guess.Game = function () {
                     $(this).hide();
                 }});
         } else {
-            this.skipAbilityWasUsed = false;
+            this.pointsAnimationEnabled = true;
         }
     }
 

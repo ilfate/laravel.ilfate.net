@@ -4,6 +4,7 @@
     <div class="question" >
 
         <div class="image single-picture" style="background-image: url('/images/game/guess/{{question.picture}}')">
+            <div class="single-picture-overlay"></div>
         </div>
         <div class="options names">
             <div class="row">
