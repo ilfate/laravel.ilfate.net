@@ -221,7 +221,7 @@ class GuessGameController extends \BaseController
         $currentLevel = $this->getCurrentLevelConfig($turn);
         $levelConfig = \Config::get('guess.game.levels.' . $currentLevel);
 
-            $typeId           = $this->getArrayRandomValue($levelConfig[4]);
+        $typeId           = $this->getArrayRandomValue($levelConfig[4]);
         $seriesDifficulty = $this->getArrayRandomValue($levelConfig[2]);
 
         $question = [
@@ -230,14 +230,15 @@ class GuessGameController extends \BaseController
             'type' => $typeId,
         ];
 
-        $answerSeries = $this->getRandomSeries($seriesDifficulty);
+        $answerSeries = $this->getRandomSeries(false);
         switch ($typeId) {
             case 1:
                 $imageDifficulty = $levelConfig[3][array_rand($levelConfig[3])];
                 $question['picture'] = $this->getPicture($imageDifficulty, $answerSeries['id']);
-                $wrong1 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id']]);
-                $wrong2 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id'], $wrong1['id']]);
-                $wrong3 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
+                //$this->getArrayRandomValue($levelConfig[2])
+                $wrong1 = $this->getRandomSeries(false, [$answerSeries['id']]);
+                $wrong2 = $this->getRandomSeries(false, [$answerSeries['id'], $wrong1['id']]);
+                $wrong3 = $this->getRandomSeries(false, [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
                 $question['all'] = [
                     $answerSeries['name'], 
                     $wrong1['name'],
@@ -247,9 +248,10 @@ class GuessGameController extends \BaseController
                 break;
             case 2:
                 $question['name'] = $answerSeries['name'];
-                $wrong1 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id']]);
-                $wrong2 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id'], $wrong1['id']]);
-                $wrong3 = $this->getRandomSeries($this->getArrayRandomValue($levelConfig[2]), [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
+                //$this->getArrayRandomValue($levelConfig[2])
+                $wrong1 = $this->getRandomSeries(false, [$answerSeries['id']]);
+                $wrong2 = $this->getRandomSeries(false, [$answerSeries['id'], $wrong1['id']]);
+                $wrong3 = $this->getRandomSeries(false, [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
                 $question['all'] = [
                     $this->getPicture($this->getArrayRandomValue($levelConfig[3]), $answerSeries['id']),
                     $this->getPicture($this->getArrayRandomValue($levelConfig[3]), $wrong1['id']),
@@ -341,7 +343,7 @@ class GuessGameController extends \BaseController
         return ['k' => $k, 'seconds' => $seconds];
     }
 
-    protected function getRandomSeries($difficulty = 1, $excludeIds = array())
+    protected function getRandomSeries($difficulty = false, $excludeIds = array())
     {
         return Series::getRandomSeries($difficulty, $excludeIds);
     }

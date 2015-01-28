@@ -28,9 +28,12 @@ class Series extends Eloquent implements RemindableInterface {
 
     protected $guarded = array();
 
-    public static function getRandomSeries($difficulty = 1, $exclude = array())
+    public static function getRandomSeries($difficulty = false, $exclude = array())
     {
-        $query = self::where('difficulty', '=', $difficulty);
+        $query = self::where('active', '=', 1);
+        if ($difficulty) {
+        	$query = $query->where('difficulty', '=', $difficulty);
+        }
         if ($exclude) {
             $query = $query->whereNotIn('id', $exclude);
         }
