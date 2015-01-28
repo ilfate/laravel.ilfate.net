@@ -30,7 +30,7 @@ class SeriesImage extends Eloquent implements RemindableInterface {
 
     public static function getPicture($difficulty, $seriesId = null, $excludeIds = array())
     {
-        $query = self::where('difficulty', '=', $difficulty);
+        $query = self::select('id', 'url', 'series_id', 'difficulty')->where('difficulty', '=', $difficulty);
         if ($seriesId) {
             $query = $query->where('series_id', '=', $seriesId);
         }

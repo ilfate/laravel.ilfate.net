@@ -99,8 +99,25 @@ class GuessGameAdminController extends \BaseController
     {
         $id = (int) $id;
         $images = SeriesImage::where('series_id', '=', $id)->get();
-        View::share('images', $images->toArray());
+        $sortedImages = [];
+        foreach ($images as $value) {
+            $sortedImages[$value['difficulty']][] = $value->toArray();
+        }
+        View::share('images', $sortedImages);
+        View::share('seriesId', $id);
         return View::make('games.guess.admin.series');
+    }
+
+    public function deleteImage($id)
+    {
+        $image = SeriesImage::select('id', 'url', 'series_id')->find($id)->first();
+        $filename = public_path() . self::PATH_TO_FILES . $image->url;
+        if (file_exists($filename)) {
+            unlink($filename);
+            SeriesImage::where('id', '=', $id)->delete();
+            return Redirect::to('GuessSeries/admin/series/' . $image->series_id);
+        }
+        return Redirect::to('GuessSeries/admin/');
     }
 
     public function generateImages()
@@ -109,7 +126,7 @@ class GuessGameAdminController extends \BaseController
         if ($seriesId) {
             $images = SeriesImage::where('series_id', '=', $seriesId)->get();
             foreach ($images as $image) {
-                file_put_contents(public_path() . '/images/game/guess/' . $image->url, $image->image);
+                file_put_contents(public_path() . self::PATH_TO_FILES . $image->url, $image->image);
                 //file_put_contents(/home/ilfate/www/php/ilfate.net/public/images/game/guess/SLKdXTrglwvDm3ia.jpg): failed to open stream: Permission denied
             }
         }

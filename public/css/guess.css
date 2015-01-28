@@ -164,6 +164,7 @@ div.answer.image{
     margin: 0 auto;
     left:0;
     right:0;
+    opacity: 0.2;
 }
 .ability {
     /*display: none;*/
@@ -323,10 +324,18 @@ div.points-modal-text{
 .series-block .dz-default{
     display: none;
 }
+.admin-series-image {
+    width:300px;
+}
+.admin-series-image:active {
+    width:600px;   
+}
+
+
+/* COLOR PALLETE */
 
 .color-pallete {
     color:#069E2D;
     color:#FF8360;
     color:#ABCDEF;
-
 }
