@@ -24,8 +24,7 @@
 
 <h3>Controls</h3>
 <a class="btn btn-primary" href="/GuessSeries/admin">Back</a><br><br>
-<a class="btn btn-primary" href="/GuessSeries/admin/series/toggle?id={{{$seriesId}}}">Disable</a><br><br>
-<a class="btn btn-primary" href="/GuessSeries/admin/series/toggle?id={{{$seriesId}}}">Enable</a><br><br>
+<a class="btn btn-primary" href="/GuessSeries/admin/series/toggle/{{{$seriesId}}}">Toggle Active</a><br><br>
 
 
 @stop

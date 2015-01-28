@@ -317,12 +317,16 @@ div.points-modal-text{
     border-radius: 5px;
     color:#ffffff;
 }
-.series-block h4{
+.series-block h4 a{
     font-weight: bold;
     font-size: 36px;
+    color: #ffffff;
 }
 .series-block .dz-default{
     display: none;
+}
+.series-block .disabled {
+    color:#FF8360;
 }
 .admin-series-image {
     width:300px;

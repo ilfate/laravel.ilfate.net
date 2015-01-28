@@ -12,7 +12,18 @@ class CreateImagesStats extends Migration {
 	 */
 	public function up()
 	{
-		//
+        Schema::dropIfExists('images_stats');
+        Schema::create('images_stats', function($table)
+        {
+            $table->engine = 'InnoDB';
+
+            $table->increments('id');
+
+            $table->integer('images_id')->unsigned();
+            $table->integer('type')->unsigned()->nullable();
+            $table->timestamps();
+            $table->index('images_id');
+        });
 	}
 
 	/**

@@ -110,13 +110,25 @@ class GuessGameAdminController extends \BaseController
 
     public function deleteImage($id)
     {
-        $image = SeriesImage::select('id', 'url', 'series_id')->find($id)->first();
+        $image = SeriesImage::select('id', 'url', 'series_id')->where('id', $id)->first();
         $filename = public_path() . self::PATH_TO_FILES . $image->url;
+        $seriesId = $image->series_id;
         if (file_exists($filename)) {
             unlink($filename);
             SeriesImage::where('id', '=', $id)->delete();
-            return Redirect::to('GuessSeries/admin/series/' . $image->series_id);
+            return Redirect::to('GuessSeries/admin/series/' . $seriesId);
         }
+        return Redirect::to('GuessSeries/admin/');
+    }
+
+    public function toggleActive($id) {
+        $series = Series::where('id', $id)->first();
+        if ($series->active) {
+            $series->active = 0;
+        } else {
+            $series->active = 1;
+        }
+        $series->save();
         return Redirect::to('GuessSeries/admin/');
     }
 

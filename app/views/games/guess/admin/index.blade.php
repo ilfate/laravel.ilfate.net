@@ -7,8 +7,11 @@
         <form method="post" class="series-block dropzone" action="/GuessSeries/admin/addImage">
             <input type="hidden" name="id" value="{{$serie->id}}" />
             <input type="hidden" class="difficulty-input" name="difficulty" value="1" />
-            <a href="/GuessSeries/admin/series/{{$serie->id}}">open</a>
-            <h4>{{$serie->name}}</h4>
+            <h4>
+                <a class="{{$serie->active == 0 ? 'disabled': ''}}" href="/GuessSeries/admin/series/{{$serie->id}}">
+                    {{$serie->name}}
+                </a>
+            </h4>
             <a onclick="Guess.Game.seriesImagesGenerate({{$serie->id}})">generate</a>
 
         </form>
