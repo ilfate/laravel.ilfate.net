@@ -17,6 +17,7 @@
 	            <a href="/GuessSeries/admin/deleteImage/{{$image['id']}}">Delete</a>
 	        </div>
 	    @endforeach
+        <div class="clear"></div>
 	</form>
     @endforeach
 @endif

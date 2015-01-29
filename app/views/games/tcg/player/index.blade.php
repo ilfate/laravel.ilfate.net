@@ -31,6 +31,8 @@ name - {{$player['name']}}
 @else
 <a class="btn btn-primary" href="/tcg/logout">Log out</a><br><br>
 <a class="btn btn-primary" href="/tcg/findBattle">Find Battle</a><br><br>
+
+<a class="btn btn-primary" href="/GuessSeries/admin">Series Admin</a><br><br>
 @endif
 
 @stop

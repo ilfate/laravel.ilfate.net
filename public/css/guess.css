@@ -59,6 +59,13 @@
 }
 
 div.answer {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     height:100px;
     text-align: center;
     cursor: pointer;
@@ -159,24 +166,21 @@ div.answer.image{
 
 
 .ability-container {
-    width:100px;
-    position:absolute;
-    margin: 0 auto;
-    left:0;
-    right:0;
-    opacity: 0.2;
+    position: relative;
+    height:100px;
+    margin-top: 50px;
 }
 .ability {
-    /*display: none;*/
+    position: absolute;
     background-color: #069E2D;
     width: 100px;
     height: 100px;
-    margin-top: 50px;
-    float: left;
-    position: relative;
+    margin: 0 auto;
+    left:0;right:0;
     font-size: 36px;
     font-weight: bold;
     text-align: center;
+    opacity: 0.2;
 }
 .ability:hover{
     background-color: #069E2D;
@@ -333,6 +337,8 @@ div.points-modal-text{
     min-width: 600px;
     background-color: #c4c2d6;
     border-radius: 20px;
+    display: block;
+    position: relative;
 }
 .admin-series-image {
     width:300px;
