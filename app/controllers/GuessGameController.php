@@ -83,7 +83,7 @@ class GuessGameController extends \BaseController
             ];
             $game[self::GAME_FINISHED] = true;
             $this->saveGame($game);
-            $this->saveResults();
+            $this->saveResults($game[self::GAME_CURRENT_QUESTION]);
             return json_encode($return);
         }
     }
@@ -103,7 +103,7 @@ class GuessGameController extends \BaseController
         ];
         $game[self::GAME_FINISHED] = true;
         $this->saveGame($game);
-        $this->saveResults();
+        $this->saveResults($game[self::GAME_CURRENT_QUESTION]);
         return json_encode($return);
     }
 
@@ -189,7 +189,7 @@ class GuessGameController extends \BaseController
         return '{"actions": ["Guess.Game.hideNameForm"]}';
     }
 
-    protected function saveResults()
+    protected function saveResults($question)
     {
         $name     = Session::get('userName', null);
         $game = $this->getGame();
@@ -201,6 +201,20 @@ class GuessGameController extends \BaseController
         $stats->laravel_session = md5(Cookie::get('laravel_session'));
         $stats->name = $name;
         $stats->save();
+
+        switch($question['type']) {
+            case 1:
+                $imageId = $question['picture']['id'];
+                break;
+            case 2:
+                $imageId = $question['options'][$question['correct']]['id'];
+                break;
+        }
+        
+        $imageStats = new ImagesStats();
+        $imageStats->image_id = $imageId;
+        $imageStats->type = 1;
+        $imageStats->save();
     }
 
     protected function getCurrentLevelConfig($turn)

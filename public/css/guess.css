@@ -322,11 +322,17 @@ div.points-modal-text{
     font-size: 36px;
     color: #ffffff;
 }
-.series-block .dz-default{
-    display: none;
-}
 .series-block .disabled {
     color:#FF8360;
+}
+.series-difficulty-block  .dz-default, .series-block .dz-default{
+    display: none;
+}
+.series-difficulty-block {
+    min-height: 300px;
+    min-width: 600px;
+    background-color: #c4c2d6;
+    border-radius: 20px;
 }
 .admin-series-image {
     width:300px;

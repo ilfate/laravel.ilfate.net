@@ -4,11 +4,11 @@
 
 @if (!empty($series))
     @foreach ($series as $serie)
-        <form method="post" class="series-block dropzone" action="/GuessSeries/admin/addImage">
+        <form method="post" class="series-block {{$editAllowed? 'dropzone' : ''}}" action="/GuessSeries/admin/addImage">
             <input type="hidden" name="id" value="{{$serie->id}}" />
             <input type="hidden" class="difficulty-input" name="difficulty" value="1" />
             <h4>
-                <a class="{{$serie->active == 0 ? 'disabled': ''}}" href="/GuessSeries/admin/series/{{$serie->id}}">
+                <a class="{{$serie->active == 0 || !$editAllowed ? 'disabled': ''}}" href="/GuessSeries/admin/series/{{$serie->id}}">
                     {{$serie->name}}
                 </a>
             </h4>

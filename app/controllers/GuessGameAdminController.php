@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Session;
 class GuessGameAdminController extends \BaseController
 {
     const PATH_TO_FILES = '/images/game/guess/';
+    const USER_EDIT_RIGHTS = 2;
+
     /**
      *
      */
@@ -35,6 +37,9 @@ class GuessGameAdminController extends \BaseController
 //        View::share('page_title', 'Guess series game');
 
         $series = Series::orderBy('name')->get();
+        $user = User::getUser();
+        $editAllowed = $this->checkForUserEditRights($user);
+        View::share('editAllowed', $editAllowed);
         View::share('series', $series);
 
         return View::make('games.guess.admin.index');
@@ -44,6 +49,10 @@ class GuessGameAdminController extends \BaseController
 
     public function addSeries()
     {
+        $user = User::getUser();
+        if (!$this->checkForUserEditRights($user)) {
+            return Redirect::to('tcg/login');
+        }
         if (Request::getMethod() == 'POST') {
             $series = new Series();
             $series->name = Input::get('name');
@@ -60,6 +69,10 @@ class GuessGameAdminController extends \BaseController
 
     public function addImage()
     {
+        $user = User::getUser();
+        if (!$this->checkForUserEditRights($user)) {
+            return Response::json('forbidden', 400);
+        }
         $seriesId = Input::get('id');
         $difficulty = Input::get('difficulty') ?: 1;
         if (!$seriesId) {
@@ -97,9 +110,13 @@ class GuessGameAdminController extends \BaseController
 
     public function seriesInfo($id)
     {
+        $user = User::getUser();
+        if (!$this->checkForUserEditRights($user)) {
+            return Redirect::to('tcg/login');
+        }
         $id = (int) $id;
         $images = SeriesImage::where('series_id', '=', $id)->get();
-        $sortedImages = [];
+        $sortedImages = [1 => [], 2 => [], 3 => []];
         foreach ($images as $value) {
             $sortedImages[$value['difficulty']][] = $value->toArray();
         }
@@ -110,6 +127,11 @@ class GuessGameAdminController extends \BaseController
 
     public function deleteImage($id)
     {
+        $user = User::getUser();
+        if (!$this->checkForUserEditRights($user)) {
+            return Response::json('forbidden', 400);
+        }
+
         $image = SeriesImage::select('id', 'url', 'series_id')->where('id', $id)->first();
         $filename = public_path() . self::PATH_TO_FILES . $image->url;
         $seriesId = $image->series_id;
@@ -122,6 +144,11 @@ class GuessGameAdminController extends \BaseController
     }
 
     public function toggleActive($id) {
+        $user = User::getUser();
+        if (!$this->checkForUserEditRights($user)) {
+            return Redirect::to('tcg/login');
+        }
+
         $series = Series::where('id', $id)->first();
         if ($series->active) {
             $series->active = 0;
@@ -134,6 +161,11 @@ class GuessGameAdminController extends \BaseController
 
     public function generateImages()
     {
+        $user = User::getUser();
+        if (!$this->checkForUserEditRights($user)) {
+            return Response::json('forbidden', 400);
+        }
+        
         $seriesId = Input::get('seriesId', null);
         if ($seriesId) {
             $images = SeriesImage::where('series_id', '=', $seriesId)->get();
@@ -142,5 +174,13 @@ class GuessGameAdminController extends \BaseController
                 //file_put_contents(/home/ilfate/www/php/ilfate.net/public/images/game/guess/SLKdXTrglwvDm3ia.jpg): failed to open stream: Permission denied
             }
         }
+    }
+
+    public function checkForUserEditRights($user)
+    {
+        if ($user->rights < self::USER_EDIT_RIGHTS) {
+            return false;
+        }
+        return true;
     }
 }

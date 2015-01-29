@@ -5,14 +5,19 @@
 @if (!empty($images))
 	@foreach ($images as $difficulty => $imagesGroup)
 	<div class="clear"></div>
-	<h1>{{$difficulty}}</h1>
+	<form method="post" class="series-difficulty-block dropzone" action="/GuessSeries/admin/addImage">
+        <input type="hidden" name="id" value="{{$seriesId}}" />
+        <input type="hidden" class="difficulty-input" name="difficulty" value="{{$difficulty}}" />
+
+        
+		<h1>{{$difficulty}}</h1>
 	    @foreach ($imagesGroup as $image)
-	        <form method="post" class="ajax series-block" action="/GuessSeries/admin/imageUpdate">
+	    	<div class="series-block">
 	        	<img class="admin-series-image" src="/images/game/guess/{{$image['url']}}" />
-	            <input type="hidden" class="difficulty-input" name="difficulty" value="1" />
 	            <a href="/GuessSeries/admin/deleteImage/{{$image['id']}}">Delete</a>
-	        </form>
+	        </div>
 	    @endforeach
+	</form>
     @endforeach
 @endif
 
