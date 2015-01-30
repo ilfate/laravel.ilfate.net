@@ -34,6 +34,10 @@ $(document).ready(function() {
 
 
 Guess.Game = function () {
+    this.color = {
+        'blue' : '#428BCA',
+        'green' : '#069E2D'
+    };
 	this.nextQuestion = [];
 	this.questionNumber = 1;
     this.queue = {};
