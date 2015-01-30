@@ -79,14 +79,13 @@ Guess.Game = function () {
 		// animation will be here
 		//$('.game-container').show();
 		$('#start-game').animate({
-            backgroundColor: "#abcdef",
+            backgroundColor: "#529BCA",
             width:'100%'
         }, 500, function() {
             $('.game-container').fadeIn(500);
             Guess.Game.startTurn(true);
         } );
         $('#start-game').animate({
-            backgroundColor: "#abcdef",
             height:'500px',
             top:'0',
             opacity:0,
@@ -364,7 +363,7 @@ Guess.Game = function () {
                 .css({right:'-30px', opacity:1})
                 .animate({right:'40%', opacity:0.7},
                 {duration:500, complete:function(){
-                    $('.points-amount').html(Guess.Game.pointsAmount).css({'font-size':'36px', color:'#FFD416'}).animate({'font-size':'20px', color:'#000000'}, 500);
+                    $('.points-amount').html(Guess.Game.pointsAmount).css({'font-size':'36px', color:'#FFD416'}).animate({'font-size':'20px', color:'#ffffff'}, 500);
                     $(this).hide();
                 }});
         } else {
@@ -493,7 +492,7 @@ Guess.Game = function () {
     }
 
     this.answerButtonMouseOver = function(el) {
-        $('.answer .block').css({'background-color':'#abcdef'});
+        $('.answer .block').css({'background-color':'#529BCA'});
         el.bounce();
         el.animate({'background-color':'#069E2D'}, {
             queue:false,
@@ -502,7 +501,7 @@ Guess.Game = function () {
     }
     this.answerButtonMouseOut = function(el) {
         el.stop();
-        el.css({'background-color':'#abcdef'});
+        el.css({'background-color':'#529BCA'});
     }
 
     this.answerImageMouseOver = function(el) {
