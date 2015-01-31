@@ -19,12 +19,17 @@
     background-color:#069E2D;
 }
 
+body {
+    background-color: #F3FCF0;
+}
+
 .sidebar-col {
     /*background-color: #abcdef;*/
-    background-color: #529BCA;
+    border:30px solid #529BCA;
+    /*background-color: #529BCA;*/
     border-radius: 10px;
     margin-top: 20px;
-    min-height: 542px;
+    min-height: 560px;
 }
 
 .turn-area {
@@ -48,7 +53,7 @@
     font-weight: bold;
 }
 .question {
-    min-height:542px;
+    min-height:560px;
 }
 .question .image.single-picture {
     width:600px;
@@ -77,7 +82,7 @@ div.answer {
     text-align: center;
     cursor: pointer;
     color:#ffffff;
-    text-shadow: 1px 1px #000000;
+    text-shadow: 1px 1px #584D3D;
 }
 .answer .block {
     background-color: #529BCA;
@@ -103,6 +108,9 @@ div.answer.image{
     background-position: center;
     left:0;
 }
+.question .options {
+    margin-top: 16px;
+}
 
 .options.names {
     min-height:200px;
@@ -113,6 +121,12 @@ div.answer.image{
     text-align: center;
     font-size: 30px;
     font-weight: bold;
+}
+.question.four-images {
+    padding: 0 10px;
+}
+.name-options-second-row {
+    margin-top: 7px;
 }
 
 .info-row {
@@ -131,12 +145,16 @@ div.answer.image{
 .points .points-amount {
     font-weight: bold;
     font-size: 20px;
+    text-shadow: 1px 1px #584D3D;
 }
 .points .add-points{
     position: absolute;
     font-weight: bold;
     font-size: 20px;
     color:#069E2D;
+}
+.points .points-amount .left, .points .points-amount .right{
+    text-shadow: 0 0 #ffffff;
 }
 
 .timer .progress {
@@ -161,7 +179,7 @@ div.answer.image{
     text-align: center;
     line-height: 40px;
     z-index: 30;
-    color:#000000;
+    color:#584D3D;
     /*background-color: #FFD416;*/
     background-color: #069E2D;
     border-radius: 5px;
@@ -313,12 +331,31 @@ div.points-modal-text{
 .points .btn {
     background-color: #ffffff;
     color:#529BCA;
+    font-weight: bold;
 }
 .restart-button {
     line-height: 80px;
     font-weight: bold;
     font-size: 30px;
     display: none;
+}
+.stats-table {
+    display: none;
+    margin-bottom: 0;
+}
+.stats-table-title {
+    text-align: center;
+}
+.stats-table-more-button {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    padding-bottom: 0 !important;
+}
+.stats-table-more-button a {
+    /*color:#069E2D;*/
+    font-weight: bold;
+    font-size: 18px;
 }
 
 /*  ADMIN */
@@ -366,4 +403,7 @@ div.points-modal-text{
     color: #529BCA;
     color:#FF8360;
     color:#ABCDEF;
+    color:#584D3D; /*black*/
+    color:#EF8354; /* orange */
+
 }

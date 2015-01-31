@@ -21,17 +21,17 @@ class GuessStats extends Eloquent {
 	 */
 	protected $hidden = array();
 
-	public function getTopStatistic($period = array())
+	public static function getTopStatistic($period = array())
 	{
-		$query = self::select('name, ip, answers, points')
+		$query = self::select('name', 'answers', 'points')
             ->orderBy('points', 'desc')
             ->limit(10);
         if ($period) {
         	$from = date( 'Y-m-d H:i:s', $period[0]);
   			$to = date( 'Y-m-d  H:i:s', $period[1]);
-        	$query = $query->whereBetween('date', array($from, $to))
+        	$query = $query->whereBetween('created_at', array($from, $to));
         }    
-        retturn $query->get();
+        return $query->get();
 	}
 
 }

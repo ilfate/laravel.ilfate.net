@@ -36,7 +36,12 @@ $(document).ready(function() {
 Guess.Game = function () {
     this.color = {
         'blue' : '#428BCA',
-        'green' : '#069E2D'
+        'green' : '#069E2D',
+        'yellow' : '#FFD416',
+        'red' : '#F21616',
+        'orange' : '#EF8354',
+        'black' : '#584D3D',
+        'white' : '#FFFFFF'
     };
 	this.nextQuestion = [];
 	this.questionNumber = 1;
@@ -56,6 +61,7 @@ Guess.Game = function () {
     this.correctAnswer = false;
     this.gameFinished = false;
     this.userName = false;
+    this.stats = [];
 
     this.pointsAnimationEnabled = true;
     this.isSwitchImages = false;
@@ -225,6 +231,7 @@ Guess.Game = function () {
             this.correctAnswersNumber = data.correctAnswersNumber;
             this.correctAnswer = data.correctAnswer;
             this.userName = data.name;
+            this.stats = data.stats;
             if (this.nextAnimationsEnded) {
                 this.showFalseAnswerAnimation();
             } else {
@@ -237,7 +244,7 @@ Guess.Game = function () {
             this.resultSec = data.result.seconds;
             this.currentQuestion = data.question;
             this.prepareToStartTurn(data.question);
-
+            this.answerWasCorrectAnimations();
         }
 	}
     this.abilityResult = function(data) {
@@ -269,6 +276,7 @@ Guess.Game = function () {
         this.correctAnswer = data.correctAnswer;
         this.correctAnswersNumber = data.correctAnswersNumber;
         this.userName = data.name;
+        this.stats = data.stats;
         this.showFalseAnswerAnimation();
     }
     this.stopGame = function() {
@@ -325,10 +333,10 @@ Guess.Game = function () {
     }
 
     this.animateAnswerSent = function() {
-        var correctAnswerEl = $('.answer.id-' + this.currentAnswer);
-        if (correctAnswerEl.hasClass('name')) {
+        var correctAnswerEl = $('.answer.name.id-' + this.currentAnswer + ' .block');
+        if (correctAnswerEl.length) {
             $('.answer .block').off();
-            correctAnswerEl.find('block').css({'background-color':'#069E2D'});
+            correctAnswerEl.css({'background-color':Guess.Game.color.yellow});
         }
         this.hideOtherAnswers(this.currentAnswer);
         setTimeout(function(){Guess.Game.answerAnimationEnded()}, 300);
@@ -339,12 +347,20 @@ Guess.Game = function () {
 
             if (i !== otherFromThat) {
                 if (answerEl.hasClass('name')) {
-                    answerEl.find('.block').css({'background-color':'#FFD416'});
+                    answerEl.find('.block').css({'background-color':Guess.Game.color.yellow});
                 }
                 answerEl.animate({
                     opacity:0
                 }, 300);
             }
+        }
+    }
+
+    this.answerWasCorrectAnimations = function() {
+        var correctAnswerEl = $('.answer.name.id-' + this.currentAnswer + ' .block');
+        if (correctAnswerEl.length) {
+            $('.answer .block').stop();
+            correctAnswerEl.animate({'background-color':Guess.Game.color.green, 'color':this.color.white}, 300);
         }
     }
 
@@ -367,7 +383,7 @@ Guess.Game = function () {
                 .css({right:'-30px', opacity:1})
                 .animate({right:'40%', opacity:0.7},
                 {duration:500, complete:function(){
-                    $('.points-amount').html(Guess.Game.pointsAmount).css({'font-size':'36px', color:'#FFD416'}).animate({'font-size':'20px', color:'#ffffff'}, 500);
+                    $('.points-amount').html(Guess.Game.pointsAmount).css({'font-size':'36px', color:Guess.Game.color.yellow}).animate({'font-size':'20px', color:'#ffffff'}, 500);
                     $(this).hide();
                 }});
         } else {
@@ -376,7 +392,7 @@ Guess.Game = function () {
     }
 
     this.abilityButtonAnimation = function(el) {
-        el.animate({'border-radius': '80px', 'background-color':'#FFD416'}, {'duration':1200, complete:function(){$(this).hide(100)}});
+        el.animate({'border-radius': '80px', 'background-color':Guess.Game.color.yellow}, {'duration':1200, complete:function(){$(this).hide(100)}});
         el.delay(250).animate({'opacity': 0}, {'duration':1000, 'queue':false});
     }
 
@@ -384,9 +400,9 @@ Guess.Game = function () {
         var duration = 1200;
         if (this.currentAnswer != 'none') {
             var currentAnswerEl = $('.answer.id-' + this.currentAnswer);
-            currentAnswerEl.animate({'opacity':0.4}, duration);
+            currentAnswerEl.animate({'opacity':0.8}, duration);
             if (currentAnswerEl.hasClass('name')) {
-                currentAnswerEl.find('.block').animate({'background-color':'#F21616'}, duration);
+                currentAnswerEl.find('.block').animate({'background-color':Guess.Game.color.red, 'color':this.color.white}, duration);
             } else {
 
             }
@@ -397,25 +413,28 @@ Guess.Game = function () {
 
         correctAnswerEl.animate({opacity:1}, {'duration':duration});
         if (correctAnswerEl.hasClass('name')) {
-            correctAnswerEl.find('.block').animate({'background-color':'#069E2D'}, duration);
+            correctAnswerEl.find('.block').animate({'background-color':Guess.Game.color.green}, duration);
             $('.answer .block').off();
         }
         setTimeout(function(){Guess.Game.showEndModal()}, 2500);
     }
 
     this.showEndModal = function() {
+
         $('.turn-area, .col-md-10.timer').animate({opacity:0}, {duration:300, complete:function(){
-            $('.turn-area, .col-md-10.timer').hide(300);
+            $('.turn-area, .col-md-10.timer').hide(500);
         }});//,
-        $('.points-container').delay(600).animate({'width':'100%'}, 300);
-        $('.points-amount').delay(900).animate({'color':'#ffffff'}, 600);
-        $('.points').delay(900).animate(
+        setTimeout(function(){
+            $('.game-area').removeClass('col-md-9').addClass('col-md-8');
+            $('.sidebar-col').removeClass('col-md-3').addClass('col-md-4');
+        }, 800);
+        $('.points-container').delay(800).animate({'width':'100%'}, 300);
+        //$('.points-amount').delay(900).animate({'color':'#ffffff'}, 600);
+        $('.points').delay(1100).animate(
             {
-                'height':'542px',
-                'padding-top':'100px',
-                'margin-top':'20px',
-                'background-color':'#428bca',
-                'color':'#ffffff'
+                'height':'560px',
+                'padding-top':'50px',
+                'margin-top':'20px'
             }, {duration:600, complete:function(){
                 $('.points').addClass('points-modal');
                 Guess.Game.fillEndModal();
@@ -447,6 +466,13 @@ Guess.Game = function () {
             $('.restart-button').before(obj);
             Ajax.init();
         }
+        var template = $('#template-sidebar-stats').html();
+        Mustache.parse(template);
+        var rendered = Mustache.render(template, {'stats' : this.stats});
+        var obj = $(rendered);
+        $('.sidebar-col').html('');
+        $('.sidebar-col').append(obj);
+        obj.fadeIn(400);
     }
 
     this.hideNameForm = function() {
@@ -460,8 +486,8 @@ Guess.Game = function () {
         this.secondsLeft = this.currentQuestion.sec;
         $('.timer .seconds .text').html(this.secondsLeft);
         $('.timer .seconds')
-            .css({'background-color': '#069E2D'})
-            .animate({'background-color':'#FF8360'}, this.currentQuestion.sec * 1000);
+            .css({'background-color': Guess.Game.color.green})
+            .animate({'background-color':Guess.Game.color.red}, this.currentQuestion.sec * 1000);
         this.turnStartTime   = new Date();
         this.timerInterval = setInterval(function() { Guess.Game.timerTick() }, 1000);
     }
@@ -496,20 +522,20 @@ Guess.Game = function () {
     }
 
     this.answerButtonMouseOver = function(el) {
-        $('.answer .block').css({'background-color':'#529BCA'});
+        $('.answer .block').css({'background-color':Guess.Game.color.blue, 'color':Guess.Game.color.white});
         el.bounce();
-        el.animate({'background-color':'#069E2D'}, {
+        el.animate({'background-color':Guess.Game.color.yellow, 'color':Guess.Game.color.black}, {
             queue:false,
             duration:400
         });
     }
     this.answerButtonMouseOut = function(el) {
         el.stop();
-        el.css({'background-color':'#529BCA'});
+        el.css({'background-color':Guess.Game.color.blue, 'color':Guess.Game.color.white});
     }
 
     this.answerImageMouseOver = function(el) {
-        el.animate({'background-size': '101%'}, {
+        el.animate({'background-size': '103%'}, {
             queue:false,
             duration:400
         });

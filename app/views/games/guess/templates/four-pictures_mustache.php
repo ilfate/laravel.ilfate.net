@@ -1,7 +1,7 @@
 
 
 <script id="template-four-pictures" type="x-tmpl-mustache">
-    <div class="question" >
+    <div class="question four-images" >
 
         <div class="row">
             <div class="col-md-12 name">

@@ -79,7 +79,8 @@ class GuessGameController extends \BaseController
                 'correctAnswer' => $game[self::GAME_CURRENT_QUESTION]['correct'],
                 'correctAnswersNumber' => $game[self::GAME_TURN] - 1,
                 'points' => $game[self::GAME_POINTS],
-                'name' => $name
+                'name' => $name,
+                'stats' => $this->getStats()
             ];
             $game[self::GAME_FINISHED] = true;
             $this->saveGame($game);
@@ -99,7 +100,8 @@ class GuessGameController extends \BaseController
             'correctAnswer' => $game[self::GAME_CURRENT_QUESTION]['correct'],
             'points' => $game[self::GAME_POINTS],
             'correctAnswersNumber' => $game[self::GAME_TURN] - 1,
-            'name' => $name
+            'name' => $name,
+            'stats' => $this->getStats()
         ];
         $game[self::GAME_FINISHED] = true;
         $this->saveGame($game);
@@ -290,9 +292,17 @@ class GuessGameController extends \BaseController
         return $question;
     }
 
+    protected function getStats()
+    {
+        $stats = GuessStats::getTopStatistic([time() - 24 * 60 * 60, time() + 4 * 60 * 60]);
+        foreach ($stats as $key => &$stat) {
+            $stat['key'] = $key + 1;
+        }
+        return $stats;
+    }
+
     protected function exportQuestion($question)
     {
-
         $toExport = [
             'sec' => $question['sec'],
             'type' => $question['type'],

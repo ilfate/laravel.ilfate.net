@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row name-options-second-row">
                 <div class="col-md-6 answer name id-2" data-id="2">
                     <div class="block">
                     {{question.options.2}}
