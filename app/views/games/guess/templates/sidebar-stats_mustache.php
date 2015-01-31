@@ -23,7 +23,7 @@
         {{/stats}}
         <tr>
           <td class="stats-table-more-button" colspan="3">
-            <a class="btn btn-primary" href="/GuessGame/stats">More statistic</a>
+            <a class="btn btn-primary" href="/GuessSeries/stats">More statistic</a>
           </td>
         </tr>
       </tbody>

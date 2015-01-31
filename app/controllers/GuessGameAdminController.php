@@ -89,6 +89,11 @@ class GuessGameAdminController extends \BaseController
 
         $extension = $file->getClientOriginalExtension();
         $filename = str_random(16) . '.' . $extension;
+        $fileInPath = public_path() . self::PATH_TO_FILES . $filename;
+        while (file_exists($fileInPath)) {
+            $filename = str_random(16) . '.' . $extension;
+            $fileInPath = public_path() . self::PATH_TO_FILES . $filename;
+        }
         $upload_success = $file->move($destinationPath, $filename);
 
         if ($upload_success) {

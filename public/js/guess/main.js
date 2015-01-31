@@ -82,6 +82,7 @@ Guess.Game = function () {
         url = '/GuessSeries/gameStarted';
         Ajax.json(url, {});
         //$('.ability').show();
+        $('.sidebar-on-start-buttons').fadeOut(1000, function(){$(this).remove()});
         $('.ability').animate({opacity:1},1000);
         $('.ability').on({
             'click':function(){Guess.Game.ability($(this))}

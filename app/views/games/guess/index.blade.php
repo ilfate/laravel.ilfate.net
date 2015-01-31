@@ -14,7 +14,8 @@
 @stop
 
 @section('sidebar')
-
+<a class="btn btn-primary go-to-stats-button sidebar-on-start-buttons" href="/GuessSeries/stats">To Leaderboards</a>
+<a class="btn btn-primary go-to-rredit sidebar-on-start-buttons" href="/GuessSeries/stats">Discuss on Rredit</a>
 <div class="row">
     <div class="ability-container col-md-12 col-sm-4">
         <div class="btn btn-info ability ability-1 " data-id="1">

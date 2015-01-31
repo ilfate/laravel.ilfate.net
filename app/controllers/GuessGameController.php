@@ -39,6 +39,16 @@ class GuessGameController extends \BaseController
         return View::make('games.guess.index');//, array('game' => $game)
     }
 
+    public function stats()
+    {
+        $imageStats = ImagesStats::getHardestImage([time() - 24 * 60 * 60, time() + 2 * 60 * 60]);
+        $url = SeriesImage::where('id', $imageStats->image_id)->pluck('url');
+        View::share('hardestPicture', $url);
+        View::share('today', $this->getStatsToday());
+        View::share('month', $this->getStatsMonth());
+        return View::make('games.guess.stats');
+    }
+
     public function gameStarted()
     {
         $game = $this->getGame();
@@ -80,7 +90,7 @@ class GuessGameController extends \BaseController
                 'correctAnswersNumber' => $game[self::GAME_TURN] - 1,
                 'points' => $game[self::GAME_POINTS],
                 'name' => $name,
-                'stats' => $this->getStats()
+                'stats' => $this->getStatsToday()
             ];
             $game[self::GAME_FINISHED] = true;
             $this->saveGame($game);
@@ -101,7 +111,7 @@ class GuessGameController extends \BaseController
             'points' => $game[self::GAME_POINTS],
             'correctAnswersNumber' => $game[self::GAME_TURN] - 1,
             'name' => $name,
-            'stats' => $this->getStats()
+            'stats' => $this->getStatsToday()
         ];
         $game[self::GAME_FINISHED] = true;
         $this->saveGame($game);
@@ -292,9 +302,18 @@ class GuessGameController extends \BaseController
         return $question;
     }
 
-    protected function getStats()
+    protected function getStatsToday()
     {
         $stats = GuessStats::getTopStatistic([time() - 24 * 60 * 60, time() + 4 * 60 * 60]);
+        foreach ($stats as $key => &$stat) {
+            $stat['key'] = $key + 1;
+        }
+        return $stats;
+    }
+
+    protected function getStatsMonth()
+    {
+        $stats = GuessStats::getTopStatistic([time() - 30 * 24 * 60 * 60, time() + 4 * 60 * 60]);
         foreach ($stats as $key => &$stat) {
             $stat['key'] = $key + 1;
         }

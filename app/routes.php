@@ -41,6 +41,7 @@ Route::post('MathEffect/saveName', array('before' => 'csrf', 'uses' => 'MathEffe
 Route::get('MathEffect/stats', 'MathEffectController@statistic');
 
 Route::get('GuessSeries', 'GuessGameController@index');
+Route::get('GuessSeries/stats', 'GuessGameController@stats');
 Route::post('GuessSeries/gameStarted', 'GuessGameController@gameStarted');
 Route::post('GuessSeries/answer', 'GuessGameController@answer');
 Route::post('GuessSeries/ability', 'GuessGameController@ability');
