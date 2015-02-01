@@ -33,7 +33,11 @@ class ImagesStats extends Eloquent {
             $to = date( 'Y-m-d  H:i:s', $period[1]);
             $query = $query->whereBetween('created_at', array($from, $to));
         }
-        return $query->first();
+        $first = $query->first();
+        if (!$first) {
+            return self::getHardestImage();
+        }
+        return $first;
     }
 
 }

@@ -304,7 +304,7 @@ class GuessGameController extends \BaseController
 
     protected function getStatsToday()
     {
-        $stats = GuessStats::getTopStatistic([time() - 24 * 60 * 60, time() + 4 * 60 * 60]);
+        $stats = GuessStats::getTopStatistic([time() - (24 * 60 * 60), time() + (4 * 60 * 60)]);
         foreach ($stats as $key => &$stat) {
             $stat['key'] = $key + 1;
         }

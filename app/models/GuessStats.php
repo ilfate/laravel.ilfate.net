@@ -27,8 +27,8 @@ class GuessStats extends Eloquent {
             ->orderBy('points', 'desc')
             ->limit(10);
         if ($period) {
-        	$from = date( 'Y-m-d H:i:s', $period[0]);
-  			$to = date( 'Y-m-d  H:i:s', $period[1]);
+        	$from = date('Y-m-d H:i:s', $period[0]);
+  			$to   = date('Y-m-d H:i:s', $period[1]);
         	$query = $query->whereBetween('created_at', array($from, $to));
         }    
         return $query->get();
