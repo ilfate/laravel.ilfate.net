@@ -2,6 +2,7 @@
 
 use Helper\Breadcrumbs;
 use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 
 class GuessGameController extends \BaseController
 {
@@ -78,7 +79,7 @@ class GuessGameController extends \BaseController
         if ($game[self::GAME_CURRENT_QUESTION]['correct'] === $id) {
             $result = $this->addPointsToGame($game, $seconds);
             $game[self::GAME_TURN]++;
-            $prevQuestions = [$game[self::GAME_CURRENT_QUESTION]['seriseId']];
+            $prevQuestions = [$game[self::GAME_CURRENT_QUESTION]['seriesId']];
             if (!empty($game[self::GAME_PREV_QUESTIONS])) {
                 $prevQuestions[] = $game[self::GAME_PREV_QUESTIONS][0];
                 if (!empty($game[self::GAME_PREV_QUESTIONS][1])) {
@@ -320,15 +321,19 @@ class GuessGameController extends \BaseController
     {
         $cachedStats = Cache::get(self::CACHE_KEY_STATS_DAY, null);
         if ($cachedStats) {
-            $lastElement = array_slice($cachedStats, -1);
+            list($lastElement) = array_slice($cachedStats, -1);
         }
-        if (!$cachedStats || $lastElement[9]['points'] < $currentResult) {
+        if (!$cachedStats ||
+            ($currentResult &&
+                ($lastElement['points'] < $currentResult || count($cachedStats) < 10)
+            )
+        ) {
             $stats = GuessStats::getTopStatistic([time() - (24 * 60 * 60), time() + (4 * 60 * 60)]);
             foreach ($stats as $key => &$stat) {
                 $stat['key'] = $key + 1;
             }
             $expiresAt = Carbon::now()->addMinutes(15);
-            Cache::put(self::CACHE_KEY_STATS_MONTH, $stats, $expiresAt);
+            Cache::put(self::CACHE_KEY_STATS_DAY, $stats, $expiresAt);
         } else {
             $stats = $cachedStats;
         }

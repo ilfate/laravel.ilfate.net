@@ -384,8 +384,9 @@ div.points-modal-text{
 }
 .stats-page .middle-panel {
     /*min-height: 515px;*/
-    background-color: #EF8354;
+    /*background-color: #529BCA;*/
     border-radius: 5px;
+    border: 15px solid #529BCA;
     margin-top: 20px;
     position: relative;
 }
@@ -401,13 +402,13 @@ div.points-modal-text{
 .hardest-image-title {
     padding-top: 15px;
     text-align: center;
-    color:#ffffff;
+    color:#529BCA;
     font-weight: bold;
     font-size: 20px;
 }
 .hardest-image {
-    width:96%;
-    margin:2%;
+    width:100%;
+    margin-top:2%;
 }
 .stats-page .table{
     color:#ffffff;
