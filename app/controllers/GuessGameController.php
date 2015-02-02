@@ -7,6 +7,9 @@ class GuessGameController extends \BaseController
 {
     const SESSION_DATA = 'guess.game';
 
+    const CACHE_KEY_STATS_MONTH = 'guess.stats.month';
+    const CACHE_KEY_STATS_DAY   = 'guess.stats.day';
+
     const GAME_TURN = 'turn';
     const GAME_STARTED = 'started';
     const GAME_START_TIME = 'start_time';
@@ -15,6 +18,7 @@ class GuessGameController extends \BaseController
     const GAME_POINTS = 'points';
     const GAME_ABILITIES = 'abilities';
     const GAME_FINISHED = 'finished';
+    const GAME_PREV_QUESTIONS = 'prev_questions';
 
     /**
      * Display a listing of the games.
@@ -74,7 +78,15 @@ class GuessGameController extends \BaseController
         if ($game[self::GAME_CURRENT_QUESTION]['correct'] === $id) {
             $result = $this->addPointsToGame($game, $seconds);
             $game[self::GAME_TURN]++;
-            $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game[self::GAME_TURN]);
+            $prevQuestions = [$game[self::GAME_CURRENT_QUESTION]['seriseId']];
+            if (!empty($game[self::GAME_PREV_QUESTIONS])) {
+                $prevQuestions[] = $game[self::GAME_PREV_QUESTIONS][0];
+                if (!empty($game[self::GAME_PREV_QUESTIONS][1])) {
+                    $prevQuestions[] = $game[self::GAME_PREV_QUESTIONS][1];
+                }
+            }
+            $game[self::GAME_PREV_QUESTIONS] = $prevQuestions;
+            $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game[self::GAME_TURN], $prevQuestions);
             $game[self::GAME_TURN_START_TIME] = time();
 
             $this->saveGame($game);
@@ -84,17 +96,18 @@ class GuessGameController extends \BaseController
                 ]);
         } else {
             $name = Session::get('userName', false);
+            $game[self::GAME_FINISHED] = true;
+            $this->saveResults($game[self::GAME_CURRENT_QUESTION]);
             $return = [
                 'finish' => true,
                 'correctAnswer' => $game[self::GAME_CURRENT_QUESTION]['correct'],
                 'correctAnswersNumber' => $game[self::GAME_TURN] - 1,
                 'points' => $game[self::GAME_POINTS],
                 'name' => $name,
-                'stats' => $this->getStatsToday()
+                'stats' => $this->getStatsToday($game[self::GAME_POINTS])
             ];
-            $game[self::GAME_FINISHED] = true;
+            
             $this->saveGame($game);
-            $this->saveResults($game[self::GAME_CURRENT_QUESTION]);
             return json_encode($return);
         }
     }
@@ -242,7 +255,7 @@ class GuessGameController extends \BaseController
         return $currentLevel;
     }
 
-    protected function getNewQuestion($turn) 
+    protected function getNewQuestion($turn, $excludeSeriesIds = array()) 
     {
         $currentLevel = $this->getCurrentLevelConfig($turn);
         $levelConfig = \Config::get('guess.game.levels.' . $currentLevel);
@@ -256,7 +269,8 @@ class GuessGameController extends \BaseController
             'type' => $typeId,
         ];
 
-        $answerSeries = $this->getRandomSeries(false);
+        $answerSeries = $this->getRandomSeries(false, $excludeSeriesIds);
+        $question['seriesId'] = $answerSeries['id'];
         switch ($typeId) {
             case 1:
                 $imageDifficulty = $levelConfig[3][array_rand($levelConfig[3])];
@@ -302,20 +316,37 @@ class GuessGameController extends \BaseController
         return $question;
     }
 
-    protected function getStatsToday()
+    protected function getStatsToday($currentResult = null)
     {
-        $stats = GuessStats::getTopStatistic([time() - (24 * 60 * 60), time() + (4 * 60 * 60)]);
-        foreach ($stats as $key => &$stat) {
-            $stat['key'] = $key + 1;
+        $cachedStats = Cache::get(self::CACHE_KEY_STATS_DAY, null);
+        if ($cachedStats) {
+            $lastElement = array_slice($cachedStats, -1);
+        }
+        if (!$cachedStats || $lastElement[9]['points'] < $currentResult) {
+            $stats = GuessStats::getTopStatistic([time() - (24 * 60 * 60), time() + (4 * 60 * 60)]);
+            foreach ($stats as $key => &$stat) {
+                $stat['key'] = $key + 1;
+            }
+            $expiresAt = Carbon::now()->addMinutes(15);
+            Cache::put(self::CACHE_KEY_STATS_MONTH, $stats, $expiresAt);
+        } else {
+            $stats = $cachedStats;
         }
         return $stats;
     }
 
     protected function getStatsMonth()
     {
-        $stats = GuessStats::getTopStatistic([time() - 30 * 24 * 60 * 60, time() + 4 * 60 * 60]);
-        foreach ($stats as $key => &$stat) {
-            $stat['key'] = $key + 1;
+        $cachedStats = Cache::get(self::CACHE_KEY_STATS_MONTH, null);
+        if (!$cachedStats) {
+            $stats = GuessStats::getTopStatistic([time() - 30 * 24 * 60 * 60, time() + 4 * 60 * 60]);
+            foreach ($stats as $key => &$stat) {
+                $stat['key'] = $key + 1;
+            }
+            $expiresAt = Carbon::now()->addMinutes(60);
+            Cache::put(self::CACHE_KEY_STATS_MONTH, $stats, $expiresAt);
+        } else {
+            $stats = $cachedStats;
         }
         return $stats;
     }
