@@ -354,7 +354,7 @@ div.points-modal-text{
     line-height: 80px;
     font-weight: bold;
     font-size: 30px;
-    display: none;
+    /*display: none;*/
 }
 .stats-table {
     display: none;
@@ -374,6 +374,15 @@ div.points-modal-text{
     font-weight: bold;
     font-size: 18px;
 }
+.facebook-like-hidden {
+    display: none;
+}
+.facebook-placeholder {
+    padding: 20px 20px 0 20px;
+    background-color: #069E2D;
+}
+
+
 /* STATS */
 
 .stats-page .side-panel {

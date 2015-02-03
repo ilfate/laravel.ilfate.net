@@ -444,10 +444,12 @@ Guess.Game = function () {
 
     this.fillEndModal = function() {
         var answersText = 'You gave ' + this.correctAnswersNumber + ' correct answers';
-        $('.points-amount').html('<span class="left"></span><span class="number"> ' + this.pointsAmount + '</span><span class="right"></span>');
-        $('.points-amount').after('<br><span class="modal-user-name"></span><br>');
-        $('.points-amount').after('<br><span class="rest-stats-text"></span>');
-        $('.restart-button').show();
+        var template = $('#template-end-modal').html();
+        Mustache.parse(template);
+        var rendered = Mustache.render(template, {'data' : {'answers':this.correctAnswersNumber}, 'number': this.pointsAmount, 'userName' : this.userName});
+        var obj = $(rendered);
+        $('.points-modal').html('').append(obj);
+
         $('.points-amount .number').animate({'font-size':'40px'}, 800);
         $('.points-amount').animate({'font-size':'30px'}, 800);
         var queue = [
@@ -456,17 +458,15 @@ Guess.Game = function () {
         ];
         if (this.userName) {
             queue.push({text:'Saved for name: ' + this.userName, el:$('.modal-user-name'), options:{'duration':800}})
+        } else {
+            Ajax.init();
         }
         $('.rest-stats-text').delay(1000).animate({'font-size':'30px'}, 800);
         pasteText('You earned', $('.points-amount .left'), {'duration':500, 'queue':queue});
-        if (!this.userName) {
-            var template = $('#template-end-modal').html();
-            Mustache.parse(template);
-            var rendered = Mustache.render(template, {'data' : {'answers':this.correctAnswersNumber}});
-            var obj = $(rendered);
-            $('.restart-button').before(obj);
-            Ajax.init();
-        }
+
+        //facebook
+        $('.facebook-placeholder').append($('.facebook-like-hidden :first-child'));
+
         var template = $('#template-sidebar-stats').html();
         Mustache.parse(template);
         var rendered = Mustache.render(template, {'stats' : this.stats});

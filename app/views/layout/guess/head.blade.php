@@ -15,10 +15,10 @@
     <meta content="guess series, game, series, guess series game" name="keywords">
     <meta content="Guess series game" name="description">
     <meta property="og:site_name" content="GuessSeries">
-    <meta property="og:title" content="Guess Series game - the game where you can show your knowledges in series">
+    <meta property="og:title" content="Guess Series - the game where you can show your knowledge in series">
     <meta property="og:url" content="http://ilfate.net/GuessGame">
-    <meta property="og:image" content="http://ilfate.net/images/games/guess.jpg">
-    <meta property="og:description" content="Play a game where you can show your knowledges is series and compete with other players!">
+    <meta property="og:image" content="http://ilfate.net/images/game/GuessSeries.jpg">
+    <meta property="og:description" content="Play a game where you can show your knowledge in series and compete with other players!">
     <meta property="og:type" content="game">
 
 </head>
@@ -48,6 +48,17 @@
     ga('send', 'pageview');
 
 </script>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=243940452354382&version=v2.0";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+<div class="facebook-like-hidden">
+    <div class="fb-like" data-href="http://ilfate.net/GuessSeries" data-layout="box_count" data-action="like" data-show-faces="false" data-share="true"></div>
+</div>
 </body>
 
 @stop

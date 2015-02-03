@@ -10,7 +10,6 @@
 			<div class="points">
                 <div class="add-points"></div>
                 <span class="points-amount">0</span>
-                <a class="btn btn-primary restart-button" href="/GuessSeries">Restart</a>
 
 			</div>
 		</div>
