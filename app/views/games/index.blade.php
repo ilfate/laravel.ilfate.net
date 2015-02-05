@@ -9,7 +9,7 @@
 <div class="row show-grid">
     <div class="col-md-8 col-md-offset-2 code-page-block">
         <a href="{{ action('GuessGameController@index') }}" class="rounded_block_link">
-            @include('interface.button-block', array('text' => '', 'background' => '/images/game/GuessSeries.jpg'))
+            @include('interface.button-block', array('text' => '', 'background' => '/images/game/GuessSeriesMini.jpg'))
         </a>
     </div>
 </div>
