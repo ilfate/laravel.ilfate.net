@@ -22,6 +22,8 @@ class GuessGameController extends \BaseController
     const GAME_FINISHED = 'finished';
     const GAME_PREV_QUESTIONS = 'prev_questions';
 
+    const REDDIT = 'http://www.reddit.com/r/GuessSeries/';
+
     /**
      * Display a listing of the games.
      *
@@ -41,6 +43,7 @@ class GuessGameController extends \BaseController
         View::share('firstQuestion', $firstQuestion);
 
         View::share('page_title', 'Guess series game');
+        View::share('reddit', self::REDDIT);
 
         return View::make('games.guess.index');//, array('game' => $game)
     }
@@ -53,7 +56,7 @@ class GuessGameController extends \BaseController
         View::share('today', $this->getStatsToday());
         View::share('month', $this->getStatsMonth());
         View::share('total', $this->getStatsTotal());
-        View::share('reddit', 'http://reddit.com');
+        View::share('reddit', self::REDDIT);
         return View::make('games.guess.stats');
     }
 
