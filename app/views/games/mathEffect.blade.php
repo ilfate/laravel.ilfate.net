@@ -44,7 +44,7 @@
                 @if (empty($userName))
                 <br>
                 <p id="MENameFormContainer">
-                    <form id="MENameForm" class="result-text" method="post" action="{{ action('MathEffectController@saveName') }}">
+                    <form id="MENameForm" class="ajax result-text" method="post" action="{{ action('MathEffectController@saveName') }}">
                         <input type="text" name="name" />
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="checkKey" id="checkKey" value="{{ $checkKey }}">
