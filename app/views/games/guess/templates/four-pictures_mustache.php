@@ -5,7 +5,7 @@
 
         <div class="row">
             <div class="col-md-12 name">
-                {{question.name}}
+                <span>{{question.name}}</span>
             </div>
         </div>
         <div class="options">

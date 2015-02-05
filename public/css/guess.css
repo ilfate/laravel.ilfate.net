@@ -142,6 +142,11 @@ div.answer.image{
 .question.four-images {
     padding: 0 10px;
 }
+.four-images .name span{
+    background-color: #FFD416;
+    padding: 5px;
+    border-radius: 5px;
+}
 .name-options-second-row {
     margin-top: 7px;
 }
