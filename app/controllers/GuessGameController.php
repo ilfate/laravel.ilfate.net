@@ -10,6 +10,7 @@ class GuessGameController extends \BaseController
 
     const CACHE_KEY_STATS_MONTH = 'guess.stats.month';
     const CACHE_KEY_STATS_DAY   = 'guess.stats.day';
+    const CACHE_KEY_STATS_TOTAL = 'guess.stats.total'
 
     const GAME_TURN = 'turn';
     const GAME_STARTED = 'started';
@@ -332,7 +333,7 @@ class GuessGameController extends \BaseController
             foreach ($stats as $key => &$stat) {
                 $stat['key'] = $key + 1;
             }
-            $expiresAt = Carbon::now()->addMinutes(15);
+            $expiresAt = Carbon::now()->addMinutes(10);
             Cache::put(self::CACHE_KEY_STATS_DAY, $stats, $expiresAt);
         } else {
             $stats = $cachedStats;
@@ -348,8 +349,21 @@ class GuessGameController extends \BaseController
             foreach ($stats as $key => &$stat) {
                 $stat['key'] = $key + 1;
             }
-            $expiresAt = Carbon::now()->addMinutes(60);
+            $expiresAt = Carbon::now()->addMinutes(10);
             Cache::put(self::CACHE_KEY_STATS_MONTH, $stats, $expiresAt);
+        } else {
+            $stats = $cachedStats;
+        }
+        return $stats;
+    }
+
+    protected function getStatsTotal()
+    {
+        $cachedStats = Cache::get(self::CACHE_KEY_STATS_TOTAL, null);
+        if (!$cachedStats) {
+            $stats = GuessStats::getTotalStatistic();
+            $expiresAt = Carbon::now()->addMinutes(15);
+            Cache::put(self::CACHE_KEY_STATS_TOTAL, $stats, $expiresAt);
         } else {
             $stats = $cachedStats;
         }

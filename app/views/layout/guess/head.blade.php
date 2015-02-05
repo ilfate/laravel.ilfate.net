@@ -16,7 +16,7 @@
     <meta content="Guess series game" name="description">
     <meta property="og:site_name" content="GuessSeries">
     <meta property="og:title" content="Guess Series - the game where you can show your knowledge in series">
-    <meta property="og:url" content="http://ilfate.net/GuessGame">
+    <meta property="og:url" content="http://ilfate.net/GuessSeries">
     <meta property="og:image" content="http://ilfate.net/images/game/GuessSeries.jpg">
     <meta property="og:description" content="Play a game where you can show your knowledge in series and compete with other players!">
     <meta property="og:type" content="game">
