@@ -386,7 +386,7 @@ div.points-modal-text{
 /* STATS */
 
 .stats-page .side-panel {
-    min-height: 560px;
+    min-height: 540px;
     background-color: #529BCA;
     border-radius: 5px;
     margin-top: 5px;
@@ -398,6 +398,12 @@ div.points-modal-text{
     border: 15px solid #529BCA;
     margin-top: 20px;
     position: relative;
+}
+.stats-page .middle-controls {
+    padding-top: 10px;
+}
+.stats-page .middle-controls .fb {
+    margin-top:10px;
 }
 .stats-page .row > .middle {
     text-align: center;
@@ -428,6 +434,12 @@ div.points-modal-text{
 }
 .stats-page .side-panel .table-striped>tbody>tr:nth-child(odd)>td, .stats-page .side-panel .table-striped>tbody>tr:nth-child(odd)>th {
     background-color: #428BBA;
+}
+.stats-page .free-description {
+    border-radius: 5px;
+    border: 15px solid #529BCA;
+    margin-top: 20px;
+    min-height: 200px;
 }
 
 /*  ADMIN */

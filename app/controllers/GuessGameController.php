@@ -10,7 +10,7 @@ class GuessGameController extends \BaseController
 
     const CACHE_KEY_STATS_MONTH = 'guess.stats.month';
     const CACHE_KEY_STATS_DAY   = 'guess.stats.day';
-    const CACHE_KEY_STATS_TOTAL = 'guess.stats.total'
+    const CACHE_KEY_STATS_TOTAL = 'guess.stats.total';
 
     const GAME_TURN = 'turn';
     const GAME_STARTED = 'started';
@@ -52,6 +52,8 @@ class GuessGameController extends \BaseController
         View::share('hardestPicture', $url);
         View::share('today', $this->getStatsToday());
         View::share('month', $this->getStatsMonth());
+        View::share('total', $this->getStatsTotal());
+        View::share('reddit', 'http://reddit.com');
         return View::make('games.guess.stats');
     }
 
