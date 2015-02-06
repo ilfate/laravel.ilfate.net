@@ -404,6 +404,9 @@ div.points-modal-text{
     margin-top: 20px;
     position: relative;
 }
+.stats-page .middle {
+    min-height: 540px;
+}
 .stats-page .middle-controls {
     padding-top: 10px;
 }

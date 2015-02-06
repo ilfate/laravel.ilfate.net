@@ -41,6 +41,11 @@
                     You killed - <span class="result-numbers" id="unitsKilled"></span> units!<br>
                     You earned - <span class="result-numbers" id="pointsEarned"></span> points!<br>
                 </p>
+                <p class="result-text">
+                    <span class="label label-warning">
+                    Try my new game - <a href="http://ilfate.ru/GuessSeries">Guess Series</a>
+                    </span>
+                </p>
                 @if (empty($userName))
                 <br>
                 <p id="MENameFormContainer">

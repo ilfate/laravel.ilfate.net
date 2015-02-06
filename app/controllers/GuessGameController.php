@@ -42,7 +42,7 @@ class GuessGameController extends \BaseController
         }
         View::share('firstQuestion', $firstQuestion);
 
-        View::share('page_title', 'Guess series game');
+        View::share('page_title', 'Guess Series game');
         View::share('reddit', self::REDDIT);
 
         return View::make('games.guess.index');//, array('game' => $game)
@@ -57,6 +57,7 @@ class GuessGameController extends \BaseController
         View::share('month', $this->getStatsMonth());
         View::share('total', $this->getStatsTotal());
         View::share('reddit', self::REDDIT);
+        View::share('page_title', 'Guess Series Leaderboard');
         return View::make('games.guess.stats');
     }
 

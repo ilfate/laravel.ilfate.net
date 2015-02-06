@@ -38,7 +38,7 @@ class GuessStats extends Eloquent {
 	{
 		$results = [];
 		$results['totalGames'] = self::count();
-        $results['avrPoints'] = self::avg('points');
+        $results['avrPoints'] = round(self::avg('points'), 1);
         $results['answersTotal'] = self::sum('answers');
         $results['users'] = self::select(DB::raw('count(DISTINCT CONCAT(COALESCE(name,\'empty\'),ip)) as count'))
             ->pluck('count');
