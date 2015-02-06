@@ -43,7 +43,7 @@
                 </p>
                 <p class="result-text">
                     <span class="label label-warning">
-                    Try my new game - <a href="http://ilfate.ru/GuessSeries">Guess Series</a>
+                    Try my new game - <a href="http://ilfate.net/GuessSeries">Guess Series</a>
                     </span>
                 </p>
                 @if (empty($userName))
