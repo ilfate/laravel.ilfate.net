@@ -277,16 +277,16 @@ class GuessGameController extends \BaseController
             'type' => $typeId,
         ];
 
-        $answerSeries = $this->getRandomSeries(false, $excludeSeriesIds);
+        $answerSeries = $this->getRandomSeries($seriesDifficulty, $excludeSeriesIds);
         $question['seriesId'] = $answerSeries['id'];
         switch ($typeId) {
             case 1:
                 $imageDifficulty = $levelConfig[3][array_rand($levelConfig[3])];
                 $question['picture'] = $this->getPicture($imageDifficulty, $answerSeries['id']);
                 //$this->getArrayRandomValue($levelConfig[2])
-                $wrong1 = $this->getRandomSeries(false, [$answerSeries['id']]);
-                $wrong2 = $this->getRandomSeries(false, [$answerSeries['id'], $wrong1['id']]);
-                $wrong3 = $this->getRandomSeries(false, [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
+                $wrong1 = $this->getRandomSeries($seriesDifficulty, [$answerSeries['id']]);
+                $wrong2 = $this->getRandomSeries($seriesDifficulty, [$answerSeries['id'], $wrong1['id']]);
+                $wrong3 = $this->getRandomSeries($seriesDifficulty, [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
                 $question['all'] = [
                     $answerSeries['name'], 
                     $wrong1['name'],
@@ -297,9 +297,9 @@ class GuessGameController extends \BaseController
             case 2:
                 $question['name'] = $answerSeries['name'];
                 //$this->getArrayRandomValue($levelConfig[2])
-                $wrong1 = $this->getRandomSeries(false, [$answerSeries['id']]);
-                $wrong2 = $this->getRandomSeries(false, [$answerSeries['id'], $wrong1['id']]);
-                $wrong3 = $this->getRandomSeries(false, [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
+                $wrong1 = $this->getRandomSeries($seriesDifficulty, [$answerSeries['id']]);
+                $wrong2 = $this->getRandomSeries($seriesDifficulty, [$answerSeries['id'], $wrong1['id']]);
+                $wrong3 = $this->getRandomSeries($seriesDifficulty, [$answerSeries['id'], $wrong1['id'], $wrong2['id']]);
                 $question['all'] = [
                     $this->getPicture($this->getArrayRandomValue($levelConfig[3]), $answerSeries['id']),
                     $this->getPicture($this->getArrayRandomValue($levelConfig[3]), $wrong1['id']),

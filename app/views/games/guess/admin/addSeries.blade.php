@@ -20,7 +20,7 @@
             <div class="form-group">
                 <label for="inputPassword4" class="col-sm-2 control-label">Difficulty</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" value="1" name="difficulty" id="inputPassword4">
+                    <input type="text" class="form-control" value="2" name="difficulty" id="inputPassword4">
                 </div>
             </div>
             <div class="form-group">
