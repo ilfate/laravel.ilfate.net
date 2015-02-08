@@ -4,6 +4,7 @@ use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
+use Carbon\Carbon;
 
 class GuessStats extends Eloquent {
 
@@ -68,14 +69,12 @@ class GuessStats extends Eloquent {
 
     public static function getLastGames()
     {
-
-        $query = self::select('i.url')
-            ->join('images i', 'images_stats.image_id', '=', 'i.id');
-        $from = Carbon::now()->addMinutes(-15);
-        $to = Carbon::now();
-        $from = date( 'Y-m-d H:i:s', $from);
-        $to = date( 'Y-m-d H:i:s', $to);
-        $query = $query->whereBetween('images_stats.created_at', array($from, $to));
+        $query = self::select('images.url', 'answers', 'points')
+            ->join('images', 'guess_stats.image_id', '=', 'images.id');
+        $from = Carbon::now()->addMinutes(-15)->format('Y-m-d H:i:s');
+        $to = Carbon::now()->addHours(2)->format('Y-m-d H:i:s');
+        $query = $query->whereBetween('guess_stats.created_at', array($from, $to));
+        return $query->get();
     }
 
 }

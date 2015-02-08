@@ -23,19 +23,6 @@ class GuessGameAdminController extends \BaseController
      */
     public function index()
     {
-//        $game[self::GAME_CURRENT_QUESTION] = $this->getNewQuestion($game['turn']);
-//        $this->saveGame($game);
-//        //}
-//
-//        if ($game['turn'] == 1) {
-//            $firstQuestion = json_encode($this->exportQuestion($game[self::GAME_CURRENT_QUESTION]));
-//        } else {
-//            $firstQuestion = '{}';
-//        }
-//        View::share('firstQuestion', $firstQuestion);
-//
-//        View::share('page_title', 'Guess series game');
-
         $series = Series::orderBy('name')->get();
         $user = User::getUser();
         $editAllowed = $this->checkForUserEditRights($user);
@@ -166,7 +153,7 @@ class GuessGameAdminController extends \BaseController
 
     public function liveStream()
     {
-        $games = ImagesStats::getLastGames();
+        $games = GuessStats::getLastGames();
         View::share('games', $games);
         return View::make('games.guess.admin.liveStream');
     }
