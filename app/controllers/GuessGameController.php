@@ -50,7 +50,7 @@ class GuessGameController extends \BaseController
 
     public function stats()
     {
-        $imageStats = ImagesStats::getHardestImage([time() - 24 * 60 * 60, time() + 2 * 60 * 60]);
+        $imageStats = GuessStats::getHardestImage([time() - 24 * 60 * 60, time() + 2 * 60 * 60]);
         $url = SeriesImage::where('id', $imageStats->image_id)->pluck('url');
         View::share('hardestPicture', $url);
         View::share('today', $this->getStatsToday());
@@ -341,6 +341,9 @@ class GuessGameController extends \BaseController
             $stats = GuessStats::getTopStatistic([time() - (24 * 60 * 60), time() + (4 * 60 * 60)]);
             foreach ($stats as $key => &$stat) {
                 $stat['key'] = $key + 1;
+                if (!$stat['name']) {
+                    $stat['name'] = '-----';
+                }
             }
             $expiresAt = Carbon::now()->addMinutes(10);
             Cache::put(self::CACHE_KEY_STATS_DAY, $stats, $expiresAt);

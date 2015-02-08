@@ -16,7 +16,7 @@
         @foreach($table as $row)
         <tr>
             <td>{{$row['key']}}</td>
-            <td>{{{$row['name'] ?: 'Anonimus'}}}</td>
+            <td>{{{$row['name'] ?: '-----'}}}</td>
             <td>{{$row['points']}}</td>
             @endforeach
         </tr>

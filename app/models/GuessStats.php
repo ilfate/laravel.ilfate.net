@@ -50,6 +50,7 @@ class GuessStats extends Eloquent {
     public static function getHardestImage($period = array())
     {
         $query = self::select('image_id', DB::raw('count(1) as sum'))
+            ->where('image_id', '!=', 0)
             ->orderBy('sum', 'desc')
             ->groupBy('image_id')
             ->orderBy('image_id')
@@ -76,5 +77,7 @@ class GuessStats extends Eloquent {
         $query = $query->whereBetween('guess_stats.created_at', array($from, $to));
         return $query->get();
     }
+
+
 
 }
