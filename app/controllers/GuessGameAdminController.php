@@ -164,6 +164,13 @@ class GuessGameAdminController extends \BaseController
         return Redirect::to('GuessSeries/admin/');
     }
 
+    public function liveStream()
+    {
+        $games = ImagesStats::getLastGames();
+        View::share('games', $games);
+        return View::make('games.guess.admin.liveStream');
+    }
+
     public function generateImages()
     {
         $user = User::getUser();

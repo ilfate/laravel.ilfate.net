@@ -28,10 +28,7 @@
 <input type="text" class="form-control" value="1" onkeyup="Guess.Game.adminDuffeculty(this)" />
 
 <a class="btn btn-primary" href="/GuessSeries/admin/addSeries">Add a Series</a><br><br>
-<a class="btn btn-primary" href="/tcg/test/clear?bot=true">Clear And create Game with Bot</a><br><br>
-<a class="btn btn-primary" href="/tcg/test/clear?debug=true&bot=true">Clear And create Debug Game with Bot</a><br><br>
-<a class="btn btn-primary" href="/tcg/test/clear?situation=true">Create Situation</a><br><br>
-<a class="btn btn-primary" href="/tcg/test/clear?situation=true&bot=true">Create Situation with Bot</a><br><br>
+<a class="btn btn-primary" href="/GuessSeries/admin/liveStream">Live stream</a><br><br>
 
 
 @stop

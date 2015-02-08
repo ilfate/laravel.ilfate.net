@@ -227,14 +227,6 @@ class GuessGameController extends \BaseController
         $name     = Session::get('userName', null);
         $game = $this->getGame();
 
-        $stats = new GuessStats();
-        $stats->points = $game[self::GAME_POINTS];
-        $stats->answers = $game[self::GAME_TURN] - 1;
-        $stats->ip      = $_SERVER['REMOTE_ADDR'];
-        $stats->laravel_session = md5(Cookie::get('laravel_session'));
-        $stats->name = $name;
-        $stats->save();
-
         switch($question['type']) {
             case 1:
                 $imageId = $question['picture']['id'];
@@ -243,11 +235,22 @@ class GuessGameController extends \BaseController
                 $imageId = $question['options'][$question['correct']]['id'];
                 break;
         }
+
+        $stats = new GuessStats();
+        $stats->points = $game[self::GAME_POINTS];
+        $stats->answers = $game[self::GAME_TURN] - 1;
+        $stats->ip      = $_SERVER['REMOTE_ADDR'];
+        $stats->laravel_session = md5(Cookie::get('laravel_session'));
+        $stats->name = $name;
+        $stats->image_id = $imageId;
+        $stats->save();
+
+
         
-        $imageStats = new ImagesStats();
-        $imageStats->image_id = $imageId;
-        $imageStats->type = 1;
-        $imageStats->save();
+//        $imageStats = new ImagesStats();
+//        $imageStats->image_id = $imageId;
+//        $imageStats->type = 1;
+//        $imageStats->save();
     }
 
     protected function getCurrentLevelConfig($turn)
