@@ -50,7 +50,7 @@ class GuessGameController extends \BaseController
 
     public function stats()
     {
-        $imageStats = GuessStats::getHardestImage([time() - 24 * 60 * 60, time() + 2 * 60 * 60]);
+        $imageStats = ImagesStats::getHardestImage([time() - 24 * 60 * 60, time() + 2 * 60 * 60]);
         $url = SeriesImage::where('id', $imageStats->image_id)->pluck('url');
         View::share('hardestPicture', $url);
         View::share('today', $this->getStatsToday());
