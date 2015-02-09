@@ -30,6 +30,7 @@
     </div>
     {{/userName}}
     <div class="clear"></div>
+    <div>Plz share the game with your friends!</div>
     <div class="facebook-placeholder col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5">
     </div>
     <div class="clear"></div>
