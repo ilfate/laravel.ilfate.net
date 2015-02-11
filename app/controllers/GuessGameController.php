@@ -76,8 +76,11 @@ class GuessGameController extends \BaseController
 
     public function answer()
     {
-        $game = $this->getGame();
-        if ($game[self::GAME_FINISHED]) {
+        $game = $this->getGame(true);
+        if (!$game || $game[self::GAME_FINISHED]) {
+            if (!$game) {
+                Log::error('ERROR. We are in "answer", but the game was not found in session. Terminating.');
+            }
             return '[]';
         }
         $id = (int) Input::get('id');
@@ -187,9 +190,9 @@ class GuessGameController extends \BaseController
                         $question['picture'] = $this->getPicture($imageDifficulty, $seriesId, [$currentImageId]);
                         break;
                     case 2:
-                        foreach ($question['options'] as &$image) {
+                        foreach ($question['options'] as $key => &$image) {
                             $imageDifficulty = $levelConfig[3][array_rand($levelConfig[3])];
-                            $image = $this->getPicture($imageDifficulty, $image['series_id'], [$image['id']]);
+                            $question['options'][$key] = $this->getPicture($imageDifficulty, $image['series_id'], [$image['id']]);
                         }
                         break;
                 }
@@ -403,10 +406,10 @@ class GuessGameController extends \BaseController
         return $toExport;
     }
 
-    protected function getGame() 
+    protected function getGame($isRequired = false) 
     {
         $game = Session::get(self::SESSION_DATA, null);
-        if (!$game) {
+        if (!$game && !$isRequired) {
             $game = $this->createGame();
         }
         return $game;
