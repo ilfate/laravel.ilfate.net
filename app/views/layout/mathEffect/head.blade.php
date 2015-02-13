@@ -15,11 +15,14 @@
 
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
 
-    <meta content="ilfate ilya rubinchik ilya_rubinchik php web developer" name="keywords">
-    <meta content="Rubinchik Ilya`s personal site" name="description">
+    <meta content="MathEffect, game, logic, strategy game, ilfate, ilya rubinchik, ilya_rubinchik, php, web developer" name="keywords">
+    <meta content="MathEffect - A logic game! Try to find the best strategy to survive!" name="description">
     <meta property="og:site_name" content="Ilfate">
-    <meta property="og:title" content="Ilfate - Rubinchik Ilya. Personal Site.">
-    <meta property="og:image" content="/images/ilfate.png">
+    <meta property="og:title" content="MathEffect">
+    <meta property="og:url" content="http://ilfate.net/MathEffect">
+    <meta property="og:image" content="http://ilfate.net/images/game/tdTitle_small.png">
+    <meta property="og:description" content="A logic game! Try to find the best strategy to survive!">
+    <meta property="og:type" content="game">
 
 </head>
 <body>
@@ -27,10 +30,6 @@
 <script type="text/javascript" src="/js/jquery-1.8.2.min.js"></script>
 <script type="text/javascript" src="/js/jquery-additional.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
-<!-- <script type="text/javascript" src="packages/bootbox.min.js"></script> -->
-
-<!--  <script type="text/javascript" src="/js/bootstrap-image-gallery.min.js"></script>
-  <script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>-->
 
 <script type="text/javascript" src="/js/events.js"></script>
 
@@ -56,6 +55,16 @@
   ga('send', 'pageview');
 
 </script>
+<div id="fb-root"></div>
+  <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId=243940452354382&version=v2.0";
+          fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+  </script>
+
 
 </body>
 

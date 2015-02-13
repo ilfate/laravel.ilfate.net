@@ -34,6 +34,7 @@ class MathEffectController extends \BaseController
         Session::put('MEcheckKey', $MEcheckKey);
 
         View::share('page_title', 'Math Effect - logic game.');
+        View::share('facebookEnabled', true);
 
         return View::make('games.mathEffect', array('userName' => $name, 'checkKey' => $MEcheckKey));
     }
@@ -134,6 +135,7 @@ class MathEffectController extends \BaseController
                 ->limit(10)
                 ->get();
         }
+        View::share('facebookEnabled', true);
 
         return View::make('games.mathEffect.stats', array(
             'topLogs'    => $topLogs, 
