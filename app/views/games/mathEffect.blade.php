@@ -63,8 +63,12 @@
             <!-- dialog buttons -->
             <div class="modal-footer">
                 <div class="me-facebook-modal">
-                    <div class="fb-like" data-href="http://ilfate.net/MathEffect" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+                    <div class="addthis_sharing_toolbox" data-url="http://ilfate.net/MathEffect" data-title="MathEffect"></div>
                 </div>
+                <!-- <div class="me-facebook-modal">
+                    <div class="fb-like" data-href="http://ilfate.net/MathEffect" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://ilfate.net/MathEffect">Tweet</a>
+                </div> -->
                 <a href="{{ action('MathEffectController@statistic') }}" class="btn btn-primary modal-leaferboard-button" >Leaderboard</a> 
                 <a href="{{ action('MathEffectController@index') }}" type="button" class="btn btn-success">Play again</a>
             </div>
