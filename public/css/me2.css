@@ -9,13 +9,37 @@
 	background-color: #EADEAD;
 	float:left;
 }
+.me2 .field .cell.actionPossible {
+    background-color: #EFDEFD;
+}
+.me2 .roads {
+    position: absolute;
+}
+.me2 .road-brick {
+    position: absolute;
+    width:6px;
+    height: 6px;
+    border-radius: 6px;
+    background-color: #843534;
+}
 .me2 .units {
 	position: absolute;
 }
 .me2 .units .unit {
-	position: absolute;
-	background-color: #967867;
-	text-align: center;
-	font-size: 20px;
-	font-weight: bold;
+    position: absolute;
+    background-color: #967867;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
 }
+.me2 .enemies {
+	position: absolute;
+}
+.me2 .enemies .enemy {
+    position: absolute;
+    background-color: #256427;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+

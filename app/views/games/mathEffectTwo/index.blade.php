@@ -9,7 +9,9 @@
 
 <div class="me2">
     <div class="field"></div>
+    <div class="roads"></div>
     <div class="units"></div>
+    <div class="enemies"></div>
 </div>
 
 
