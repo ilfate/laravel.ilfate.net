@@ -266,6 +266,9 @@ class GuessGameController extends \BaseController
                 break;
             }
         }
+        if (!$currentLevel && $turn) {
+            $currentLevel = 11;
+        }
         return $currentLevel;
     }
 
