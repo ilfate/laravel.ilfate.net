@@ -8,6 +8,37 @@
 
 <div class="panel panel-default">
   <!-- Default panel contents -->
+  <div class="panel-heading">Top today</div>
+  <table class="table">
+      <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Turns Survived</th>
+            <th>Points</th>
+            <th>Units Killed</th>
+        </tr>
+      </thead>  
+      <tbody>
+        @forelse ($todayLogs as $key => $log)
+            <tr>
+                <td>{{{ $key + 1 }}}</td>
+                <td>{{{ $log->name }}}</td>
+                <td><b>{{{ $log->turnsSurvived }}}</b></td>
+                <td>{{{ $log->pointsEarned }}}</td>
+                <td>{{{ $log->unitsKilled }}}</td>
+            </tr>
+        @empty
+            <tr>
+              <th>No logs today :(</th>
+            </tr>
+        @endforelse        
+      </tbody>
+  </table>
+</div>
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
   <div class="panel-heading">Top 10 games</div>
   <table class="table">
       <thead>
@@ -29,7 +60,9 @@
                 <td>{{{ $log->unitsKilled }}}</td>
             </tr>
         @empty
-            No logs today :(
+            <tr>
+              <th>No logs today :(</th>
+            </tr>
         @endforelse        
       </tbody>
   </table>

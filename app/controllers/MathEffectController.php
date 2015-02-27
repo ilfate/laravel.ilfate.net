@@ -2,6 +2,7 @@
 
 use Helper\Breadcrumbs;
 use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 
 class MathEffectController extends \BaseController
 {
@@ -117,6 +118,15 @@ class MathEffectController extends \BaseController
             ->orderBy('turnsSurvived', 'desc')
             ->limit(10)
             ->get();
+
+        $from = Carbon::now()->addHours(-24)->format('Y-m-d H:i:s');
+        $to = Carbon::now()->addHours(2)->format('Y-m-d H:i:s');
+        $todayLogs = DB::table('td_statistic')
+            ->select(DB::raw('name, ip, turnsSurvived, pointsEarned, unitsKilled'))
+            ->orderBy('turnsSurvived', 'desc')
+            ->limit(10)
+            ->whereBetween('created_at', [$from, $to])
+            ->get();
         $totalGames = DB::table('td_statistic')
             ->count();
         $avrTurns = DB::table('td_statistic')
@@ -139,6 +149,7 @@ class MathEffectController extends \BaseController
 
         return View::make('games.mathEffect.stats', array(
             'topLogs'    => $topLogs, 
+            'todayLogs'  => $todayLogs, 
             'totalGames' => $totalGames,
             'avrTurns'   => $avrTurns,
             'users'      => $users,
