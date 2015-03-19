@@ -57,6 +57,8 @@
                         <button class="btn btn-primary" type="submit">Save my name</button>
                     </form>
                 </p>
+                @else
+                  <input type="hidden" name="checkKey" id="checkKey" value="{{ $checkKey }}" >
                 @endif
             </div>
 
