@@ -24,7 +24,7 @@ class TestController extends \BaseController
     public function index()
     {
         $this->breadcrumbs->addLink(action(__CLASS__ . '@' . __FUNCTION__), 'Code');
-        return View::make('games.dark.index');
+        return View::make('games.vortex.index');
     }
 
     /**
