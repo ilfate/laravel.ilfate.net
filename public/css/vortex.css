@@ -1,0 +1,61 @@
+.clear{
+    clear: both;
+}
+
+.btn {
+    border: none;
+    border-radius: 2px;
+}
+.btn-primary {
+    background-color: #069E2D;
+}
+.btn-primary:hover {
+    background-color: #067E1D;
+}
+.btn:hover{
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.23), 0 10px 30px rgba(0, 0, 0, 0.19);
+}
+.progress-bar-success {
+    background-color:#069E2D;
+}
+
+body {
+    background-color: #F3FCF0;
+}
+
+
+
+
+.map .cells .cell {
+	/*width: 5em;*/
+	/*height: 5em;*/
+	
+	float:left;
+}
+
+.cell.status-accessible {
+	background-color: #26BE4D;
+}
+.cell.status-visible{
+	background-color: #EF8354;
+}
+.cell.status-visible.status-accessible{
+	background-color: #069E2D;
+}
+.cell.status-visible.status-activated {
+	background-color: #ABCDEF;
+}
+
+
+/* COLOR PALLETE */
+
+.color-pallete {
+    color:#069E2D;
+    /*color:#399E5A;*/
+    color: #529BCA;
+    color:#FF8360;
+    color:#ABCDEF;
+    color:#584D3D; /*black*/
+    color:#EF8354; /* orange */
+
+}

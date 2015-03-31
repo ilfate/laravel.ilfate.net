@@ -61,6 +61,13 @@ Route::any('GuessSeries/admin/deleteImage/{id}', 'GuessGameAdminController@delet
 
 Route::get('test', 'TestController@index');
 
+Route::get('Vortex', 'VortexController@index');
+Route::post('Vortex/action', 'VortexController@action');
+
+
+
+
+
 Route::get('tcg/me', 'TcgPlayerController@index');
 Route::get('tcg/register', 'TcgPlayerController@registerForm');
 Route::post('tcg/register/submit', 'TcgPlayerController@registerSubmit');
