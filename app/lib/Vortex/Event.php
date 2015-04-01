@@ -70,6 +70,12 @@ class Event {
 		$configs = \Config::get('vortex.map');
 		switch($this->data['eventId']) {
 			case self::TYPE_ARROW:
+				$cells = $this->getCellsByString($configs['actionsTypes'][$this->data['eventId']]['types'][$this->data['eventTypeId']]);
+				foreach ($cells as $coordinats) {
+					$this->game->cellView($coordinats[0], $coordinats[1]);
+					$this->game->cellAccess($coordinats[0], $coordinats[1]);
+					$this->game->cellActivate($coordinats[0], $coordinats[1]);
+				}
 				break;
 			case self::TYPE_VIEW:
 				$cells = $this->getCellsByString($configs['actionsTypes'][$this->data['eventId']]['types'][$this->data['eventTypeId']]);
@@ -86,6 +92,18 @@ class Event {
 					$this->game->cellView($coordinats[0], $coordinats[1]);
 				}
 				break;
+				case self::TYPE_KEYS:
+					break;
+				case self::TYPE_BOMB:
+					break;
+				case self::TYPE_KNIGHT:
+					break;
+				case self::TYPE_PORTAL:
+					break;
+				case self::TYPE_VORTEX:
+					break;
+				case self::TYPE_TREASURE:
+					break;
 		}
 		$cells = $this->getCellsByString($configs['defaultAccessDirections']);
 		foreach ($cells as $coordinats) {

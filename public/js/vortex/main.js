@@ -69,12 +69,15 @@ Vortex.Game = function () {
 				var cellObj = $('.map .cells .cell.x-' + x + '.y-' + y);
 				if (data.map[x][y].visible && !cellObj.hasClass(this.CONST_VISIBLE)) {
 					cellObj.addClass(this.CONST_VISIBLE);
+					info (.x-' + x + '.y-' + y - is now visible');
 				}
 				if (data.map[x][y].accessible && !cellObj.hasClass(this.CONST_ACCESSIBLE)) {
 					cellObj.addClass(this.CONST_ACCESSIBLE);
+					info (.x-' + x + '.y-' + y - is now accesseible');
 				}
 				if (data.map[x][y].activated && !cellObj.hasClass(this.CONST_ACTIVATED)) {
 					cellObj.addClass(this.CONST_ACTIVATED);
+					info (.x-' + x + '.y-' + y - is was activated');
 				}				
 				this.showIcon(cellObj, data.map[x][y]);
 			}
@@ -91,10 +94,20 @@ Vortex.Game = function () {
 		}
 		var html = '';
 		switch (type) {
-			case '1_1':	html = '<i class="fa fa-arrow-up"></i>'; break;
-			case '1_2':	html = '<i class="fa fa-arrow-right"></i>'; break;
-			case '1_3':	html = '<i class="fa fa-arrow-down"></i>'; break;
-			case '1_4':	html = '<i class="fa fa-arrow-left"></i>'; break;
+			case '1_1':	 html = '<i class="fa fa-arrow-up"></i>'; break;
+			case '1_2':	 html = '<i class="fa fa-arrow-right"></i>'; break;
+			case '1_3':	 html = '<i class="fa fa-arrow-down"></i>'; break;
+			case '1_4':	 html = '<i class="fa fa-arrow-left"></i>'; break;
+			case '1_5':	 html = '<i class="fa rotate-45 fa-arrow-up"></i>'; break;
+			case '1_6':	 html = '<i class="fa rotate-45 fa-arrow-right"></i>'; break;
+			case '1_7':	 html = '<i class="fa rotate-45 fa-arrow-down"></i>'; break;
+			case '1_8':	 html = '<i class="fa rotate-45 fa-arrow-left"></i>'; break;
+			case '1_9':	 html = '<i class="fa fa-arrows-v"></i>'; break;
+			case '1_10': html = '<i class="fa fa-arrows-h"></i>'; break;
+			case '1_11': html = '<i class="fa rotate-45 fa-arrows-v"></i>'; break;
+			case '1_12': html = '<i class="fa rotate-45 fa-arrows-h"></i>'; break;
+			case '1_13': html = '<i class="fa fa-arrows"></i>'; break;
+			case '1_14': html = '<i class="fa fa-arrows-alt"></i>'; break;
 			case '2_1':
 			case '2_2':
 			case '2_3':
@@ -105,6 +118,33 @@ Vortex.Game = function () {
 			case '2_8':
 			case '2_9':
 				html = '<i class="fa fa-eye"></i>';
+				break;
+			case '3_1':
+			case '3_2':
+			case '3_3':
+			case '3_4':
+			case '3_5':
+			case '3_6':
+			case '3_7':
+				html = '<i class="fa fa-key"></i>';
+				break;
+			case 4:
+				html = '<i class="fa fa-bomb"></i>';
+				break;
+			case 5:
+				html = '<i class="fa fa-mail-forward"></i>';
+				break;
+			case 6:
+				html = '<i class="fa fa-database"></i>';
+				break;
+			case 7:
+				html = '<i class="fa fa-recycle"></i>';
+				break;
+			case 8:
+				html = '<i class="fa fa-gift"></i>';
+				break;
+			default:
+				info(type);
 				break;
 		}
 		if (html) {

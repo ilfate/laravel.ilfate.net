@@ -96,7 +96,7 @@ class Vortex {
 		if (empty($this->map[$x][$y])) {
 			$this->createNewEvent($x, $y);
 		}
-		if (!$this->map[$x][$y]->isVisible()) {
+		if (!$this->map[$x][$y]->isVisible() && !$this->map[$x][$y]->isActivated()) {
 			$this->map[$x][$y]->setVisible();
 		}
 	}
@@ -109,7 +109,7 @@ class Vortex {
 		if (empty($this->map[$x][$y])) {
 			$this->createNewEvent($x, $y);
 		}
-		if (!$this->map[$x][$y]->isAccessible()) {
+		if (!$this->map[$x][$y]->isAccessible() && !$this->map[$x][$y]->isActivated()) {
 			$this->map[$x][$y]->setAccessible();
 		}
 	}
@@ -123,8 +123,8 @@ class Vortex {
 			return false;
 		}
 		if (!$this->map[$x][$y]->isActivated()) {
-			$this->map[$x][$y]->execute();
 			$this->map[$x][$y]->setActivated();
+			$this->map[$x][$y]->execute();
 		}	
 	}
 
