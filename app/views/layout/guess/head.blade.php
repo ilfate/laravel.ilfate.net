@@ -12,8 +12,8 @@
 
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"/>
 
-    <meta content="guess series, game, series, guess series game" name="keywords">
-    <meta content="Guess series game" name="description">
+    <meta content="guess series, game, series, quiz, quiz series, guess series game" name="keywords">
+    <meta content="Quiz: Guess series game" name="description">
     <meta property="og:site_name" content="GuessSeries">
     <meta property="og:title" content="Guess Series - the game where you can show your knowledge in series">
     <meta property="og:url" content="http://ilfate.net/GuessSeries">
