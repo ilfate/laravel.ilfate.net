@@ -9,7 +9,7 @@
 <div class="row show-grid">
     <div class="col-md-9 col-md-offset-1 code-page-block" >
         <a href="{{ action('CodeController@engine') }}" class="rounded_block_link" data-target=".main-content-well">
-            @include('interface.button-block', array('text' => 'Ilfate PHP framework', 'background' => '/images/php2.jpg'))
+            @include('interface.button-block', array('text' => 'My PHP framework', 'background' => '/images/php2.jpg'))
         </a>
     </div>
 </div>
