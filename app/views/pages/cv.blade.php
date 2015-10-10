@@ -33,12 +33,12 @@
                 <h1 class="pull-left">Skills</h1>
                 <strong><a class="pull-left like-h1" href="{{ action('PageController@skills') }}">learn more</a></strong>
                 <div class="clearfix"></div>
-                Languages: PHP, JavaScript, Ruby, Java<br>
-                Web development: CSS, HTML/XHTML, Jquery, Bootstrap<br>
-                DB: MySql, Solr, <span class="tip" rel="tooltip" title="Module for MySql to work with it like noSql database" >HandlerSocket</span>, Sphinx, Oracle, Redis<br>
-                VCS: Git, Svn<br>
-                Frameworks: Laravel, ZendFramework<br>
-                Other: PHPUnit, Nginx, Memcached, Behat, Selenium, Phing, Jira, Redmine, Scrum<br>
+                Languages: <b>PHP</b>, <b>JavaScript</b>, Ruby, Java<br>
+                Web development: <b>CSS</b>, HTML/XHTML, Jquery, Bootstrap, Materializecss, Scss, Compas<br>
+                DB: <b>MySql</b>, Solr, <span class="tip" rel="tooltip" title="Module for MySql to work with it like noSql database" >HandlerSocket</span>, Sphinx, Oracle, Redis<br>
+                VCS: <b>Git</b>, Svn<br>
+                Frameworks: Laravel, ZendFramework, Phalcon<br>
+                Other: <b>PHPUnit</b>, Nginx, Memcached, Vagrant, Saltstack, Behat, Selenium, Phing, Jira, Scrum<br>
                 <a href="{{ action('PageController@skills') }}">My skills table</a>
             </div>
             <div>
@@ -58,6 +58,7 @@
                 Web development<br>
                 Game development<br>
                 <a target="_blank" href="http://www.youtube.com/watch?v=xk2_qX_oU3U">Snowboarding</a><br>
+                Climbing<br>
                 Reading<br>
                 Traveling<br>
                 Bicycling<br>
@@ -70,14 +71,41 @@
                 <a target="_blank" href="https://github.com/ilfate">Github</a><br>
                 <a target="_blank" href="https://plus.google.com/u/0/104220186237319355155/posts">Google+</a><br>
             </div>
+            <div>
+                <h1>Personal Projects</h1>
+                <h3>GuessSeries</h3>
+                February 2015.<br>
+                One more simple JS game made in 2 weeks. This time it is a quiz game about series. In total game was played by 15k players.<br>
+                Game: <a href="{{ action('GuessGameController@index') }}" >GuessSeries</a>
+                <h3>Math Effect</h3>
+                October 2014 - November 2014.<br>
+                A simple JS game I made in 2 weeks. Math Effect is a turn-based strategic game. In total game was played by 43k players.<br>
+                Game: <a href="{{ action('MathEffectController@index') }}" >Math effect</a>
+                <h3>Robot Rock</h3>
+                Novemder 2010 - June 2011.<br>
+                My first Php + Canvas game. Main purpose of creating this game was to learn HTML5-Canvas and increase my PHP skills<br>
+                You can find animation demo and information at the page below <a href="{{ action('GamesController@robotRock') }}" >http://ilfate.net/RobotRock</a>
+                <h3>Ilfate framework</h3>
+                October 2012 - January 2013.<br>
+                My PHP micro-framework. ilfate.net is created with this framework<br>
+                Github project: <a target="_blank" href="https://github.com/ilfate/ilfate_php_engine" >http://github.com/ilfate/ilfate_php_engine</a>
+            </div>
         </div>
         <div class="col-md-5 col-md-offset-2">
             <div>
                 <h1>Work experience</h1>
+                <h3>Senior PHP Developer</h3>
+                <a target="_blank" href="http://www.nu3.de">Nu3.de</a> - “Your Nutrition Experts: Nutrients & Supplements at nu3”<br>
+                <b>January 2015 - Present</b>. Berlin.<br>
+                <h3>Backend Developer</h3>
+                <a target="_blank" href="http://www.nu3.de">Nu3.de</a> - “Your Nutrition Experts: Nutrients & Supplements at nu3”<br>
+                <b>August 2014 - January 2015</b>. Berlin.<br>
+                In a scrum team I worked on further development and maintenance of PHP based e-commerce project. Optimization and standardization of system’s architecture. Building separate financial application for Navision integration. Improving mailing.<br>
+                <span class="text-info">PHP + Mysql + Apache + Solr</span>
                 <h3>Backend PHP Developer</h3>
                 <a target="_blank" href="http://www.home24.de">Home24.de</a> - “Germany's biggest online furniture store”<br>
-                <b>April 2013 - present</b>. Berlin.<br>
-                I’m working in team of 10 developers to support and improve successful online store. I’m responsible for different parts of the project like: reclamation process, Erp tasks processor, feeds, delta solr indexing and ect. My duties also include bug fixes all over the project, improving performance, improving safety and refactoring old code.<br>
+                <b>April 2013 - August 2014</b>. Berlin.<br>
+                I was working in team of 10 backend developers to support and improve successful online store. I was responsible for different parts of the project like: reclamation process, Erp tasks processor, feeds, delta solr indexing and ect. My duties also included bug fixes all over the project, improving performance, improving safety and refactoring old code.<br>
                 <span class="text-info">PHP + Mysql + Apache + Solr</span>
                 <h3>PHP Developer</h3>
                 <a target="_blank" href="http://www.professionali.ru">Professionali.ru</a> - a huge Russian social network for people in
@@ -101,17 +129,7 @@
                 I was creating sites based on company`s inner framework. This was a part time job where I learned PHP and everything about web development.<br>
                 <span class="text-info">PHP + MySql + Apache</span>
             </div>
-            <div>
-                <h1>Personal Projects</h1>
-                <h3>Robot Rock</h3>
-                Novemder 2010 - June 2011.<br>
-                My first Php + Canvas game. Main purpose of creating this game was to learn HTML5-Canvas and increase my PHP skills<br>
-                You can find animation demo and information at the page below <a href="{{ action('GamesController@robotRock') }}" >http://ilfate.net/RobotRock</a>
-                <h3>Ilfate framework</h3>
-                October 2012 - present.<br>
-                My PHP micro-framework. ilfate.net is created with this framework<br>
-                Github project: <a target="_blank" href="https://github.com/ilfate/ilfate_php_engine" >http://github.com/ilfate/ilfate_php_engine</a>
-            </div>
+            
         </div>
     </div>
 </div>
